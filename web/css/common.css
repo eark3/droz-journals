@@ -1,0 +1,58 @@
+.blocklink {
+	width: 100%;
+}
+
+.vendorlink {
+	width: 307px;
+	height: 71px;
+	display: block;
+	float:left;
+}
+
+.contextlink {
+    float: right;
+	color: white;
+	background: #6C757E;
+	cursor: pointer;
+}
+
+.contextlink:hover {
+	color: #A3CBFF;
+}
+
+.contextlink ul {
+	display: block;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	right: 0;
+	z-index: 20000;
+}
+
+.contextlink ul li {
+	display: none;
+	margin: 0;
+	padding: 5px 10px;
+	background: #6C757E;;
+	white-space: nowrap;
+	text-align: left;
+}
+
+.contextlink:hover ul li {
+	display: block;
+}
+
+.contextlink ul li a,
+.contextlink ul li span {
+	color: white;
+	text-transform: none;
+}
+
+.contextlink ul li:hover {
+	background: #A3CBFF;
+}
+
+.contextlink ul li:hover a,
+.contextlink ul li:hover span {
+	color: #6C757E;;
+}

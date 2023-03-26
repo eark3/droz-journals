@@ -1,0 +1,98 @@
+{
+    "root": {
+        "title": {
+            "fr-FR": "Portail de revues de la Librairie Droz"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/"
+            }
+        ]
+    },
+    "RR": {
+        "title": {
+            "fr-FR": "Recherches & Rencontres"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/RR"
+            }
+        ]
+    },
+    "SLLMOO": {
+        "title": {
+            "fr-FR": "Les colloques de la Société de Langues et Littératures médiévales d’Oc et d’Oïl"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/SLLMOO"
+            }
+        ]
+    },
+    "RThPh": {
+        "title": {
+            "fr-FR": "Revue de Théologie et de Philosophie"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/RThPh"
+            }
+        ]
+    },
+    "CFS": {
+        "title": {
+            "fr-FR": "Cahiers Ferdinand de Saussure"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/CFS"
+            }
+        ]
+    },
+    "RFHL": {
+        "title": {
+            "fr-FR": "Revue française d'histoire du livre"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/RFHL"
+            }
+        ]
+    },
+    "HCL": {
+        "title": {
+            "fr-FR": "Histoire et civilisation du livre"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/HCL"
+            }
+        ]
+    },
+    "RHP": {
+        "title": {
+            "fr-FR": "Revue d'histoire du protestantisme"
+        },
+        "url": [
+            {
+                "secure": true,
+                "host": "revues.droz.org",
+                "path": "/RHP"
+            }
+        ]
+    }
+}
