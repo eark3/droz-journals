@@ -6,10 +6,20 @@
 		}
 	},
 	"styles": {
-		"common": {
+		"bootstrap": {
 			"media": "screen",
 			"type": "text/css",
-			"href": "/journals/css/common.css"
+			"href": "/journals/css/bootstrap.css"
+		},
+		"layout": {
+			"media": "screen",
+			"type": "text/css",
+			"href": "/journals/css/layout.css"
+		},
+		"root": {
+			"media": "screen",
+			"type": "text/css",
+			"href": "/journals/css/root.css"
 		}
 	},
 	"scripts": {

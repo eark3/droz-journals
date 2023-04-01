@@ -1,0 +1,23 @@
+{
+	"SettingEntity": {
+		"table": "settings",
+		"fields": [
+			"id",
+			"type",
+			"object",
+			"name",
+			"value",
+			"locale",
+			"content"
+		],
+		"key": "id"
+	},
+	"JournalEntity": {
+		"table": "journals",
+		"fields": [
+			"id",
+			"context"
+		],
+		"key": "id"
+	}
+}
