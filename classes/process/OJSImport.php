@@ -84,6 +84,7 @@ class OJSImport extends ProcessExecutor {
         }
         (new JournalEntity())->delete();
         (new SettingEntity())->delete();
+        (new UserEntity())->delete();
         foreach ($data as $context => $journal) {
             $entity = (new JournalEntity())->create(["context" => $context]);
             foreach (['name','description'] as $name) {
@@ -97,6 +98,25 @@ class OJSImport extends ProcessExecutor {
             }
         }
         file_put_contents('/tmp/ojs.json', Zord::json_encode($data));
+        foreach ((new OJSUserEntity())->retrieve() as $user) {
+            $first = trim($user->first_name ?? '');
+            $middle = trim($user->middle_name ?? '');
+            $last = trim($user->last_name ?? '');
+            $tokens = [];
+            foreach ([$first,$middle,$last] as $token) {
+                if (!empty($token)) {
+                    $tokens[] = $token;
+                }
+            }
+            $name = implode(' ', $tokens);
+            echo "$name\n";
+            $entity = (new UserEntity())->create([
+                "login" => $user->username,
+                "password" => $user->password,
+                "email" => $user->email,
+                "name" => $name,
+            ]);
+        }
     }
     
 }
