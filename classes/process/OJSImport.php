@@ -82,6 +82,7 @@ class OJSImport extends ProcessExecutor {
                 $data[$journal->path]["issues"][] = $_issue;
             }
         }
+        file_put_contents('/tmp/ojs.json', Zord::json_encode($data));
         (new JournalEntity())->delete();
         (new SettingEntity())->delete();
         (new UserEntity())->delete();
@@ -97,7 +98,6 @@ class OJSImport extends ProcessExecutor {
                 ]);
             }
         }
-        file_put_contents('/tmp/ojs.json', Zord::json_encode($data));
         foreach ((new OJSUserEntity())->retrieve() as $user) {
             $first = trim($user->first_name ?? '');
             $middle = trim($user->middle_name ?? '');

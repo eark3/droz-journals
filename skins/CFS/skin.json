@@ -1,0 +1,9 @@
+{
+	"styles": {
+		"CFS": {
+			"media": "screen",
+			"type": "text/css",
+			"href": "/journals/css/CFS.css"
+		}
+	}
+}

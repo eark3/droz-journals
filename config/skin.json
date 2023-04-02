@@ -1,11 +1,10 @@
 {
-	"header": {
-		"left": {
-			"url": "http://revues.droz.org",
-			"image": "/journals/img/librairie_droz.jpg"
-		}
-	},
 	"styles": {
+		"fonts": {
+			"media": "screen",
+			"type": "text/css",
+			"href": "/journals/css/fonts.css"
+		},
 		"bootstrap": {
 			"media": "screen",
 			"type": "text/css",
@@ -16,10 +15,10 @@
 			"type": "text/css",
 			"href": "/journals/css/layout.css"
 		},
-		"root": {
+		"droz": {
 			"media": "screen",
 			"type": "text/css",
-			"href": "/journals/css/root.css"
+			"href": "/journals/css/droz.css"
 		}
 	},
 	"scripts": {
