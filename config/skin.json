@@ -10,11 +10,5 @@
 			"type": "text/css",
 			"href": "/journals/css/common.css"
 		}
-	},
-	"scripts": {
-		"common": {
-			"type": "text/javascript",
-			"src": "/journals/js/common.js"
-		}
 	}
 }

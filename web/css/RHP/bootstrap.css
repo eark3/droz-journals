@@ -1,4 +1,5 @@
 html {
+	background: #fafafa;
 	font-size: 10px;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0)
 }
@@ -8,7 +9,9 @@ body {
 	font-size: 15px;
 	line-height: 1.42857143;
 	color: #606060;
-	background-color: #fafafa
+	background-color: #fafafa;
+	-webkit-font-smoothing: antialiased;
+	margin-top: 135px
 }
 
 input, button, select, textarea {
@@ -6339,10 +6342,6 @@ footer[role="contentinfo"] {
 	border: 1px solid #606060
 }
 
-body {
-	-webkit-font-smoothing: antialiased
-}
-
 .text-primary, .text-primary:hover {
 	color: #707f42
 }
@@ -6507,17 +6506,6 @@ a.list-group-item-danger.active:hover, a.list-group-item-danger.active:focus
 
 .popover {
 	color: #606060
-}
-
-html {
-	background: #fafafa
-}
-
-body {
-	background: #fafafa;
-	font-family: 1em;
-	color: #606060;
-	margin-top: 135px
 }
 
 .SabonLTStd-Roman {

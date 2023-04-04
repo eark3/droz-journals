@@ -43,25 +43,7 @@
 
 .page-header {
 	font-family: 'SabonLTStd-Roman', serif;
-	font-size: 1.2em !important
-}
-
-.navbar-header h1.site-name, .navbar-header .navbar-brand {
-	font-family: "Bodoni 16" !important;
-	font-style: italic
-}
-
-.header_view {
-	background-color: #D0DAF3;
-	border-color: #D0DAF3 !important;
-	color: #003c70
-}
-
-.header_view a {
-	color: #003c70 !important
-}
-
-.page-header {
+	font-size: 1.2em !important;
 	font-weight: 500
 }
 
@@ -138,4 +120,19 @@ h1, h2, h3, h4, h5, h6, small, .current_issue_title {
 		float: left;
 		margin: 0 0 0 5px
 	}
+}
+
+.navbar-header h1.site-name, .navbar-header .navbar-brand {
+	font-family: "Bodoni 16" !important;
+	font-style: italic
+}
+
+.header_view {
+	background-color: #D0DAF3;
+	border-color: #D0DAF3 !important;
+	color: #003c70
+}
+
+.header_view a {
+	color: #003c70 !important
 }
