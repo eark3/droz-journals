@@ -5,20 +5,10 @@
 			"type": "text/css",
 			"href": "/journals/css/fonts.css"
 		},
-		"bootstrap": {
+		"common": {
 			"media": "screen",
 			"type": "text/css",
-			"href": "/journals/css/bootstrap.css"
-		},
-		"layout": {
-			"media": "screen",
-			"type": "text/css",
-			"href": "/journals/css/layout.css"
-		},
-		"droz": {
-			"media": "screen",
-			"type": "text/css",
-			"href": "/journals/css/droz.css"
+			"href": "/journals/css/common.css"
 		}
 	},
 	"scripts": {

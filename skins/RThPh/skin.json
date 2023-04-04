@@ -3,12 +3,12 @@
 		"bootstrap": {
 			"media": "screen",
 			"type": "text/css",
-			"href": "/journals/css/CFS/bootstrap.css"
+			"href": "/journals/css/RThPh/bootstrap.css"
 		},
 		"layout": {
 			"media": "screen",
 			"type": "text/css",
-			"href": "/journals/css/CFS/layout.css"
+			"href": "/journals/css/RThPh/layout.css"
 		}
 	}
 }
