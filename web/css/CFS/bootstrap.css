@@ -63,10 +63,6 @@ a.bg-info:hover, a.bg-info:focus {
 	background-color: #827b6d
 }
 
-.page-header {
-	border-bottom: 1px solid #9b9487
-}
-
 abbr[title], abbr[data-original-title] {
 	border-bottom: 1px dotted #9b9487
 }
@@ -498,10 +494,6 @@ output {
 .navbar-toggle {
 	margin-top: 18px;
 	margin-bottom: 18px;
-}
-
-.navbar-nav {
-	margin: 12.25px -15px
 }
 
 @media ( min-width : 768px) {
