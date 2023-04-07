@@ -16,7 +16,60 @@
 		"table": "journals",
 		"fields": [
 			"id",
-			"context"
+			"context",
+			"name",
+			"place"
+		],
+		"key": "id"
+	},
+	"IssueEntity": {
+		"table": "issues",
+		"fields": [
+			"id",
+			"journal",
+			"volume",
+			"number",
+			"title",
+			"year",
+			"published",
+			"modified",
+			"open"
+		],
+		"key": "id"
+	},
+	"SectionEntity": {
+		"table": "sections",
+		"fields": [
+			"id",
+			"journal",
+			"title",
+			"place"
+		],
+		"key": "id"
+	},
+	"PaperEntity": {
+		"table": "papers",
+		"fields": [
+			"id",
+			"issue",
+			"section",
+			"place",
+			"pages",
+			"title",
+			"status",
+			"title",
+			"subtitle",
+			"doi"
+		],
+		"key": "id"
+	},
+	"AuthorEntity": {
+		"table": "authors",
+		"fields": [
+			"id",
+			"paper",
+			"first",
+			"last"
 		],
 		"key": "id"
 	}

@@ -4,8 +4,8 @@
 			<div class="media">
 				<div class="media-left media-top">
 					<div class="homepage-image">
-						<a class="fancybox" href="https://revues.droz.org/public/journals/18/homepageImage_fr_FR.jpg">
-							<img class="img-responsive" src="https://revues.droz.org/public/journals/18/homepageImage_fr_FR.jpg" alt="">
+						<a class="fancybox" href="/public/journals/thumbnails/<?php echo $context; ?>.jpg">
+							<img class="img-responsive" src="/public/journals/thumbnails/<?php echo $context; ?>.jpg" alt="<?php echo $journal['name']; ?>">
 						</a>
 					</div>
 				</div>
@@ -16,10 +16,10 @@
 				</div>
 			</div>
 			<section class="current_issue">
-				<h1 class="current_issue_heading">Dernier numéro</h1>
+				<h1 class="current_issue_heading"><?php echo $locale->issue->last; ?></h1>
 <?php $this->render('/portal/widget/issue'); ?>
 				<div style="padding-top: 20px; clear: both;"></div>
-				<a href="/CFS/issue/archive" class="btn btn-primary read-more"> Voir tous les numéros <span class="glyphicon glyphicon-chevron-right"></span></a>
+				<a href="/<?php echo $context; ?>/issue/archive" class="btn btn-primary read-more"><?php echo $locale->issue->archive; ?><span class="glyphicon glyphicon-chevron-right"></span></a>
 			</section>
 			<section class="additional_content">
 <?php $this->render('additional'); ?>
@@ -27,9 +27,8 @@
 		</div>
 	</main>
 	<aside id="sidebar" class="pkp_structure_sidebar left col-xs-12 col-sm-4" role="complementary" aria-label="Barre de navigation">
-<?php $this->render('aside/search'); ?>
-<?php $this->render('aside/shop'); ?>
-<?php $this->render('aside/information'); ?>
-<?php $this->render('aside/link'); ?>
+<?php foreach ($layout['aside'] as $component) { ?>
+<?php   $this->render('aside/'.$component); ?>
+<?php } ?>
 	</aside>
 </div>

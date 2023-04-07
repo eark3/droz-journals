@@ -39,7 +39,7 @@
 									</div>
 									<div class="right">
 										<ul style="text-align: right; font-size: 16px">
-											<li><a href="#199">Éditorial</a></li>
+											<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#199">Éditorial</a></li>
 											<li><a href="#187">Articles</a></li>
 											<li><a href="#200">Résumés de thèses</a></li>
 											<li><a href="#201">Documents</a></li>

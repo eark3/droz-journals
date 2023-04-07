@@ -4,7 +4,7 @@ class JournalsControler extends Controler {
     
     public function models() {
         $models = parent::models();
-        foreach ((new JournalEntity())->retrieve() as $journal) {
+        foreach ((new JournalEntity())->retrieve(['many' => true, 'order' => ['asc' => 'place']]) as $journal) {
             $settings = [];
             $criteria = [
                 'type'   => 'journal',
@@ -30,6 +30,15 @@ class JournalsControler extends Controler {
                 'description' => $settings['description'] ?? null,
                 'image'       => '/public/journals/thumbnails/'.$journal->context.'.jpg'
             ];
+        }
+        if ($this->context !== 'root') {
+            $models['layout'] = Zord::value('layout', $this->context);
+            $journal = (new JournalEntity())->retrieve(['where' => ['context' => $this->context]]);
+            if ($journal !== false) {
+                $models['journal'] = [
+                    'name' => $journal->name
+                ];
+            }
         }
         return $models;
     }

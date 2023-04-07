@@ -4,27 +4,49 @@ class OJSImport extends ProcessExecutor {
     
     public function execute($parameters = []) {
         $data = [];
-        foreach ((new OJSJournalEntity())->retrieve() as $journal) {
+        foreach ((new OJSJournalEntity())->retrieve(['many' => true, 'order' => ['asc' => 'seq']]) as $journal) {
             echo "$journal->path\n";
-            $entities = (new OJSSettingEntity('journal'))->retrieve(['many' => true, 'where' => [
+            foreach ((new OJSSettingEntity('journal'))->retrieve(['many' => true, 'where' => [
                 'journal_id' => $journal->journal_id,
                 'setting_name' => ['in' => ['name','description']],
                 'locale' => 'fr_CA'
-            ]]);
-            foreach ($entities as $entity) {
+            ]]) as $entity) {
                 $data[$journal->path][$entity->setting_name] = $entity->setting_value;
+            }
+            foreach ((new OJSSectionEntity())->retrieve(['many' => true, 'where' => ['journal_id' => $journal->journal_id], 'order' => ['asc' => 'seq']]) as $section) {
+                $setting = (new OJSSettingEntity('section'))->retrieve(['where' => [
+                    'section_id'   => $section->section_id,
+                    'locale'       => $journal->primary_locale,
+                    'setting_name' => 'title'
+                ]]);
+                $data[$journal->path]["sections"][] = [
+                    'ojs'   => $section->section_id,
+                    'title' => $setting->setting_value,
+                    'place' => $section->seq
+                ];
             }
             foreach ((new OJSIssueEntity())->retrieve(['many' => true, 'where' => ['journal_id' => $journal->journal_id]]) as $issue) {
                 echo "\tvol.$issue->volume".(!empty($issue->number) ? " n°$issue->number" : '')." ($issue->year)\n";
+                $setting = (new OJSSettingEntity('issue'))->retrieve(['where' => [
+                    'issue_id'     => $issue->issue_id,
+                    'locale'       => $journal->primary_locale,
+                    'setting_name' => 'title'
+                ]]);
                 $_issue = [
-                    'volume' => $issue->volume,
-                    'number' => !empty($issue->number) ? $issue->number : null,
-                    'year'   => $issue->year
+                    'volume'    => $issue->volume,
+                    'number'    => !empty($issue->number) ? $issue->number : null,
+                    'year'      => $issue->year,
+                    'title'     => $setting->setting_value,
+                    'published' => $issue->date_published,
+                    'modified'  => $issue->last_modified,
+                    'open'      => $issue->open_access_date
                 ];
                 foreach ((new OJSPublicationEntity())->retrieve(['many' => true, 'where' => ['issue_id' => $issue->issue_id]]) as $publication) {
                     $paper = (new OJSPaperEntity())->retrieve($publication->submission_id);
                     $status = $publication->access_status ? 'free' : 'subscription';
                     $pages = $paper->pages;
+                    $section = $paper->section_id;
+                    $place = $publication->seq;
                     echo "\t\tp.$pages ($status)\n";
                     $entities = (new OJSSettingEntity('submission'))->retrieve(['many' => true, 'where' => ['submission_id' => $publication->submission_id]]);
                     $settings = [];
@@ -77,6 +99,8 @@ class OJSImport extends ProcessExecutor {
                         'settings'  => $settings,
                         'authors'   => $authors,
                         'resources' => $resources,
+                        'section'   => $section,
+                        'place'     => $place
                     ];
                 }
                 $data[$journal->path]["issues"][] = $_issue;
@@ -84,18 +108,50 @@ class OJSImport extends ProcessExecutor {
         }
         file_put_contents('/tmp/ojs.json', Zord::json_encode($data));
         (new JournalEntity())->delete();
+        (new IssueEntity())->delete();
+        (new SectionEntity())->delete();
+        (new PaperEntity())->delete();
         (new SettingEntity())->delete();
         (new UserEntity())->delete();
+        $order = 0;
         foreach ($data as $context => $journal) {
-            $entity = (new JournalEntity())->create(["context" => $context]);
+            $order++;
+            $_journal = (new JournalEntity())->create([
+                "context" => $context,
+                "name" => $journal['name'],
+                "place" => $order
+            ]);
             foreach (['name','description'] as $name) {
                 (new SettingEntity())->create([
                     "type"   => "journal",
-                    "object" => $entity->id,
+                    "object" => $_journal->id,
                     "name"   => $name,
                     "value"  => $journal[$name],
                     "locale" => "fr-FR"
                 ]);
+            }
+            $sections = [];
+            foreach ($journal['sections'] ?? [] as $section) {
+                $section["journal"] = $_journal->id;
+                $_section = (new SectionEntity())->create($section);
+                $sections["OJS_".$section['ojs']] = $_section->id;
+            }
+            foreach ($journal['issues'] ?? [] as $issue) {
+                $issue["journal"] = $_journal->id;
+                $_issue = (new IssueEntity())->create($issue);
+                foreach ($issue['papers'] as $paper) {
+                    $paper['issue'] = $_issue->id;
+                    $paper['section'] = $sections["OJS_".$paper['section']];
+                    foreach ($paper['settings'] as $key => $value) {
+                        $key = explode('::', $key);
+                        $paper[end($key)] = $value;
+                    }
+                    $_paper = (new PaperEntity())->create($paper);
+                    foreach ($paper['authors'] as $author) {
+                        $author['paper'] = $_paper->id;
+                        (new AuthorEntity())->create($author);
+                    }
+                }
             }
         }
         foreach ((new OJSUserEntity())->retrieve() as $user) {

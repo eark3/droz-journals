@@ -14876,7 +14876,7 @@ ul>#main-navigation>li>a {
 }
 
 .pkp_block {
-	padding: 0;
+	padding: 0 !important;
 	background: white
 }
 

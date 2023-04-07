@@ -1,0 +1,17 @@
+{
+	"issue": {
+		"last": "Dernier numéro",
+		"previous" : "Numéros précédents",
+		"archive": "Voir tous les numéros"
+	},
+	"about": {
+		"short": "À propos",
+		"long": "À propos de la revue"
+	},
+	"board": "Comité éditorial",
+	"contact": "Contact",
+	"policy": "Politique d'accès",
+	"license": "Mentions légales",
+	"subscription": "Abonnement",
+	"login": "Se connecter"
+}
