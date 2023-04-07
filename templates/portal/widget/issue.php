@@ -1,30 +1,21 @@
 				<div class="issue-toc">
 					<div class="heading row">
 						<div class="col-md-12">
-							<a href="/CFS/issue/view/CFS74"">
-								<p style="margin-top: 5px !important; margin-bottom: 15px !important;" class="page-header">
-									Vol. 74 (2021): Varia
-								</p>
-							</a>
+							<p style="margin-top: 5px !important; margin-bottom: 15px !important;" class="page-header">
+								<?php echo $issue['title']; ?>
+							</p>
 						</div>
 					</div>
 					<div class="heading row">
 						<div class="col-md-4">
-							<a class="cover" href="/CFS/issue/view/CFS74">
-								<a class="fancybox" href="https://revues.droz.org/public/journals/18/cover_issue_411_fr_FR.jpg">
-									<img class="imgCover img-responsive" src="https://revues.droz.org/public/journals/18/cover_issue_411_fr_FR.jpg">
-								</a>
+							<a class="fancybox" href="<?php echo $issue['cover']; ?>">
+								<img class="imgCover img-responsive" src="<?php echo $issue['cover']; ?>">
 							</a>
 						</div>
 						<div style="margin-top:;" class="issue-details col-md-8">
 							<div class="description">
-								<p>ISBN: 978-2-600-06414-9</p>
-								<p>
-									<a href="https://www.droz.org/9782600064149">Retrouvez le numéro papier sur le site de la Librairie Droz</a>
-								</p>
-								<p>Édité par Pierre-Yves Testenoire</p>
-								<br />
-								Publié: 2022-12-05
+								<?php echo $issue['description']; ?>
+								<?php echo $locale->published; ?>: <?php echo $issue['published']; ?>
 							</div>
 						</div>
 					</div>

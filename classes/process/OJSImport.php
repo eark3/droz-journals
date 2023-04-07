@@ -27,20 +27,21 @@ class OJSImport extends ProcessExecutor {
             }
             foreach ((new OJSIssueEntity())->retrieve(['many' => true, 'where' => ['journal_id' => $journal->journal_id]]) as $issue) {
                 echo "\tvol.$issue->volume".(!empty($issue->number) ? " n°$issue->number" : '')." ($issue->year)\n";
-                $setting = (new OJSSettingEntity('issue'))->retrieve(['where' => [
+                $_issue = [
+                    'volume'      => $issue->volume,
+                    'number'      => !empty($issue->number) ? $issue->number : null,
+                    'year'        => $issue->year,
+                    'published'   => $issue->date_published,
+                    'modified'    => $issue->last_modified,
+                    'open'        => $issue->open_access_date,
+                ];
+                foreach ((new OJSSettingEntity('issue'))->retrieve(['many' => true, 'where' => [
                     'issue_id'     => $issue->issue_id,
                     'locale'       => $journal->primary_locale,
-                    'setting_name' => 'title'
-                ]]);
-                $_issue = [
-                    'volume'    => $issue->volume,
-                    'number'    => !empty($issue->number) ? $issue->number : null,
-                    'year'      => $issue->year,
-                    'title'     => $setting->setting_value,
-                    'published' => $issue->date_published,
-                    'modified'  => $issue->last_modified,
-                    'open'      => $issue->open_access_date
-                ];
+                    'setting_name' => ['in' => ['title','description']]
+                ]]) as $setting) {
+                    $_issue[$setting->setting_name] = $setting->setting_value;
+                }
                 foreach ((new OJSPublicationEntity())->retrieve(['many' => true, 'where' => ['issue_id' => $issue->issue_id]]) as $publication) {
                     $paper = (new OJSPaperEntity())->retrieve($publication->submission_id);
                     $status = $publication->access_status ? 'free' : 'subscription';
@@ -121,7 +122,7 @@ class OJSImport extends ProcessExecutor {
                 "name" => $journal['name'],
                 "place" => $order
             ]);
-            foreach (['name','description'] as $name) {
+            foreach (['description'] as $name) {
                 (new SettingEntity())->create([
                     "type"   => "journal",
                     "object" => $_journal->id,
@@ -139,6 +140,15 @@ class OJSImport extends ProcessExecutor {
             foreach ($journal['issues'] ?? [] as $issue) {
                 $issue["journal"] = $_journal->id;
                 $_issue = (new IssueEntity())->create($issue);
+                foreach (['description'] as $name) {
+                    (new SettingEntity())->create([
+                        "type"   => "issue",
+                        "object" => $_issue->id,
+                        "name"   => $name,
+                        "value"  => $issue[$name],
+                        "locale" => "fr-FR"
+                    ]);
+                }
                 foreach ($issue['papers'] as $paper) {
                     $paper['issue'] = $_issue->id;
                     $paper['section'] = $sections["OJS_".$paper['section']];
