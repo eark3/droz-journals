@@ -14963,6 +14963,11 @@ div#languageSelect>ul {
 	border: none
 }
 
+.page_index_journal .additional_content {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
 @media ( min-width : 960px) {
 	.pkp_page_index .cmp_announcements>.more:before, .pkp_page_index .cmp_announcements>.obj_announcement_summary:before
 		{

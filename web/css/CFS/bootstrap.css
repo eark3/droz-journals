@@ -1060,6 +1060,8 @@ h2 {
 
 div.pkp_block>div.content>ul>li {
 	background: #dbdcd6;
+	padding: 0;
+	padding-left: 15px;
 }
 
 #languageSelect>.btn-info {
