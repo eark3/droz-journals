@@ -10,7 +10,7 @@ class JournalsControler extends Controler {
                 'type'   => 'journal',
                 'object' => $journal->id
             ];
-            foreach (['name','description'] as $property) {
+            foreach (['description'] as $property) {
                 $criteria['name'] = $property;
                 $setting = null;
                 foreach ([$this->lang, DEFAULT_LANG] as $locale) {
@@ -26,7 +26,7 @@ class JournalsControler extends Controler {
             }
             $models['journals'][] = [
                 'path'        => '/'.$journal->context,
-                'name'        => $settings['name'] ?? null,
+                'name'        => $journal->name ?? null,
                 'description' => $settings['description'] ?? null,
                 'image'       => '/public/journals/thumbnails/'.$journal->context.'.jpg'
             ];

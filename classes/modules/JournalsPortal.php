@@ -39,7 +39,7 @@ class JournalsPortal extends Portal {
                 }
             }
         }
-        return $this->redirect('/');
+        return parent::home();
     }
     
 }
