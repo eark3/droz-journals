@@ -5,7 +5,7 @@
 				<div class="media-left media-top">
 					<div class="homepage-image">
 						<a class="fancybox" href="/public/journals/thumbnails/<?php echo $context; ?>.jpg">
-							<img class="img-responsive" src="/public/journals/thumbnails/<?php echo $context; ?>.jpg" alt="<?php echo $journal['name']; ?>">
+							<img class="img-responsive" src="/public/journals/thumbnails/<?php echo $context; ?>.jpg" alt="<?php echo $controler->journal->name; ?>">
 						</a>
 					</div>
 				</div>

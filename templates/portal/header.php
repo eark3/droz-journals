@@ -26,7 +26,7 @@
 		<div class="navbar-header">
 			<h1 class="site-name">
 				<div class="navbar-brand">
-					<a href="/<?php echo $context; ?>"><?php echo $journal['name']; ?></a>
+					<a href="/<?php echo $context; ?>"><?php echo $controler->journal->name; ?></a>
 				</div>
 			</h1>
 		</div>

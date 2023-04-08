@@ -25,7 +25,7 @@
 								<div class="content">
 									<div class="left">
 										<h2>
-											Sommaire <br />de ce numéro
+											<?php echo $locale->issue->summary; ?>
 										</h2>
 									</div>
 									<div class="right">

@@ -2,7 +2,8 @@
 	"issue": {
 		"last": "Dernier numéro",
 		"previous" : "Numéros précédents",
-		"archive": "Voir tous les numéros"
+		"archive": "Voir tous les numéros",
+		"summary": "Sommaire <br />de ce numéro"
 	},
 	"about": {
 		"short": "À propos",

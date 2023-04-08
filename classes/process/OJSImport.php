@@ -123,8 +123,7 @@ class OJSImport extends ProcessExecutor {
                 "place" => $order
             ]);
             foreach (['description'] as $name) {
-                (new SettingEntity())->create([
-                    "type"   => "journal",
+                (new SettingEntity('journal'))->create([
                     "object" => $_journal->id,
                     "name"   => $name,
                     "value"  => $journal[$name],
@@ -141,8 +140,7 @@ class OJSImport extends ProcessExecutor {
                 $issue["journal"] = $_journal->id;
                 $_issue = (new IssueEntity())->create($issue);
                 foreach (['description'] as $name) {
-                    (new SettingEntity())->create([
-                        "type"   => "issue",
+                    (new SettingEntity('issue'))->create([
                         "object" => $_issue->id,
                         "name"   => $name,
                         "value"  => $issue[$name],
