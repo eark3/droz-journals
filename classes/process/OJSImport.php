@@ -172,8 +172,13 @@ class OJSImport extends ProcessExecutor {
                         $path = $resource;
                         if ($type !== 'shop') {
                             echo $resource.' : ';
-                            if ($ojs->recv($resource, STORE_FOLDER.'journals'.DS.$_paper->id.'.'.$type)) {
-                                $path = '/article/'.$type.'/'.$_paper->id;
+                            $folder = STORE_FOLDER.'journals'.DS.$context.DS.$issue['volume'].(isset($issue['number']) ? '_'.$issue['number'] : '').DS;
+                            $file = $_paper->id.'.'.$type;
+                            if (!file_exists($folder)) {
+                                mkdir($folder, 0755, true);
+                            }
+                            if ($ojs->recv($resource, $folder.$file)) {
+                                $path = '/'.$context.'/article/'.$type.'/'.$_paper->id;
                                 echo $path;
                             } else {
                                 echo 'false';
