@@ -41,7 +41,7 @@ class JournalsControler extends Controler {
             ];
         }
         if ($this->context !== 'root') {
-            $models['layout'] = Zord::value('layout', $this->context);
+            $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
         }
         return $models;
     }

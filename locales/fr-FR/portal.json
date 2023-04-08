@@ -15,5 +15,14 @@
 	"license": "Mentions légales",
 	"subscription": "Abonnement",
 	"login": "Se connecter",
-	"published": "Publié"
+	"logout": "Se déconnecter",
+	"published": "Publié",
+	"access": {
+		"subscription": "Accès sous abonnement"
+	},
+	"galleys": {
+		"html": "HTML",
+		"pdf": "PDF",
+		"shop": "PDF à l'achat"
+	}
 }

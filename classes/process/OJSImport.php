@@ -6,6 +6,7 @@ class OJSImport extends ProcessExecutor {
         $data = [];
         foreach ((new OJSJournalEntity())->retrieve(['many' => true, 'order' => ['asc' => 'seq']]) as $journal) {
             echo "$journal->path\n";
+            $data[$journal->path]['locale'] = $journal->primary_locale;
             foreach ((new OJSSettingEntity('journal'))->retrieve(['many' => true, 'where' => [
                 'journal_id' => $journal->journal_id,
                 'setting_name' => ['in' => ['name','description']],
@@ -57,23 +58,29 @@ class OJSImport extends ProcessExecutor {
                             $settings[$entity->setting_name] = $entity->setting_value;
                         }
                     }
+                    if ($settings['title'] === "PDF du dossier") {
+                        $settings['title'] = 'Dossier complet';
+                        unset($settings['subtitle']);
+                    }
                     $entities = (new OJSAuthorEntity())->retrieve(['many' => true, 'where' => ['submission_id' => $publication->submission_id]]);
                     $authors = [];
                     foreach ($entities as $entity) {
                         $last = trim($entity->last_name);
                         $first = trim($entity->first_name);
                         if (!empty($last) || !empty($first)) {
-                            echo "\t\t\t".($last ?? '').(!empty($last) && !empty($first) ? ', ' : '').($first ?? '')."\n";
-                            $authors[] = [
-                                'first' => $first,
-                                'last'  => $last,
-                            ];
+                            if ($first !== 's.' || $last !== 'n.') {
+                                echo "\t\t\t".($last ?? '').(!empty($last) && !empty($first) ? ', ' : '').($first ?? '')."\n";
+                                $authors[] = [
+                                    'first' => $first,
+                                    'last'  => $last,
+                                ];
+                            }
                         }
                     }
                     $entities = (new OJSGalleyEntity())->retrieve(['many' => true, 'where' => ['submission_id' => $publication->submission_id]]);
                     $resources = [];
                     foreach ($entities as $entity) {
-                        if (substr($entity->label, -strlen(" à l'achat")) === " à l'achat" && !empty($entity->remote_url)) {
+                        if (substr($entity->label, -strlen(" à l'achat")) === " à l'achat" && !empty($entity->remote_url) && substr($entity->remote_url, 0, strlen('https://www.droz.org/')) === 'https://www.droz.org/') {
                             echo "\t\t\t$entity->remote_url\n";
                             $resources['shop'] = $entity->remote_url;
                         }
@@ -112,9 +119,11 @@ class OJSImport extends ProcessExecutor {
         (new IssueEntity())->delete();
         (new SectionEntity())->delete();
         (new PaperEntity())->delete();
+        (new GalleyEntity())->delete();
         (new SettingEntity())->delete();
         (new UserEntity())->delete();
         $order = 0;
+        $ojs = new Tunnel('ojs');
         foreach ($data as $context => $journal) {
             $order++;
             $_journal = (new JournalEntity())->create([
@@ -127,7 +136,7 @@ class OJSImport extends ProcessExecutor {
                     "object" => $_journal->id,
                     "name"   => $name,
                     "value"  => $journal[$name],
-                    "locale" => "fr-FR"
+                    "locale" => str_replace('_', '-', $journal['locale'])
                 ]);
             }
             $sections = [];
@@ -159,6 +168,24 @@ class OJSImport extends ProcessExecutor {
                         $author['paper'] = $_paper->id;
                         (new AuthorEntity())->create($author);
                     }
+                    foreach ($paper['resources'] as $type => $resource) {
+                        $path = $resource;
+                        if ($type !== 'shop') {
+                            echo $resource.' : ';
+                            if ($ojs->recv($resource, STORE_FOLDER.'journals'.DS.$_paper->id.'.'.$type)) {
+                                $path = '/article/'.$type.'/'.$_paper->id;
+                                echo $path;
+                            } else {
+                                echo 'false';
+                            }
+                            echo "\n";
+                        }
+                        (new GalleyEntity())->create([
+                            'type'  => $type,
+                            'paper' => $_paper->id,
+                            'path'  => $path
+                        ]);
+                    }
                 }
             }
         }
@@ -177,6 +204,7 @@ class OJSImport extends ProcessExecutor {
             $entity = (new UserEntity())->create([
                 "login" => $user->username,
                 "password" => $user->password,
+                "password.crypted" => true,
                 "email" => $user->email,
                 "name" => $name,
             ]);

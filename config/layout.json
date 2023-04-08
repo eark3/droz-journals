@@ -1,4 +1,12 @@
 {
+	"default": {
+		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+	},
 	"CFS": {
 		"aside": [
 			"search",
@@ -6,5 +14,53 @@
 			"information",
 			"summary"
 		]
-	}
+	},
+    "RR": {
+		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+    },
+    "SLLMOO": {
+		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+    },
+    "RThPh": {
+		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+    },
+    "RFHL": {
+ 		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+    },
+    "HCL": {
+		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+    },
+    "RHP": {
+		"aside": [
+			"search",
+			"shop",
+			"information",
+			"summary"
+		]
+    }
 }

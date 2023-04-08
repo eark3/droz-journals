@@ -72,5 +72,15 @@
 			"last"
 		],
 		"key": "id"
+	},
+	"GalleyEntity": {
+		"table": "galleys",
+		"fields": [
+			"id",
+			"paper",
+			"type",
+			"path"
+		],
+		"key": "id"
 	}
 }
