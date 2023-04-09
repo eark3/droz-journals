@@ -2,15 +2,13 @@
 					<div class="heading row">
 						<div class="col-md-12">
 							<p style="margin-top: 5px !important; margin-bottom: 15px !important;" class="page-header">
-								<?php echo $issue['title']; ?>
+								<?php echo $issue['serial']; ?> : <?php echo $issue['title']; ?>
 							</p>
 						</div>
 					</div>
 					<div class="heading row">
 						<div class="col-md-4">
-							<a class="fancybox" href="<?php echo $issue['cover']; ?>">
-								<img class="imgCover img-responsive" src="<?php echo $issue['cover']; ?>">
-							</a>
+<?php $this->render('/portal/widget/cover'); ?>
 						</div>
 						<div style="margin-top:;" class="issue-details col-md-8">
 							<div class="description">

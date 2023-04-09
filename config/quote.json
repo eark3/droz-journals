@@ -1,0 +1,11 @@
+{
+	"format": {
+		"acm-sig-proceedings": "ACM",
+		"chicago-author-date": "Chicago",
+		"harvard-cite-them-right": "Harvard"
+	},
+	"download": {
+		"ris": "Endnote/Zotero/Mendeley (RIS)",
+		"bibtex": "BibTeX"
+	}
+}

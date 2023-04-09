@@ -1,4 +1,9 @@
 {
+	"ariadne": {
+		"aria": "Vous êtes ici:",
+		"home": "Accueil",
+		"archive": "Archives"
+	},
 	"issue": {
 		"last": "Dernier numéro",
 		"previous" : "Numéros précédents",
@@ -24,5 +29,19 @@
 		"html": "HTML",
 		"pdf": "PDF",
 		"shop": "PDF à l'achat"
+	},
+	"footer": {
+		"board": "Comité éditorial",
+		"contact": "Contact",
+		"about": "À propos de la revue",
+		"license": "Mentions légales"
+	},
+	"article": {
+		"quote": {
+			"how": "Comment citer",
+			"format": "Formats de citations",
+			"download": "Télécharger la référence bibliographique"
+		},
+		"issue": "Numéro"
 	}
 }

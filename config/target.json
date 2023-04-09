@@ -1,0 +1,27 @@
+{
+	"Portal": {
+		"issue": {
+			"shortcut": "issue",
+			"parameters": {
+				"page": "FILTER_SANITIZE_STRING",
+				"short": "FILTER_SANITIZE_STRING"
+			}
+		},
+		"article": {
+			"shortcut": "article",
+			"parameters": {
+				"page": "FILTER_SANITIZE_STRING",
+				"paper": "FILTER_SANITIZE_STRING",
+				"type": "FILTER_SANITIZE_STRING"
+			}
+		},
+		"quote": {
+			"shortcut": "quote",
+			"parameters": {
+				"output": "FILTER_SANITIZE_STRING",
+				"style": "FILTER_SANITIZE_STRING",
+				"paper": "FILTER_SANITIZE_STRING"
+			}
+		}
+	}
+}

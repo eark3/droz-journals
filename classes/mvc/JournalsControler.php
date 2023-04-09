@@ -3,6 +3,10 @@
 class JournalsControler extends Controler {
     
     public $journal = null;
+    public $issue = null;
+    public $section = null;
+    public $paper = null;
+    public $authors = [];
     
     public function handle($target, $replay = false) {
         if (!empty($target['context']) && $target['context'] !== 'root') {
@@ -44,6 +48,15 @@ class JournalsControler extends Controler {
             $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
         }
         return $models;
+    }
+    
+    public function getTarget($url, $redirect = false) {
+        $useless = '/index.php';
+        $path = $_SERVER['REQUEST_URI'];
+        if (substr($path, 0, strlen($useless)) === $useless) {
+            $url = str_replace($useless, '', $url);
+        }
+        return parent::getTarget($url, $redirect);
     }
     
 }

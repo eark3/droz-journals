@@ -169,7 +169,7 @@ class OJSImport extends ProcessExecutor {
                         (new AuthorEntity())->create($author);
                     }
                     foreach ($paper['resources'] as $type => $resource) {
-                        $path = $resource;
+                        $path = $type === 'shop' ? $resource : null;
                         if ($type !== 'shop') {
                             echo $resource.' : ';
                             $folder = STORE_FOLDER.'journals'.DS.$context.DS.$issue['volume'].(isset($issue['number']) ? '_'.$issue['number'] : '').DS;
@@ -178,7 +178,6 @@ class OJSImport extends ProcessExecutor {
                                 mkdir($folder, 0755, true);
                             }
                             if ($ojs->recv($resource, $folder.$file)) {
-                                $path = '/'.$context.'/article/'.$type.'/'.$_paper->id;
                                 echo $path;
                             } else {
                                 echo 'false';
