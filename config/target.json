@@ -4,7 +4,7 @@
 			"shortcut": "issue",
 			"parameters": {
 				"page": "FILTER_SANITIZE_STRING",
-				"short": "FILTER_SANITIZE_STRING"
+				"issue": "FILTER_SANITIZE_STRING"
 			}
 		},
 		"article": {
@@ -13,6 +13,13 @@
 				"page": "FILTER_SANITIZE_STRING",
 				"paper": "FILTER_SANITIZE_STRING",
 				"type": "FILTER_SANITIZE_STRING"
+			}
+		},
+		"reference": {
+			"shortcut": "reference",
+			"response": "DATA",
+			"parameters": {
+				"paper": "FILTER_SANITIZE_STRING"
 			}
 		},
 		"quote": {

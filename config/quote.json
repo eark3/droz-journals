@@ -5,7 +5,13 @@
 		"harvard-cite-them-right": "Harvard"
 	},
 	"download": {
-		"ris": "Endnote/Zotero/Mendeley (RIS)",
-		"bibtex": "BibTeX"
+		"ris": {
+			"label": "Endnote/Zotero/Mendeley (RIS)",
+			"extension": "ris"
+		},
+		"bibtex": {
+			"label": "BibTeX",
+			"extension": "bib"
+		}
 	}
 }

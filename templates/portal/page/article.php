@@ -43,27 +43,32 @@
 						<div class="sub_item citation_display">
 							<div class="value">
 								<div id="citationOutput" role="region" aria-live="polite">
-<?php $this->render('quote'); ?>
+									<div class="csl-bib-body">
+										<div class="csl-entry">
+											<div class="csl-right-inline" data-paper="<?php echo $paper['id']; ?>">
+											</div>
+										</div>
+									</div>
 								</div>
 								<div class="citation_formats">
 									<?php echo $locale->article->quote->format; ?>
 									<div id="cslCitationFormats" class="citation_formats_list" aria-hidden="true">
 										<ul class="citation_formats_styles">
 <?php foreach (Zord::value('quote', 'format') as $style => $label) { ?>
-											<li>
-												<a aria-controls="citationOutput" href="<?php echo $baseURL; ?>/quote/format/<?php echo $style; ?>/<?php echo $paper['id']; ?>">
+											<li data-style="<?php echo $style; ?>">
+												<span aria-controls="citationOutput">
 													<?php echo $label; ?>
-												</a>
-<?php } ?>
+												</span>
 											</li>
+<?php } ?>
 										</ul>
 										<h2 class="label"><?php echo $locale->article->quote->download; ?></h2>
 										<ul class="citation_formats_styles">
-<?php foreach (Zord::value('quote', 'download') as $style => $label) { ?>
+<?php foreach (Zord::value('quote', 'download') as $style => $_style) { ?>
 											<li>
-												<a href="<?php echo $baseURL; ?>/quote/download/<?php echo $style; ?>/<?php echo $paper['id']; ?>">
+												<a href="<?php echo $baseURL; ?>/quote/download/<?php echo $style; ?>/<?php echo $paper['short']; ?>">
 													<span class="fa fa-download"></span>
-													<?php echo $label; ?>
+													<?php echo $_style['label']; ?>
 												</a>
 											</li>
 <?php } ?>

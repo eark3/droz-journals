@@ -1,5 +1,5 @@
 @article {
-	Basile_<?php echo date('Y', strtotime($controler->issue->published)); ?>,
+	<?php echo JournalsPortal::short($context, $controler->issue, $controler->paper); ?>,
 	title={<?php echo $controler->paper->title; ?>},
 	volume={<?php echo $controler->issue->volume; ?>},
 <?php if (!empty($controler->issue->number)) { ?>
