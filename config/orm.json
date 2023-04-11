@@ -69,7 +69,10 @@
 			"id",
 			"paper",
 			"first",
-			"last"
+			"middle",
+			"last",
+			"email",
+			"place"
 		],
 		"key": "id"
 	},

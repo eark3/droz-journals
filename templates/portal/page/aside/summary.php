@@ -1,29 +1,10 @@
 		<div class="description pkp_block block_toc2">
-			<span class="title">Sommaire de ce numéro</span>
+			<span class="title"><?php echo $locale->aside->summary->title; ?></span>
 			<div class="content">
+<?php foreach ($issue['sections'] ?? [] as $id => $section) { ?>
 				<ul>
-					<li><a href="#199">Éditorial</a></li>
+					<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $id; ?>"><?php echo $section['title']; ?></a></li>
 				</ul>
-				<ul>
-					<li><a href="#187">Articles</a></li>
-				</ul>
-				<ul>
-					<li><a href="#200">Résumés de thèses</a></li>
-				</ul>
-				<ul>
-					<li><a href="#201">Documents</a></li>
-				</ul>
-				<ul>
-					<li><a href="#217">In memoriam</a></li>
-				</ul>
-				<ul>
-					<li><a href="#218">Lectures critiques</a></li>
-				</ul>
-				<ul>
-					<li><a href="#202">Comptes Rendus</a></li>
-				</ul>
-				<ul>
-					<li><a href="#204">Chroniques du cercle</a></li>
-				</ul>
+<?php } ?>
 			</div>
 		</div>

@@ -1,19 +1,19 @@
 		<div class="pkp_block block_information">
-			<span class="title">Informations</span>
+			<span class="title"><?php echo $locale->aside->infos->title; ?></span>
 			<div class="content">
 				<ul>
 					<li>
-						<a href="/CFS/information/readers"> Pour les lecteurs </a>
+						<a href="/CFS/information/readers"><?php echo $locale->aside->infos->readers; ?></a>
 					</li>
 				</ul>
 				<ul>
 					<li>
-						<a href="/CFS/information/authors"> Pour les auteurs </a>
+						<a href="/CFS/information/authors"><?php echo $locale->aside->infos->authors; ?></a>
 					</li>
 				</ul>
 				<ul>
 					<li>
-						<a href="/CFS/information/librarians"> Pour les bibliothécaires </a>
+						<a href="/CFS/information/librarians"><?php echo $locale->aside->infos->librarians; ?></a>
 					</li>
 				</ul>
 			</div>

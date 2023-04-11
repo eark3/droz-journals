@@ -15,7 +15,7 @@
 												</a>
 											</p>
 											<div class="meta">
-												<div class="authors" style="float: left;"><?php echo !empty($paper['authors']) ? implode(', ', $paper['authors']) : ''; ?></div>
+												<div class="authors" style="float: left;"><?php echo !empty($paper['authors']) ? $paper['names'] : ''; ?></div>
 												<div class="pages" style="float: right;"><?php echo $paper['pages']; ?></div>
 											</div>
 										</div>

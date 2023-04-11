@@ -52,5 +52,22 @@
 		"topic": "Rubrique",
 		"free": "Libre accès",
 		"subscription": "Accès par abonnement"
+	},
+	"aside": {
+		"summary": {
+			"title":"Sommaire de ce numéro"
+		},
+		"infos": {
+			"title":"Informations",
+			"readers": "Pour les lecteurs",
+			"authors": "Pour les auteurs",
+			"librarians": "Pour les bibliothécaires"
+		},
+		"search": {
+			"title":"Rechercher",
+			"contains": "Rechercher des articles contenant",
+			"authors": "Auteurs",
+			"submit": "Rechercher"
+		}
 	}
 }

@@ -33,7 +33,7 @@
 		<div class="col-md-8">
 			<section class="article-main">
 				<div class="authors">
-					<strong><?php echo !empty($paper['authors']) ? implode(', ', $paper['authors']) : ''; ?></strong>
+					<strong><?php echo !empty($paper['authors']) ? $paper['names'] : ''; ?></strong>
 				</div>
 			</section>
 			<div class="item citation">

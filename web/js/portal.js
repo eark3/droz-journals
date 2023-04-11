@@ -8,10 +8,12 @@ $(window).scroll(function() {
 
 jQuery(document).ready(function() {
 	jQuery(".fancybox").fancybox();
-	jQuery("a[href^='#']").click(function(e) {
-		e.preventDefault();
+	jQuery("a[href]").click(function(e) {
 		var href = jQuery(this).attr("href");
-		if (href !== '#') {
+		var index = href.indexOf('#');
+		if (href !== '#' && index >= 0) {
+			e.preventDefault();
+			href = href.substring(index);
 			var position = jQuery(href).offset().top;
 			jQuery("body, html").animate({
 				scrollTop: position - 90

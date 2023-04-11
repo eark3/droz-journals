@@ -66,9 +66,24 @@ class JournalsPortal extends Portal {
             'doi'      => $paper->doi,
             'short'    => $short
         ];
-        $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
+        $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
-            $result['authors'][] = $author->first.' '.$author->last;
+            $_author = [
+                'name' => $author->first.' '.(!empty($author->middle) ? $author->middle.' ' : '').$author->last,
+                'email' => $author->email
+            ];
+            $settings = (new SettingEntity())->retrieveAll([
+                'type'   => 'author',
+                'object' => $author->id,
+                'locale' => $this->lang
+            ]);
+            foreach ($settings as $setting) {
+                $_author[$setting->name] = $setting->value;
+            }
+            $result['authors'][] = $_author;
+        }
+        if (!empty($result['authors'])) {
+            $result['names'] = implode(', ', array_map(function($author) {return $author['name'];}, $result['authors']));
         }
         $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
         foreach ($galleys as $galley) {
@@ -200,7 +215,7 @@ class JournalsPortal extends Portal {
                                     break;
                                 }
                                 case 'download': {
-                                    $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.DS.(isset($issue->number) ? $issue->number.DS : '').$paper->id.'.'.$display;
+                                    $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.(!empty($issue->number) ? '.'.$issue->number : '').DS.$_paper['short'].'.'.$display;
                                     switch ($display) {
                                         case 'html': {
                                             $view = 'download';

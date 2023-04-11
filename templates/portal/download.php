@@ -14,14 +14,13 @@
 		<div style="font-weight:bold;font-style:italic;"></div>
 		<div style="font-size:15px">
 <?php foreach ($paper['authors'] ?? [] as $author) { ?>
-			<?php echo $author; ?>
+			<?php echo $author['name']; ?>
 			<br />
+<?php   if (!empty($author['email'])) { ?>
+			<a href="mailto:<?php echo $author['email']; ?>"><?php echo $author['email']; ?></a>
+			<br />
+<?php   } ?>
 <?php } ?>
-<!-- 
-			<a href="mailto:jacopo.dalonzo@gmail.com">jacopo.dalonzo@gmail.com</a>
-			<br />
--->
-			<br />
 			<br />
 			<div style="font-size:88%">
 				<?php echo $locale->download->topic; ?>: <?php echo $section; ?>
