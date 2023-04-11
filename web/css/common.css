@@ -7825,10 +7825,6 @@ a.list-group-item-danger.active:hover, a.list-group-item-danger.active:focus
 	color: #56769f
 }
 
-.nav .dropdown:hover .dropdown-menu {
-	display: block;
-} 
-
 .journal-description img {
 	max-width: 100%;
 	height: auto

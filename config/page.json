@@ -1,4 +1,20 @@
 {
+	"home": {
+		"scripts": [
+			{
+				"type": "text/javascript",
+				"src": "/journals/js/issue.js"
+			}
+		]
+	},
+	"issue": {
+		"scripts": [
+			{
+				"type": "text/javascript",
+				"src": "/journals/js/issue.js"
+			}
+		]
+	},
 	"article": {
 		"scripts": [
 			{

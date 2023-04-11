@@ -1,4 +1,10 @@
 {
+	"scripts": {
+		"journals": {
+			"type": "text/javascript",
+			"src": "/journals/js/portal.js"
+		}
+	},
 	"styles": {
 		"fonts": {
 			"media": "screen",
