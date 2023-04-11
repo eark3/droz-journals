@@ -46,7 +46,7 @@ class OJSImport extends ProcessExecutor {
                 foreach ((new OJSPublicationEntity())->retrieve(['many' => true, 'where' => ['issue_id' => $issue->issue_id]]) as $publication) {
                     $paper = (new OJSPaperEntity())->retrieve($publication->submission_id);
                     $status = $publication->access_status ? 'free' : 'subscription';
-                    $pages = $paper->pages;
+                    $pages = JournalsPortal::pages($paper);
                     $section = $paper->section_id;
                     $place = $publication->seq;
                     echo "\t\tp.$pages ($status)\n";

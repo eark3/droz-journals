@@ -2,11 +2,6 @@
 
 class JournalsPortal extends Portal {
     
-    private static $STYLES_EXT = [
-        "ris"    => "ris",
-        "bibtex" => "bib"
-    ];
-    
     protected function _issue($issue, $full = true) {
         $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
         $short = self::short($this->context, $issue);
@@ -34,31 +29,7 @@ class JournalsPortal extends Portal {
                 ];
             }
             foreach ($papers as $paper) {
-                $_paper = [
-                    'id'       => $paper->id,
-                    'pages'    => $paper->pages,
-                    'status'   => $paper->status,
-                    'title'    => $paper->title,
-                    'subtitle' => $paper->subtitle,
-                    'short'    => self::short($this->context, $issue, $paper)
-                ];
-                $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
-                foreach ($authors as $author) {
-                    $_paper['authors'][] = $author->first.' '.$author->last;
-                }
-                $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
-                foreach ($galleys as $galley) {
-                    $access = $this->user->isConnected() || $issue->open < date('Y-m-d') || $paper->status === 'free';
-                    $shop = $galley->type === 'shop';
-                    if ($access !== $shop) {
-                        $path = $galley->path;
-                        if (empty($galley->path)) {
-                            $path = $this->baseURL.'/article/view/'.$paper->id.'/'.$galley->type;
-                        }
-                        $_paper['galleys'][$galley->type] = $path;
-                    }
-                }
-                $_sections[$paper->section]['papers'][] = $_paper;
+                $_sections[$paper->section]['papers'][] = $this->_paper($paper, $issue);
             }
             foreach ($_sections as $id => $section) {
                 if (empty($section['papers'])) {
@@ -85,12 +56,15 @@ class JournalsPortal extends Portal {
     }
     
     protected function _paper($paper, $issue) {
+        $short = self::short($this->context, $issue, $paper);
         $result = [
+            'id'       => $paper->id,
             'title'    => $paper->title,
             'subtitle' => $paper->subtitle,
-            'id'       => $paper->id,
+            'pages'    => $paper->pages,
+            'status'   => $paper->status,
             'doi'      => $paper->doi,
-            'short'    => self::short($this->context, $issue, $paper)
+            'short'    => $short
         ];
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
         foreach ($authors as $author) {
@@ -103,7 +77,7 @@ class JournalsPortal extends Portal {
             if ($access !== $shop) {
                 $path = $galley->path;
                 if (empty($galley->path)) {
-                    $path = $this->baseURL.'/article/view/'.$paper->id.'/'.$galley->type;
+                    $path = $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
                 }
                $result['galleys'][$galley->type] = $path;
             }
@@ -114,7 +88,7 @@ class JournalsPortal extends Portal {
     public static function short($context, $issue, $paper = null) {
         $short = $context.'_'.$issue->volume;
         if ($issue->number) {
-            $short .= '_'.$issue->number;
+            $short .= '.'.$issue->number;
         }
         if ($paper) {
             $short .= '_'.$paper->pages;
@@ -191,7 +165,7 @@ class JournalsPortal extends Portal {
         if (isset($this->controler->journal)) {
             $page = $this->params['page'] ?? null;
             $paper = $this->params['paper'] ?? null;
-            $type = $this->params['type'] ?? null;
+            $display = $this->params['display'] ?? null;
             $models = false;
             if ($paper) {
                 $paper = (new PaperEntity())->retrieveOne($paper);
@@ -200,19 +174,52 @@ class JournalsPortal extends Portal {
                     if ($issue) {
                         $section = (new SectionEntity())->retrieveOne($paper->section);
                         if ($section) {
-                            $paper = $this->_paper($paper, $issue);
-                            $issue = $this->_issue($issue, false);
+                            $_paper = $this->_paper($paper, $issue);
+                            $_issue = $this->_issue($issue, false);
                             $ariadne = [
                                 'home' => '/'.$this->context,
                                 'archive' => '/'.$this->context.'/issue/archive',
-                                'issue' => [$issue['serial'].' : '.$issue['title'], '/'.$this->context.'/issue/view'],
-                                'active' => $section->title
+                                'issue' => [$_issue['serial'].' : '.$_issue['title'], '/'.$this->context.'/issue/view/'.$_issue['short']]
                             ];
                             switch ($page) {
                                 case 'view': {
-                                    $page = 'article';
-                                    $models = ['paper' => $paper, 'issue' => $issue];
+                                    if (in_array($display, ['html','pdf'])) {
+                                        $view = 'display';
+                                        $ariadne['section'] = [$section->title, '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$section->id];
+                                        $ariadne['active'] = [$_paper['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
+                                    } else {
+                                        $page = 'article';
+                                        $ariadne['active'] = $section->title;
+                                    }
+                                    $models = [
+                                        'paper' => $_paper,
+                                        'issue' => $_issue,
+                                        'display' => $display,
+                                        'title' => $_paper['title'].' | '.$_issue['serial']
+                                    ];
                                     break;
+                                }
+                                case 'download': {
+                                    $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.DS.(isset($issue->number) ? $issue->number.DS : '').$paper->id.'.'.$display;
+                                    switch ($display) {
+                                        case 'html': {
+                                            $view = 'download';
+                                            $models = [
+                                                'paper' => $_paper,
+                                                'issue' => $_issue,
+                                                'content' => file_get_contents($path),
+                                                'status' => ($issue->open < date('Y-m-d') || $paper->status === 'free') ? 'free' : 'subscription',
+                                                'section' => $section->title
+                                            ];
+                                            break;
+                                        }
+                                        case 'pdf': {
+                                            return $this->send($path);
+                                        }
+                                        default: {
+                                            return $this->error(404);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -221,7 +228,12 @@ class JournalsPortal extends Portal {
             }
         }
         if ($models !== false) {
-            return $this->page($page, array_merge($models, ['ariadne' => $ariadne]));
+            $models = array_merge($models, ['ariadne' => $ariadne]);
+            if (isset($view)) {
+                return $this->view('/portal/'.$view, $models);
+            } else if (isset($page)) {
+                return $this->page($page, $models);
+            }
         }
         return $this->home();
     }

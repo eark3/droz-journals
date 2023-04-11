@@ -12,7 +12,7 @@
 			"parameters": {
 				"page": "FILTER_SANITIZE_STRING",
 				"paper": "FILTER_SANITIZE_STRING",
-				"type": "FILTER_SANITIZE_STRING"
+				"display": "FILTER_SANITIZE_STRING"
 			}
 		},
 		"reference": {

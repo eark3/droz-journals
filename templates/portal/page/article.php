@@ -21,7 +21,7 @@
 				</div>
 <?php } ?>
 			</div>
-<?php foreach ($paper['galleys'] as $type => $path) { ?>
+<?php foreach ($paper['galleys'] ?? [] as $type => $path) { ?>
 <?php   $this->render('/portal/widget/galley', ['type' => $type, 'path' => $path]); ?>
 <?php } ?>
 			<div class="panel panel-default copyright">
@@ -33,7 +33,7 @@
 		<div class="col-md-8">
 			<section class="article-main">
 				<div class="authors">
-					<strong><?php echo implode(', ', $paper['authors']); ?></strong>
+					<strong><?php echo !empty($paper['authors']) ? implode(', ', $paper['authors']) : ''; ?></strong>
 				</div>
 			</section>
 			<div class="item citation">

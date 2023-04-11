@@ -1,5 +1,11 @@
 <?php
 
-class JournalEntity extends Entity {}
+class JournalEntity extends JournalsEntity {
+
+    protected function retrieveBy() {
+        return $this->journal;
+    }
+
+}
 
 ?>

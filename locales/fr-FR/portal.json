@@ -43,5 +43,14 @@
 			"download": "Télécharger la référence bibliographique"
 		},
 		"issue": "Numéro"
+	},
+	"download": {
+		"info": "Informations",
+		"toc": "Table des matières",
+		"notes": "Notes",
+		"biblio": "Bibliographie",
+		"topic": "Rubrique",
+		"free": "Libre accès",
+		"subscription": "Accès par abonnement"
 	}
 }

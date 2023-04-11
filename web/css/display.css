@@ -1,0 +1,77 @@
+/**
+ * plugins/generic/htmlArticleGalley/display.css
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * Styles for embedded viewing of a HTML galley.
+ */
+
+html, body, #htmlContainer, iframe {
+	height: 100%;
+	width: 100%;
+}
+body {
+	margin-top:0px !important;
+}
+
+.header_view{
+    font-family: Helvetica Neue !important;
+}
+h1{
+  display: inline;
+  font-size: 1em !important;
+  font-weight: 400 !important;
+  font-family: Helvetica Neue !important;
+}
+
+.galley_view { 
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+@-webkit-keyframes fadeIn {
+  0% {opacity: 0;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+} 
+  
+.galley_view iframe {
+  padding-top:0 !important;
+  height: 98% !important;
+  padding-top: 71px !important;
+  padding-bottom: 41px !important;
+  padding-bottom: 0 !important;
+}
+
+iframe {
+	padding-bottom: 30px;
+}
+
+html, body {
+	overflow: hidden;
+}
+
+.header_view{
+	padding-top:22px !important;
+	padding-left:20px !important;
+}
+
+@media (max-width: 767px) {
+  .header_view{
+    padding-top: 3px !important;
+    min-height : 38px !important;
+    padding-bottom:3px !important;
+  }
+
+}

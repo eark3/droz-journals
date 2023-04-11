@@ -1,0 +1,929 @@
+/*----------------------*/
+/* 		POLICE DROZ 	*/
+/*----------------------*/
+
+@font-face {
+    font-family: 'SabonLTStd-Roman';
+    src: url('/fonts/SabonLTStd-Roman.eot');
+    src: url('/fonts/SabonLTStd-Roman.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/SabonLTStd-Roman.woff') format('woff'),
+         url('/fonts/SabonLTStd-Roman.ttf') format('truetype'),
+         url('/fonts/SabonLTStd-Roman.svg#Sri-TSCRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*--------------------------*/
+/* STYLE DE BASE DE LA PAGE */
+/*--------------------------*/
+
+body, 
+.body {
+	font-family: 'Roboto', sans-serif;
+	background-color: #fafafa;
+	color:#606060;
+	-webkit-hyphens:none;
+	text-align:justify;
+	font-size: 1em;
+	line-height: 1.7em;
+	max-width: 800px;
+	margin: 70px 2em 0em 2em;
+	margin-top:0;
+
+}
+
+.mainContainer{
+	max-width: 800px;
+	padding-left:5%;
+	padding-right:5%;
+}
+
+/*--------------------------*/
+/* 		BALISE STANDARD 	*/
+/*--------------------------*/
+
+body > p{
+	margin:0;
+}
+
+a:link {
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+	color:#000000;
+}
+
+ul{
+	padding-left: 2.2em;
+}
+
+
+
+span.page {
+	visibility: hidden;
+	display:none;
+	text-indent: 0px;
+	margin-top: 0em;
+	margin-left: -1em;
+	margin-bottom: 0em;
+}
+
+small {
+	text-transform: uppercase;
+}
+
+/*--------------------------*/
+/* 			IMAGES 			*/
+/*--------------------------*/
+
+img {
+	max-width:100%;
+	max-height:100%;
+}
+
+.image {
+	text-align:center;
+	margin-top:1.5em;
+	margin-bottom:0.5em;
+	text-indent:0em;
+}
+
+.caption {
+	text-align:justify;
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	font-size: 88%;
+	line-height: 1.1em;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+.caption2 {
+	text-align:justify;
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	font-size: 88%;
+	line-height: 1.1em;
+	text-indent:0em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+.caption2{
+	font-style: normal;
+	font-size: 82%;
+	font-weight: bold;
+}
+
+.vignette_CR {
+	text-align:center;
+	margin-top:1.5em;
+	margin-bottom:0.5em;
+	text-indent:0em;
+}
+
+/*--------------------------*/
+/* 			CHAP TITLE		*/
+/*--------------------------*/
+
+.chap-title{
+  	padding-top: 0 !important;
+}
+
+.chap-title, 
+.chap-title1, 
+.das1, 
+.Normal {
+	/*font-family: 'SabonLTStd-Roman', sans-serif !important;*/
+	font-family: 'Roboto', sans-serif;
+  	font-weight:600;
+	font-size: 1.5em !important;
+	line-height: 1.2em;
+	color: #606060;
+	margin-bottom: 20px;
+}
+
+.Normal{
+	margin-top:100px;
+}
+
+.chap-subtitle, 
+.chap-subtitle1{
+	font-family: 'SabonLTStd-Roman', sans-serif !important;
+	font-weight:300;
+	font-size: 1.2em !important;
+	margin-bottom: 10px;
+
+}
+/* ---------- NON UTILE ---------------*/
+/*
+
+.version_RFHL_jan_2020 .title_block,
+.version_CFS_jan_2020 .title_block,
+.version_RThPh_jan_2020 .title_block,
+.version_HCL_jan_2020 .title_block,
+.version_RHP_jan_2020 .title_block{
+	margin-bottom:10px;
+}
+
+*/
+.version_RFHL_jan_2020 .chap-title,
+.version_CFS_jan_2020 .chap-title,
+.version_RThPh_jan_2020 .chap-title,
+.version_HCL_jan_2020 .chap-title,
+.version_RHP_jan_2020 .chap-title,
+.version_SLLMOO_jan_2020 .chap-title{
+	margin-bottom:0;
+}
+.version_RFHL_jan_2020 .chap-subtitle,
+.version_CFS_jan_2020 .chap-subtitle,
+.version_RThPh_jan_2020 .chap-subtitle,
+.version_HCL_jan_2020 .chap-subtitle,
+.version_RHP_jan_2020 .chap-subtitle,
+.version_SLLMOO_jan_2020 .chap-title{
+	margin-top:0;
+	margin-bottom:0;
+}
+
+
+/*------------------------------*/
+/* 			BLOC AUTEUR			*/
+/*------------------------------*/
+
+.au, 
+.au1, 
+.au2 {
+	font-weight:300;
+	font-size:1em !important;
+}
+
+
+.au{
+	font-weight:600;
+	margin-left:1.5em;
+	margin-bottom:0px;
+}
+
+.au1{
+	margin-left:1.5em;
+	font-style:italic;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.au1:last-child{
+	margin-bottom:200px;
+}
+
+.version_RFHL_jan_2020 .au1:last-child,
+.version_CFS_jan_2020 .au1:last-child,
+.version_RThPh_jan_2020 .au1:last-child,
+.version_HCL_jan_2020 .au1:last-child,
+.version_RHP_jan_2020 .au1:last-child,
+.version_SLLMOO_jan_2020 .au1:last-child{
+    margin-bottom: 0;
+}
+
+.author_block .au1:last-child{
+	margin-bottom:0;
+}
+
+.au2 {
+	font-weight:normal;
+	color: #444444;
+	margin-top: 2em;
+	margin-bottom: 2em;
+	text-align:left;
+	margin-left:2em;
+	font-size: 0.8em !important;
+	line-height: 1.3em;
+
+}
+
+/* Rajout d'une règle lorsque .au2 est le premier élément de la page pour qu'il ne soit pas caché par le header */
+/* Visible dans certains articles de la RHP ancienne version */
+
+.au2:first-child{
+	margin-top:100px;
+}
+
+
+
+.version_RFHL_jan_2020 .author_block,
+.version_CFS_jan_2020 .author_block,
+.version_RThPh_jan_2020 .author_block,
+.version_HCL_jan_2020 .author_block,
+.version_RHP_jan_2020 .author_block,
+.version_SLLMOO_jan_2020 .author_block{
+    margin-bottom: 30px;
+}
+
+.version_RFHL_jan_2020 .au2:first-child,
+.version_CFS_jan_2020 .au2:first-child,
+.version_RThPh_jan_2020 .au2:first-child,
+.version_HCL_jan_2020 .au2:first-child,
+.version_RHP_jan_2020 .au2:first-child,
+.version_SLLMOO_jan_2020 .au2:first-child{
+    margin-top: 0;
+}
+
+
+
+.au1_mail{
+	margin-left: 1.5em;
+	color:rgba(0, 0, 0, 0.44);
+	margin-top:0;
+	margin-bottom: 0;
+	font-weight: 300;
+
+}
+
+p.bibl{
+	color: #444444;
+	margin-left:2em;
+	margin-top:0em;
+	margin-bottom:1em;
+	font-size:88%;
+}
+
+/*------------------------------*/
+/* 			INDENTATION 		*/
+/*------------------------------*/
+
+.noindent {
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+}
+
+.noindent1, 
+.noindent2 {
+	font-size: 95%;
+	text-align:justify;
+	font-style:italic;
+	line-height: 31px;
+	color: #444444;
+	text-indent:2.5em;
+	margin-top: 1em;
+	margin-bottom: 0.8em;
+	margin-left:22%;
+	margin-right:20%;
+}
+.noindent3 {
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+}
+
+.noindent4 {
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 1em;
+	margin-bottom: 0em;
+}
+
+.noindent5 {
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 1em;
+	margin-bottom: 0em;
+}
+
+.noindentb, 
+.noindent-s {
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+}
+
+.indent {	
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:1.5em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+
+.indent1 {
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:1.5em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.indent2 {
+	color: #444444;
+	font-size: 92%;
+	text-align:justify;
+	text-indent:1.5em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+
+.indent3 {
+
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:1.5em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+.indent4 {
+
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:1.5em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+.indent5 {
+
+	color: #444444;
+	font-size: 95%;
+	text-align:justify;
+	text-indent:1.5em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+span.marge{
+	column-count: 2;
+	column-gap: 1.5em;
+}
+
+
+/*------------------------------*/
+/* 			ALIGNEMENTS 		*/
+/*------------------------------*/
+
+.right, 
+.right1, 
+.right2, 
+.right3, 
+.right4 {
+	font-size: 95%;
+	text-align:right;
+	margin-top: 1em;
+	margin-bottom: 1.5em;
+	font-style: italic;
+}
+
+.right2{
+	margin-top:0;
+	margin-bottom:1.5em;
+}
+
+.center, 
+.center1, 
+.center2, 
+.center3, 
+.center4 {
+	margin-top:1.5em;
+	margin-bottom:0.5em;
+}
+
+
+/*------------------------------*/
+/* 			  BLOCKS	 		*/
+/*------------------------------*/
+
+.block {
+	font-family: Georgia, "DejaVu Serif", Norasi, serif;
+	color: #444444;
+	font-size: 90%;
+	text-align:justify;
+	text-indent:0em;
+	/* margin-left:10%;
+	margin-right:10%; */
+	margin-left: 2.5em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.block1,
+.block2 {
+	font-family: Georgia, "DejaVu Serif", Norasi, serif;
+	color: #444444;
+	font-size: 90%;
+	text-align:justify;
+	text-indent:0em;
+	margin-left: 2.5em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+}
+
+.block3 {
+	font-family: Georgia, "DejaVu Serif", Norasi, serif;
+	color: #444444;
+	font-size: 90%;
+	line-height: 1.3em;
+	text-align:justify;
+	text-indent:0em;
+	margin-left: 5em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+}
+
+.block4 {
+	font-family: Georgia, "DejaVu Serif", Norasi, serif;
+	color: #444444;
+	font-size: 90%;
+	line-height: 1.3em;
+	text-align:justify;
+	text-indent:0em;
+	margin-left: 5em;
+	margin-top: 1em;
+	margin-bottom: 0em;
+}
+
+.block5 {
+	font-family: Georgia, "DejaVu Serif", Norasi, serif;
+	color: #444444;
+	font-size: 90%;
+	text-align:justify;
+	text-indent:0em;
+	margin-left: 2.5em;
+	margin-top: 2em;
+	margin-bottom: 0em;
+}
+
+.block_1{
+	text-align: right;
+	margin-top:0;
+	margin-bottom:1.5em;
+}
+
+.block_2{
+	text-align: right;
+	margin-top:0;
+	margin-bottom:0;
+}
+
+.block_3{
+	text-align: right;
+	margin-top:0;
+	margin-bottom:0;
+	text-indent:1.5em;
+}
+
+.block_4-1{
+	text-align: right;
+	margin-top:1.5em;
+	margin-bottom:0;
+	text-indent:1.5em;
+}
+
+.block6{
+	text-align:right;
+	text-indent:0em;
+	margin-top: 1em;
+	margin-bottom: 1.5em;
+}
+
+.block-center{
+
+	font-family: Georgia, "DejaVu Serif", Norasi, serif;
+
+	color: #444444;
+
+	font-size: 90%;
+
+	text-align:center;
+
+	text-indent:1.5em;
+
+	margin-left: 2.5em;
+
+	margin-top: 0em;
+
+	margin-bottom: 0em;
+
+}
+
+/*------------------------------*/
+/* 				TITRE 			*/
+/*------------------------------*/
+
+.h1, 
+.h1a, 
+.h1b {
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	text-indent:0em;
+	text-align:justify;
+	font-size:100%;
+	font-weight:normal;
+	margin-top:2em;
+	margin-bottom:1.2em;
+}
+
+.h1c {
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	text-indent:0em;
+	/* margin-left: 2.5em; */
+	/* text-align:center; */
+	font-size:97%;
+	font-weight:normal;
+}
+
+.h2, 
+.h2a, 
+.h2b {
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	text-indent:0em;
+	font-size:92%;
+	font-weight:normal;
+	margin-top:2em;
+	margin-bottom:1.2em;
+	margin-left: 2.5em;
+}
+
+.h2_1{
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	text-indent:0em;
+	text-align:center;
+	font-size:92%;
+	font-weight:normal;
+	margin-top:2em;
+	margin-bottom:1em;
+
+}
+
+p.h1{
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	text-transform: uppercase;
+	color: #444444;
+}
+
+p.h2{
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	font-weight: bold;
+	margin-left:0;
+	font-size: 100%;
+	color: #444444;
+}
+
+p.h3{
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	margin-left:1.5em;
+	font-style: italic;
+	font-weight: bold;
+}
+
+p.h4{
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	margin-left:1.5em;
+	font-style: italic;
+	font-weight: normal;
+}
+
+p.h5{
+	font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	color: #444444;
+	margin-left:1.5em;
+	font-style: normal;
+	font-weight: normal;
+}
+
+
+/*--------------------------*/
+/* 			DASH			*/
+/*--------------------------*/
+
+p.dash {
+	color: #444444;
+	text-indent:-1.3em;
+	margin-left:1.3em;
+	margin-top:0.3em;
+	margin-bottom:0em;
+}
+
+.dash1 {
+	color: #444444;
+	font-size:95%;
+	text-indent:-1.3em;
+	margin-left:1.3em;
+	margin-top:0.3em;
+	
+	margin-bottom:1em;
+}
+
+/* Rajout d'une règle lorsque .dash1 est le premier éléement de la page pour qu'il ne soit pas caché par le header */
+/* Visible dans certains articles de la RHP ancienne version */
+
+.dash1:first-child{
+	margin-top:100px;
+}
+
+
+/*--------------------------*/
+/* 			FOOTNOTES		*/
+/*--------------------------*/
+
+
+p.fn {
+	color: #444444;
+	margin-left:2em;
+	margin-top:0em;
+	margin-bottom:0em;
+	font-size:88%;
+}
+
+p.fn > .num > a:link,
+p.fn > .num1 > a:link,
+p.fn > .num2 > a:link,
+p.fn1 > .num > a:link,
+p.fn1 > .num1 > a:link,
+p.fn1 > .num2 > a:link,
+p.fn2 > .num > a:link
+p.fn2 > .num1 > a:link
+p.fn2 > .num2 > a:link {
+	text-decoration:none;
+	color: #606060 !important;
+}
+
+p.fn > .num > a:hover,
+p.fn > .num1 > a:hover,
+p.fn > .num2 > a:hover,
+p.fn1 > .num > a:hover,
+p.fn1 > .num1 > a:hover,
+p.fn1 > .num2 > a:hover,
+p.fn2 > .num > a:hover
+p.fn2 > .num1 > a:hover
+p.fn2 > .num2 > a:hover {
+	text-decoration:none;
+	color: #000 !important;
+}
+
+span.num {
+	margin-left:-1em;
+}
+
+p.fn1 {
+	color: #444444;
+	margin-left:2em;
+	margin-top:0em;
+	margin-bottom:0em;
+	font-size:88%;
+}
+
+span.num1 {
+	margin-left:-1.5em;
+}
+
+p.fn2 {
+	color: #444444;
+	margin-left:2em;
+	margin-top:0em;
+	margin-bottom:0em;
+	font-size:88%;
+}
+
+span.num2 {
+	margin-left:-2em;
+}
+
+
+sup {
+	font-size:80%;
+}
+
+sup > a:link {
+	text-decoration:none;
+	color: #606060 !important;
+}
+
+sup > a:hover {
+	text-decoration:none;
+	color: #000 !important;
+}
+
+sup{
+	vertical-align: baseline;
+	position: relative;
+	top: -0.4em;
+}
+
+
+/*------------------------------*/
+/* 			SEPARATEUR 			*/
+/*------------------------------*/
+
+.sep1 {
+	text-indent:0em;
+	font-size:97%;
+	font-weight:normal;
+	margin:2em 0 2em 0;
+	text-align:center;
+}
+
+/*------------------------------*/
+/* 			 TABLEAU 			*/
+/*------------------------------*/
+
+table, 
+th, 
+td {
+	border: 1px solid black;
+	border-collapse: collapse;
+	font-size:95%;
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+	padding-left:0.3em;
+	padding-right:0.3em;
+}
+
+table{
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/*==================================================================
+=            EXTRAITS DE CORRESPONDANCE OU DE DOCUMENTS            =
+==================================================================*/
+
+.extract_block,
+.annex_block{
+	font-size: 0.9em;
+}
+
+/*=====  End of EXTRAITS DE CORRESPONDANCE OU DE DOCUMENTS  ======*/
+
+
+/*------------------------------*/
+/*			  ANNEXE			*/
+/*------------------------------*/
+
+
+
+p.annex_A {
+	font-size: 95%;
+	text-align:right;
+	margin-right: 1.5em;
+	margin-top: 1em;
+	margin-bottom: 0em;
+}
+
+p.annex_B {
+	font-size: 95%;
+	text-align:right;
+	margin-right: 1.5em;
+	margin-top: 0em;
+	margin-bottom: 1.5em;
+}
+
+.annex_1 {
+
+	color: #444444;
+	text-indent:0em;
+	text-align:justify;
+	font-size:100%;
+	font-weight:normal;
+	margin-top:1.7em;
+	margin-bottom:1em;
+}
+
+.annex_2{
+
+	color: #444444;
+	font-size: 100%;
+	text-align:justify;
+	text-indent:0em;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+}
+
+.annex {
+
+	color: #444444;
+	text-indent:-1.3em;
+	margin-left:1.3em;
+	margin-top:0em;
+	margin-bottom:0em;
+}
+
+
+/*------------------------------*/
+/*			RESPONSIVE			*/
+/*------------------------------*/
+
+@media (max-width: 768px) {  
+	body, 
+	.body {
+		padding-bottom:200px;
+		padding-top: 25px;
+    }
+}
+
+@media (max-width: 767px) {
+	body, .body {
+		/* margin-left:100px !important; */
+		margin-right:20px !important;
+		width:85%;
+		margin-top:0;
+		line-height: 1.4em;
+		padding-bottom:200px;
+		padding-top: 25px;
+   	}
+  
+	.chap-subtitle, .chap-subtitle1, .au, .au1, .au2 {
+		margin-left:0;
+		margin-right:0;
+	}
+
+	.chap-title{
+		padding-top:49px !important;
+	}
+
+	.block4{
+		margin-left:1.8em !important;
+	}
+}
+
+
+
+.center,.center2{
+	text-align: center;
+}
+
+.center2{
+	font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
