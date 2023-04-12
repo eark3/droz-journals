@@ -70,7 +70,8 @@ class JournalsPortal extends Portal {
         foreach ($authors as $author) {
             $_author = [
                 'name' => $author->first.' '.(!empty($author->middle) ? $author->middle.' ' : '').$author->last,
-                'email' => $author->email
+                'email' => $author->email,
+                'affiliation' => $author->affiliation
             ];
             $settings = (new SettingEntity())->retrieveAll([
                 'type'   => 'author',

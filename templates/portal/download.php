@@ -11,10 +11,10 @@
 	</ul>
 	<div id="tab-0" class="tab-content current" >
 		<div style="font-weight:bold"><?php echo $paper['title']; ?></div>
-		<div style="font-weight:bold;font-style:italic;"></div>
+		<div style="font-weight:bold;font-style:italic;"><?php echo $paper['subtitle']; ?></div>
 		<div style="font-size:15px">
 <?php foreach ($paper['authors'] ?? [] as $author) { ?>
-			<?php echo $author['name']; ?>
+			<?php echo $author['name']; ?><?php echo !empty($author['affiliation']) ? ', '.$author['affiliation'] : ''; ?>
 			<br />
 <?php   if (!empty($author['email'])) { ?>
 			<a href="mailto:<?php echo $author['email']; ?>"><?php echo $author['email']; ?></a>
