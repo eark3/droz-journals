@@ -12,7 +12,7 @@ class JournalsPortal extends Portal {
         if ($issue->year) {
             $serial .= ' ('.$issue->year.')';
         }
-        $settings = JournalsUtils::settings($issue, $this->lang, $this->controler->journal);
+        $settings = JournalsUtils::settings('issue', $issue, $this->lang, $this->controler->journal);
         $cover = '/public/journals/images/'.$this->context.'/'.$settings['coverImage'];
         $link = $this->baseURL.'/issue/view/'.$short;
         if ($full) {
@@ -21,7 +21,7 @@ class JournalsPortal extends Portal {
             $_sections = [];
             foreach ($sections as $section) {
                 $_sections[$section->id] = [
-                    'title' => $section->title
+                    'settings' => JournalsUtils::settings('section', $section, $this->lang, $this->controler->journal)
                 ];
             }
             foreach ($papers as $paper) {
@@ -34,50 +34,36 @@ class JournalsPortal extends Portal {
             }
         }
         $result = [
-            'title'     => $settings['title'],
             'cover'     => $cover,
             'serial'    => $serial,
             'published' => $issue->published,
             'link'      => $link,
             'short'     => $short,
-            'copyright' => $copyright
+            'copyright' => $copyright,
+            'settings'  => $settings
         ];
         if ($full) {
-            $result = array_merge($result, [
-                'description' => $settings['description'] ?? null,
-                'sections'    => $_sections
-            ]);
+            $result = array_merge($result, ['sections' => $_sections]);
         }
         return $result;
     }
     
     protected function _paper($paper, $issue) {
         $short = JournalsUtils::short($this->context, $issue, $paper);
-        $settings = JournalsUtils::settings($paper, $this->lang, $this->controler->journal);
         $result = [
             'id'       => $paper->id,
-            'title'    => $paper->title,
-            'subtitle' => $paper->subtitle,
             'pages'    => $paper->pages,
             'status'   => $paper->status,
-            'doi'      => $paper->doi,
-            'short'    => $short
+            'short'    => $short,
+            'settings' => JournalsUtils::settings('paper', $paper, $this->lang, $this->controler->journal)
         ];
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
-            $_author = [
-                'name' => JournalsUtils::name($author),
-                'email' => $author->email,
-                'affiliation' => $author->affiliation
+            $result['authors'][] = [
+                'name'     => JournalsUtils::name($author),
+                'email'    => $author->email,
+                'settings' => JournalsUtils::settings('author', $author, $this->lang, $this->controler->journal, 'affiliation')
             ];
-            $settings = (new SettingEntity('author'))->retrieveAll([
-                'object' => $author->id,
-                'locale' => $this->lang
-            ]);
-            foreach ($settings as $setting) {
-                $_author[$setting->name] = $setting->value;
-            }
-            $result['authors'][] = $_author;
         }
         if (!empty($result['authors'])) {
             $result['names'] = implode(', ', array_map(function($author) {return $author['name'];}, $result['authors']));
@@ -101,10 +87,7 @@ class JournalsPortal extends Portal {
         if (isset($this->controler->journal)) {
             $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'id']]);
             if ($issue) {
-                return $this->page('home', [
-                    'journal' => JournalsUtils::journal($this->controler->journal, $this->lang),
-                    'issue' => $this->_issue($issue)]
-                );
+                return $this->page('home', ['issue' => $this->_issue($issue)]);
             }
         }
         return parent::home();
@@ -143,17 +126,16 @@ class JournalsPortal extends Portal {
                     if ($issue) {
                         $page = 'issue';
                         $issue = $this->_issue($issue);
-                        $ariadne['active'] = $issue['serial'].' : '.$issue['title'];
+                        $ariadne['active'] = $issue['serial'].' : '.$issue['settings']['title'];
                         $models = ['issue' => $issue];
+                    } else {
+                        return $this->error(404);
                     }
                     break;
                 }
             }
             if ($models !== false) {
-                return $this->page($page, array_merge($models, [
-                    'ariadne' => $ariadne,
-                    'journal' => JournalsUtils::journal($this->controler->journal, $this->lang)
-                ]));
+                return $this->page($page, array_merge($models, ['ariadne' => $ariadne]));
             }
         }
         return $this->home();
@@ -165,71 +147,76 @@ class JournalsPortal extends Portal {
             $paper = $this->params['paper'] ?? null;
             $display = $this->params['display'] ?? null;
             $models = false;
-            if ($paper) {
-                $paper = (new PaperEntity())->retrieveOne($paper);
-                if ($paper) {
-                    $issue = (new IssueEntity())->retrieveOne($paper->issue);
-                    if ($issue) {
-                        $section = (new SectionEntity())->retrieveOne($paper->section);
-                        if ($section) {
-                            $_paper = $this->_paper($paper, $issue);
-                            $_issue = $this->_issue($issue, false);
-                            $ariadne = [
-                                'home' => '/'.$this->context,
-                                'archive' => '/'.$this->context.'/issue/archive',
-                                'issue' => [$_issue['serial'].' : '.$_issue['title'], '/'.$this->context.'/issue/view/'.$_issue['short']]
+            if (!isset($paper)) {
+                return $this->error(404);
+            }
+            $paper = (new PaperEntity())->retrieveOne($paper);
+            if ($paper === false) {
+                return $this->error(404);
+            }
+            $issue = (new IssueEntity())->retrieveOne($paper->issue);
+            if ($issue === false) {
+                return $this->error(404);
+            }
+            $section = (new SectionEntity())->retrieveOne($paper->section);
+            if ($section === false) {
+                return $this->error(404);
+            }
+            $_paper = $this->_paper($paper, $issue);
+            $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.(!empty($issue->number) ? '.'.$issue->number : '').DS.$_paper['short'].'.'.$display;
+            if (isset($display) && (!file_exists($path) || !is_file($path))) {
+                return $this->error(404);
+            }
+            $_issue = $this->_issue($issue, false);
+            $_section = JournalsUtils::settings('section', $section, $this->lang, $this->controler->journal);
+            $ariadne = [
+                'home' => '/'.$this->context,
+                'archive' => '/'.$this->context.'/issue/archive',
+                'issue' => [$_issue['serial'].' : '.$_issue['settings']['title'], '/'.$this->context.'/issue/view/'.$_issue['short']]
+            ];
+            switch ($page) {
+                case 'view': {
+                    if (in_array($display, ['html','pdf'])) {
+                        $view = 'display';
+                        $ariadne['section'] = [$_section['title'], '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$section->id];
+                        $ariadne['active'] = [$_paper['settings']['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
+                    } else {
+                        $page = 'article';
+                        $ariadne['active'] = $_section['title'];
+                    }
+                    $models = [
+                        'paper' => $_paper,
+                        'issue' => $_issue,
+                        'display' => $display,
+                        'title' => $_paper['settings']['title'].' | '.$_issue['serial']
+                    ];
+                    break;
+                }
+                case 'download': {
+                    switch ($display) {
+                        case 'html': {
+                            $view = 'download';
+                            $models = [
+                                'paper' => $_paper,
+                                'issue' => $_issue,
+                                'content' => file_get_contents($path),
+                                'status' => ($issue->open < date('Y-m-d') || $paper->status === 'free') ? 'free' : 'subscription',
+                                'section' => $_section['title']
                             ];
-                            switch ($page) {
-                                case 'view': {
-                                    if (in_array($display, ['html','pdf'])) {
-                                        $view = 'display';
-                                        $ariadne['section'] = [$section->title, '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$section->id];
-                                        $ariadne['active'] = [$_paper['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
-                                    } else {
-                                        $page = 'article';
-                                        $ariadne['active'] = $section->title;
-                                    }
-                                    $models = [
-                                        'paper' => $_paper,
-                                        'issue' => $_issue,
-                                        'display' => $display,
-                                        'title' => $_paper['title'].' | '.$_issue['serial']
-                                    ];
-                                    break;
-                                }
-                                case 'download': {
-                                    $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.(!empty($issue->number) ? '.'.$issue->number : '').DS.$_paper['short'].'.'.$display;
-                                    switch ($display) {
-                                        case 'html': {
-                                            $view = 'download';
-                                            $models = [
-                                                'paper' => $_paper,
-                                                'issue' => $_issue,
-                                                'content' => file_get_contents($path),
-                                                'status' => ($issue->open < date('Y-m-d') || $paper->status === 'free') ? 'free' : 'subscription',
-                                                'section' => $section->title
-                                            ];
-                                            break;
-                                        }
-                                        case 'pdf': {
-                                            return $this->send($path);
-                                        }
-                                        default: {
-                                            return $this->error(404);
-                                        }
-                                    }
-                                }
-                            }
+                            break;
+                        }
+                        case 'pdf': {
+                            return $this->send($path);
+                        }
+                        default: {
+                            return $this->error(404);
                         }
                     }
                 }
             }
         }
         if ($models !== false) {
-            $models = array_merge($models, [
-                'ariadne' => $ariadne,
-                'journal' => JournalsUtils::journal($this->controler->journal, $this->lang)
-            ]);
+            $models = array_merge($models, ['ariadne' => $ariadne]);
             if (isset($view)) {
                 return $this->view('/portal/'.$view, $models);
             } else if (isset($page)) {
@@ -276,7 +263,7 @@ class JournalsPortal extends Portal {
         $this->controler->section = $section;
         $this->controler->paper = $paper;
         foreach ((new AuthorEntity())->retrieveAll(['paper' => $paper->id]) as $author) {
-            $this->controler->authors[] = $author->last.', '.$author->first;
+            $this->controler->authors[] = JournalsUtils::name($author);
         }
         switch ($output) {
             case 'format': {
@@ -315,12 +302,15 @@ class JournalsPortal extends Portal {
         }
         $now = time();
         $issued = strtotime($issue->published);
+        $_paper = JournalsUtils::settings('paper', $paper, $this->lang, $journal);
+        $_journal = JournalsUtils::settings('journal', $journal, $this->lang, $journal);
+        $short = JournalsUtils::short($this->context, $issue, $paper);
         $reference = [
             'type'            => 'article-journal',
-            'id'              => JournalsUtils::short($this->context, $issue, $paper),
-            'title'           => $paper->title,
+            'id'              => $short,
+            'title'           => $_paper['title'],
             'volume'          => $issue->volume,
-            'container-title' => $journal->name,
+            'container-title' => $_journal['name'],
             'page'            => JournalsUtils::pages($paper),
             'accessed'        => ["date-parts" => [[date('Y', $now), date('m', $now), date('d', $now)]]],
             'issued'          => ["date-parts" => [[date('Y', $issued), date('m', $issued), date('d', $issued)]]]
@@ -328,10 +318,10 @@ class JournalsPortal extends Portal {
         if ($issue->number) {
             $reference['issue'] = $issue->number;
         }
-        if ($paper->doi) {
-            $reference['DOI'] = $paper->doi;
+        if (isset($_paper['pub-id::doi'])) {
+            $reference['DOI'] = $_paper['pub-id::doi'];
         } else {
-            $reference['URL'] = $this->baseURL.'/article/view/'.JournalsUtils::short($this->context, $issue, $paper);
+            $reference['URL'] = $this->baseURL.'/article/view/'.$short;
         }
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
         foreach ($authors as $author) {

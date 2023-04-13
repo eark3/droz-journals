@@ -1,7 +1,7 @@
 <article class="article-details">
 	<header>
 		<h1 class="page-header">
-			<?php echo $paper['title']; ?>
+			<?php echo $paper['settings']['title']; ?>
 <?php if (!empty($paper['subtitle'])) { ?>
 			<p style="margin-top:4px;" class="small"><?php echo $paper['subtitle']; ?></p>
 <?php } ?>
@@ -45,7 +45,7 @@
 								<div id="citationOutput" role="region" aria-live="polite">
 									<div class="csl-bib-body">
 										<div class="csl-entry">
-											<div class="csl-right-inline" data-paper="<?php echo $paper['id']; ?>">
+											<div class="csl-right-inline" data-paper="<?php echo $paper['short']; ?>">
 											</div>
 										</div>
 									</div>
@@ -84,7 +84,7 @@
 						<div class="panel-heading"><?php echo $locale->article->issue; ?></div>
 						<div class="panel-body">
 							<a class="title" href="<?php echo $baseURL; ?>/issue/view/<?php echo $issue['short']; ?>">
-								<?php echo $issue['serial']?> : <?php echo $issue['title']?>
+								<?php echo $issue['serial']?> : <?php echo $issue['settings']['title']?>
 							</a>
 						</div>
 					</div>

@@ -28,7 +28,6 @@
 			"journal",
 			"volume",
 			"number",
-			"title",
 			"year",
 			"published",
 			"modified",
@@ -41,7 +40,6 @@
 		"fields": [
 			"id",
 			"journal",
-			"title",
 			"place"
 		],
 		"key": "id"
@@ -54,11 +52,7 @@
 			"section",
 			"place",
 			"pages",
-			"title",
-			"status",
-			"title",
-			"subtitle",
-			"doi"
+			"status"
 		],
 		"key": "id"
 	},
@@ -71,7 +65,6 @@
 			"middle",
 			"last",
 			"email",
-			"affiliation",
 			"place"
 		],
 		"key": "id"

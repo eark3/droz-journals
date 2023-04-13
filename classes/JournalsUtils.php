@@ -3,7 +3,7 @@
 class JournalsUtils {
     
     public static function journal($journal, $locale, $names = null) {
-        $settings = self::settings($journal, $locale, $journal, $names);
+        $settings = self::settings('journal', $journal, $locale, $journal, $names);
         $thumbnail = json_decode($settings['homepageImage'], true);
         $models = [
             'path'      => '/'.$journal->context,
@@ -37,11 +37,14 @@ class JournalsUtils {
         return $pages;
     }
     
-    public static function name($author) {
-        return $author->first.' '.(!empty($author->middle) ? $author->middle.' ' : '').$author->last;
+    public static function name($author, $reverse = false) {
+        $middle = !empty($author->middle) ? $author->middle.' ' : '';
+        return $reverse 
+            ? $middle.$author->last.', '.$author->first
+            : $author->first.' '.$middle.$author->last;
     }
     
-    public static function settings($object, $locale, $journal, $names = null) {
+    public static function settings($type, $object, $locale, $journal, $names = null) {
         $locales = [$locale, $journal->locale, DEFAULT_LANG];
         $settings = [];
         $setting = null;
@@ -57,7 +60,7 @@ class JournalsUtils {
         }
         foreach ($locales as $_locale) {
             $criteria['locale'] = $_locale;
-            $entity = (new SettingEntity($object->_type));
+            $entity = (new SettingEntity($type));
             if ($many) {
                 $entities = $entity->retrieveAll($criteria);
                 foreach ($entities as $entity) {

@@ -2,7 +2,7 @@
 					<div class="heading row">
 						<div class="col-md-12">
 							<p style="margin-top: 5px !important; margin-bottom: 15px !important;" class="page-header">
-								<?php echo $issue['serial']; ?> : <?php echo $issue['title']; ?>
+								<?php echo $issue['serial']; ?> : <?php echo $issue['settings']['title']; ?>
 							</p>
 						</div>
 					</div>
@@ -12,7 +12,7 @@
 						</div>
 						<div style="margin-top:;" class="issue-details col-md-8">
 							<div class="description">
-								<?php echo $issue['description']; ?>
+								<?php echo $issue['settings']['description']; ?>
 								<?php echo $locale->published; ?>: <?php echo $issue['published']; ?>
 							</div>
 						</div>
@@ -29,7 +29,7 @@
 									<div class="right">
 										<ul style="text-align: right; font-size: 16px">
 <?php foreach ($issue['sections'] as $id => $section) { ?>
-											<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $id; ?>"><?php echo $section['title']; ?></a></li>
+											<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $id; ?>"><?php echo $section['settings']['title']; ?></a></li>
 <?php } ?>
 										</ul>
 									</div>

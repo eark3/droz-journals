@@ -23,8 +23,9 @@ class JournalsControler extends Controler {
         foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
             $models['journals'][] = JournalsUtils::journal($journal, $this->lang);
         }
-        if ($this->context !== 'root') {
+        if (isset($this->journal)) {
             $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
+            $models['journal'] = JournalsUtils::journal($this->journal, $this->lang);
         }
         return $models;
     }

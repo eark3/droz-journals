@@ -8,9 +8,9 @@
 										<div class="col-xs-9">
 											<p class="media-heading">
 												<a href="<?php echo $baseURL; ?>/article/view/<?php echo $paper['short']; ?>">
-													<?php echo $paper['title']; ?><br />
-													<?php if (!empty($paper['subtitle'])) { ?>
-													<span class="small"><?php echo $paper['subtitle']; ?></span>
+													<?php echo $paper['settings']['title']; ?><br />
+													<?php if (!empty($paper['settings']['subtitle'])) { ?>
+													<span class="small"><?php echo $paper['settings']['subtitle']; ?></span>
 													<?php } ?>
 												</a>
 											</p>

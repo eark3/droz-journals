@@ -8,6 +8,11 @@ abstract class JournalsEntity extends Entity {
     
     protected abstract function retrieveBy();
     
+    public function retrieveOne($criteria) {
+        $object = parent::retrieveOne($criteria);
+        return isset($object->id) ? $object : false;
+    }
+    
     public function retrieve($criteria = null, $deep = false) {
         if (is_string($criteria) && !is_numeric($criteria)) {
             $journal = null;
@@ -47,6 +52,9 @@ abstract class JournalsEntity extends Entity {
                         'issue' => $this->issue->id,
                         'pages' => $pages
                     ]);
+                    if ($this->paper === false) {
+                        return false;
+                    }
                 }
             }
             return $this->retrieveBy();
