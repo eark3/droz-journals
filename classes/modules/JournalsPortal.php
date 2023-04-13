@@ -2,7 +2,11 @@
 
 class JournalsPortal extends Portal {
     
-    protected function _issue($issue, $full = true) {
+    protected function _issue($issue) {
+        $key = JournalsUtils::short($this->context, $issue);
+        if (Cache::hasItem('issue', $key)) {
+            return Cache::getItem('issue', $key);
+        }
         $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
         $short = JournalsUtils::short($this->context, $issue);
         $serial = 'Vol. '.$issue->volume;
@@ -15,22 +19,20 @@ class JournalsPortal extends Portal {
         $settings = JournalsUtils::settings('issue', $issue, $this->lang, $this->controler->journal);
         $cover = '/public/journals/images/'.$this->context.'/'.$settings['coverImage'];
         $link = $this->baseURL.'/issue/view/'.$short;
-        if ($full) {
-            $sections = (new SectionEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['asc' => 'place']]);
-            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
-            $_sections = [];
-            foreach ($sections as $section) {
-                $_sections[$section->id] = [
-                    'settings' => JournalsUtils::settings('section', $section, $this->lang, $this->controler->journal)
-                ];
-            }
-            foreach ($papers as $paper) {
-                $_sections[$paper->section]['papers'][] = $this->_paper($paper, $issue);
-            }
-            foreach ($_sections as $id => $section) {
-                if (empty($section['papers'])) {
-                    unset($_sections[$id]);
-                }
+        $sections = (new SectionEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['asc' => 'place']]);
+        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
+        $_sections = [];
+        foreach ($sections as $section) {
+            $_sections[$section->id] = [
+                'settings' => JournalsUtils::settings('section', $section, $this->lang, $this->controler->journal)
+            ];
+        }
+        foreach ($papers as $paper) {
+            $_sections[$paper->section]['papers'][] = $this->_paper($paper, $issue);
+        }
+        foreach ($_sections as $id => $section) {
+            if (empty($section['papers'])) {
+                unset($_sections[$id]);
             }
         }
         $result = [
@@ -40,16 +42,19 @@ class JournalsPortal extends Portal {
             'link'      => $link,
             'short'     => $short,
             'copyright' => $copyright,
-            'settings'  => $settings
+            'settings'  => $settings,
+            'sections'  => $_sections
         ];
-        if ($full) {
-            $result = array_merge($result, ['sections' => $_sections]);
-        }
+        Cache::setItem('issue', $key, $result);
         return $result;
     }
     
     protected function _paper($paper, $issue) {
         $short = JournalsUtils::short($this->context, $issue, $paper);
+        $key = str_replace('-', '_', $short);
+        if (Cache::hasItem('paper', $key)) {
+            return Cache::getItem('paper', $key);
+        }
         $result = [
             'id'       => $paper->id,
             'pages'    => $paper->pages,
@@ -62,7 +67,7 @@ class JournalsPortal extends Portal {
             $result['authors'][] = [
                 'name'     => JournalsUtils::name($author),
                 'email'    => $author->email,
-                'settings' => JournalsUtils::settings('author', $author, $this->lang, $this->controler->journal, 'affiliation')
+                'settings' => JournalsUtils::settings('author', $author, $this->lang, $this->controler->journal)
             ];
         }
         if (!empty($result['authors'])) {
@@ -73,13 +78,10 @@ class JournalsPortal extends Portal {
             $access = $this->user->isConnected() || $issue->open < date('Y-m-d') || $paper->status === 'free';
             $shop = $galley->type === 'shop';
             if ($access !== $shop) {
-                $path = $galley->path;
-                if (empty($galley->path)) {
-                    $path = $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
-                }
-               $result['galleys'][$galley->type] = $path;
+                $result['galleys'][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
             }
         }
+        Cache::setItem('paper', $key, $result);
         return $result;
     }
     
@@ -104,7 +106,7 @@ class JournalsPortal extends Portal {
                     $entities = (new IssueEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
                     $issues = [];
                     foreach ($entities as $issue) {
-                        $issues[] = $this->_issue($issue, false);
+                        $issues[] = $this->_issue($issue);
                     }
                     if (!empty($issues)) {
                         $models = ['issues' => $issues];
@@ -167,7 +169,7 @@ class JournalsPortal extends Portal {
             if (isset($display) && (!file_exists($path) || !is_file($path))) {
                 return $this->error(404);
             }
-            $_issue = $this->_issue($issue, false);
+            $_issue = $this->_issue($issue);
             $_section = JournalsUtils::settings('section', $section, $this->lang, $this->controler->journal);
             $ariadne = [
                 'home' => '/'.$this->context,

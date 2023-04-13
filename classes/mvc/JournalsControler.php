@@ -7,6 +7,7 @@ class JournalsControler extends Controler {
     public $section = null;
     public $paper = null;
     public $authors = [];
+    public $galleys = [];
     
     public function handle($target, $replay = false) {
         if (!empty($target['context']) && $target['context'] !== 'root') {

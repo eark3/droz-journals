@@ -2,18 +2,13 @@
 
 class JournalsUtils {
     
-    public static function journal($journal, $locale, $names = null) {
-        $settings = self::settings('journal', $journal, $locale, $journal, $names);
-        $thumbnail = json_decode($settings['homepageImage'], true);
+    public static function journal($journal, $locale) {
+        $settings = self::settings('journal', $journal, $locale, $journal);
         $models = [
             'path'      => '/'.$journal->context,
-            'thumbnail' => '/public/journals/thumbnails/'.$journal->context.'.jpg',
+            'thumbnail' => '/public/journals/images/'.$journal->context.'/'.$settings['homepageImage']['uploadName'],
+            'settings'  => $settings
         ];
-        if (isset($names) && is_string($names)) {
-            $models[$names] = $settings;
-        } else {
-            $models['settings'] = $settings;
-        }
         return $models;
     }
     
@@ -44,39 +39,46 @@ class JournalsUtils {
             : $author->first.' '.$middle.$author->last;
     }
     
-    public static function settings($type, $object, $locale, $journal, $names = null) {
-        $locales = [$locale, $journal->locale, DEFAULT_LANG];
-        $settings = [];
-        $setting = null;
-        $many = true;
-        $criteria = ['object' => $object->id];
-        if (isset($names)) {
-            if (is_array($names) && !Zord::is_associative($names)) {
-                $criteria['name'] = ['in' => $names];
-            } else if (is_string($names)) {
-                $criteria['name'] = $names;
-                $many = false;
+    public static function settings($type, $object, $locale, $journal) {
+        $_type = 'settings'.DS.$type.DS.$object->id;
+        $key = str_replace('-', '_' ,$locale);
+        if (Cache::hasItem($_type, $key)) {
+            return Cache::getItem($_type, $key);
+        }
+        $locales = [];
+        foreach ([$locale, $journal->locale, DEFAULT_LANG] as $_locale) {
+            if (!in_array($_locale, $locales)) {
+                $locales[] = $_locale;
             }
         }
+        $settings = [];
+        $criteria = ['object' => $object->id];
         foreach ($locales as $_locale) {
             $criteria['locale'] = $_locale;
-            $entity = (new SettingEntity($type));
-            if ($many) {
-                $entities = $entity->retrieveAll($criteria);
-                foreach ($entities as $entity) {
-                    if (!isset($settings[$entity->name])) {
-                        $settings[$entity->name] = $entity->value;
+            $entities = (new SettingEntity($type))->retrieveAll($criteria);
+            foreach ($entities as $entity) {
+                if (!isset($settings[$entity->name])) {
+                    $value = $entity->value;
+                    switch ($entity->content) {
+                        case 'object': {
+                            $value = unserialize($value);
+                            break;
+                        }
+                        case 'bool': {
+                            $value = (boolean) $value;
+                            break;
+                        }
+                        case 'int': {
+                            $value = (int) $value;
+                            break;
+                        }
                     }
-                }
-            } else {
-                $entity = $entity->retrieveOne($criteria);
-                if ($entity !== false) {
-                    $setting = $entity->value;
-                    break;
+                    $settings[$entity->name] = $value;
                 }
             }
         }
-        return $many ? $settings : $setting;
+        Cache::setItem($_type, $key, $settings);
+        return $settings;
     }
     
 }
