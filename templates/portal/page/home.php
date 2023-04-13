@@ -2,14 +2,14 @@
 			<div class="media">
 				<div class="media-left media-top">
 					<div class="homepage-image">
-						<a class="fancybox" href="/public/journals/thumbnails/<?php echo $context; ?>.jpg">
-							<img class="img-responsive" src="/public/journals/thumbnails/<?php echo $context; ?>.jpg" alt="<?php echo $controler->journal->name; ?>">
+						<a class="fancybox" href="<?php echo $journal['thumbnail']; ?>">
+							<img class="img-responsive" src="<?php echo $journal['thumbnail']; ?>" alt="<?php echo $controler->journal->name; ?>">
 						</a>
 					</div>
 				</div>
 				<div class="media-body" style="margin-bottom: 0 !important; padding-bottom: 0 !important;">
 					<div class="journal-description" style="margin-bottom: 0 !important; padding-bottom: 0 !important;">
-<?php $this->render('description'); ?>
+						<?php echo $journal['settings']['description']; ?>
 					</div>
 				</div>
 			</div>
@@ -20,6 +20,6 @@
 				<a href="/<?php echo $context; ?>/issue/archive" class="btn btn-primary read-more"><?php echo $locale->issue->archive; ?><span class="glyphicon glyphicon-chevron-right"></span></a>
 			</section>
 			<section class="additional_content">
-<?php $this->render('additional'); ?>
+				<?php echo $journal['settings']['additionalHomeContent'] ?? ''; ?>
 			</section>
 		</div>

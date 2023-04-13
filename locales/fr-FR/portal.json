@@ -1,4 +1,8 @@
 {
+	"root": {
+		"journal": "Voir la revue",
+		"current": "Numéro courant"
+	},
 	"ariadne": {
 		"aria": "Vous êtes ici:",
 		"home": "Accueil",

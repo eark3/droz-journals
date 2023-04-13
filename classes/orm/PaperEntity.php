@@ -2,6 +2,8 @@
 
 class PaperEntity extends JournalsEntity {
     
+    public $_type = 'paper';
+    
     public function retrieveBy() {
         if (!empty($this->paper)) {
             return $this->paper;

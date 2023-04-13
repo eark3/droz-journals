@@ -4,7 +4,7 @@ class JournalsPortal extends Portal {
     
     protected function _issue($issue, $full = true) {
         $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
-        $short = self::short($this->context, $issue);
+        $short = JournalsUtils::short($this->context, $issue);
         $serial = 'Vol. '.$issue->volume;
         if ($issue->number) {
             $serial .= ' n° '.$issue->number;
@@ -12,14 +12,10 @@ class JournalsPortal extends Portal {
         if ($issue->year) {
             $serial .= ' ('.$issue->year.')';
         }
-        $cover = '/public/journals/covers/'.$short. '.jpg';
+        $settings = JournalsUtils::settings($issue, $this->lang, $this->controler->journal);
+        $cover = '/public/journals/images/'.$this->context.'/'.$settings['coverImage'];
         $link = $this->baseURL.'/issue/view/'.$short;
         if ($full) {
-            $description = (new SettingEntity('issue'))->retrieveOne([
-                'name'   => 'description',
-                'locale' => $this->lang,
-                'object' => $issue->id
-            ]);
             $sections = (new SectionEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['asc' => 'place']]);
             $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
             $_sections = [];
@@ -38,7 +34,7 @@ class JournalsPortal extends Portal {
             }
         }
         $result = [
-            'title'     => $issue->title,
+            'title'     => $settings['title'],
             'cover'     => $cover,
             'serial'    => $serial,
             'published' => $issue->published,
@@ -48,7 +44,7 @@ class JournalsPortal extends Portal {
         ];
         if ($full) {
             $result = array_merge($result, [
-                'description' => $description->value ?? null,
+                'description' => $settings['description'] ?? null,
                 'sections'    => $_sections
             ]);
         }
@@ -56,7 +52,8 @@ class JournalsPortal extends Portal {
     }
     
     protected function _paper($paper, $issue) {
-        $short = self::short($this->context, $issue, $paper);
+        $short = JournalsUtils::short($this->context, $issue, $paper);
+        $settings = JournalsUtils::settings($paper, $this->lang, $this->controler->journal);
         $result = [
             'id'       => $paper->id,
             'title'    => $paper->title,
@@ -69,12 +66,11 @@ class JournalsPortal extends Portal {
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
             $_author = [
-                'name' => $author->first.' '.(!empty($author->middle) ? $author->middle.' ' : '').$author->last,
+                'name' => JournalsUtils::name($author),
                 'email' => $author->email,
                 'affiliation' => $author->affiliation
             ];
-            $settings = (new SettingEntity())->retrieveAll([
-                'type'   => 'author',
+            $settings = (new SettingEntity('author'))->retrieveAll([
                 'object' => $author->id,
                 'locale' => $this->lang
             ]);
@@ -101,31 +97,14 @@ class JournalsPortal extends Portal {
         return $result;
     }
     
-    public static function short($context, $issue, $paper = null) {
-        $short = $context.'_'.$issue->volume;
-        if ($issue->number) {
-            $short .= '.'.$issue->number;
-        }
-        if ($paper) {
-            $short .= '_'.$paper->pages;
-        }
-        return $short;
-    }
-    
-    public static function pages($paper) {
-        $pages = $paper->pages;
-        $tokens = explode('-', $pages);
-        if (count($tokens) === 2 && $tokens[0] === $tokens[1]) {
-            $pages = $tokens[0];
-        }
-        return $pages;
-    }
-    
     public function home() {
         if (isset($this->controler->journal)) {
             $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'id']]);
             if ($issue) {
-                return $this->page('home', ['issue' => $this->_issue($issue)]);
+                return $this->page('home', [
+                    'journal' => JournalsUtils::journal($this->controler->journal, $this->lang),
+                    'issue' => $this->_issue($issue)]
+                );
             }
         }
         return parent::home();
@@ -171,7 +150,10 @@ class JournalsPortal extends Portal {
                 }
             }
             if ($models !== false) {
-                return $this->page($page, array_merge($models, ['ariadne' => $ariadne]));
+                return $this->page($page, array_merge($models, [
+                    'ariadne' => $ariadne,
+                    'journal' => JournalsUtils::journal($this->controler->journal, $this->lang)
+                ]));
             }
         }
         return $this->home();
@@ -244,7 +226,10 @@ class JournalsPortal extends Portal {
             }
         }
         if ($models !== false) {
-            $models = array_merge($models, ['ariadne' => $ariadne]);
+            $models = array_merge($models, [
+                'ariadne' => $ariadne,
+                'journal' => JournalsUtils::journal($this->controler->journal, $this->lang)
+            ]);
             if (isset($view)) {
                 return $this->view('/portal/'.$view, $models);
             } else if (isset($page)) {
@@ -303,7 +288,7 @@ class JournalsPortal extends Portal {
                 $view->setMark(false);
                 $content = $view->render();
                 return isset($content) ? $this->download(
-                    self::short($this->context, $issue, $paper).'.'.Zord::value('quote', ['download',$style,'extension']),
+                    JournalsUtils::short($this->context, $issue, $paper).'.'.Zord::value('quote', ['download',$style,'extension']),
                     null,
                     $content
                 ) : $this->error(501);
@@ -332,11 +317,11 @@ class JournalsPortal extends Portal {
         $issued = strtotime($issue->published);
         $reference = [
             'type'            => 'article-journal',
-            'id'              => self::short($this->context, $issue, $paper),
+            'id'              => JournalsUtils::short($this->context, $issue, $paper),
             'title'           => $paper->title,
             'volume'          => $issue->volume,
             'container-title' => $journal->name,
-            'page'            => self::pages($paper),
+            'page'            => JournalsUtils::pages($paper),
             'accessed'        => ["date-parts" => [[date('Y', $now), date('m', $now), date('d', $now)]]],
             'issued'          => ["date-parts" => [[date('Y', $issued), date('m', $issued), date('d', $issued)]]]
         ];
@@ -346,7 +331,7 @@ class JournalsPortal extends Portal {
         if ($paper->doi) {
             $reference['DOI'] = $paper->doi;
         } else {
-            $reference['URL'] = $this->baseURL.'/article/view/'.self::short($this->context, $issue, $paper);
+            $reference['URL'] = $this->baseURL.'/article/view/'.JournalsUtils::short($this->context, $issue, $paper);
         }
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
         foreach ($authors as $author) {

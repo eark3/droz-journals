@@ -14,7 +14,7 @@
 						<a href="/" class="dropdown-toggle" data-toggle="dropdown">revues.droz.org<b class="caret"></b></a>
 	 					<ul class="dropdown-menu dropdown-menu-right">
 <?php foreach ($journals as $_journal) { ?>
-							<li><a href="<?php echo $_journal['path']; ?>"><?php echo $_journal['name']; ?></a></li>
+							<li><a href="<?php echo $_journal['path']; ?>"><?php echo $_journal['settings']['name']; ?></a></li>
 <?php } ?>
 						</ul>
 					</li>
@@ -26,7 +26,7 @@
 		<div class="navbar-header">
 			<h1 class="site-name">
 				<div class="navbar-brand">
-					<a href="/<?php echo $context; ?>"><?php echo $controler->journal->name; ?></a>
+					<a href="/<?php echo $context; ?>"><?php echo $journal['settings']['name']; ?></a>
 				</div>
 			</h1>
 		</div>
