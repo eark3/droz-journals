@@ -138,8 +138,8 @@ class OJSImport extends ProcessExecutor {
         (new AuthorEntity())->delete();
         (new GalleyEntity())->delete();
         (new SettingEntity())->delete();
-        //(new UserEntity())->delete();
-        //$ojs = new Tunnel('ojs');
+        (new UserEntity())->delete();
+        $ojs = new Tunnel('ojs');
         foreach ($journals as $journal) {
             $_journal = $this->create(new JournalEntity(), $journal);
             echo $_journal->context."\n";
@@ -169,11 +169,11 @@ class OJSImport extends ProcessExecutor {
                         $create = true;
                         if ($type !== 'shop') {
                             $folder = STORE_FOLDER.'journals'.DS.$journal['context'].DS.$issue['volume'].(isset($issue['number']) ? '_'.$issue['number'] : '').DS;
-                            //$file = JournalsUtils::short($journal['context'], $_issue, $_paper).'.'.$type;
+                            $file = JournalsUtils::short($journal['context'], $_issue, $_paper).'.'.$type;
                             if (!file_exists($folder)) {
                                 mkdir($folder, 0755, true);
                             }
-                            //$create = $ojs->recv($resource, $folder.$file);
+                            $create = $ojs->recv($resource, $folder.$file);
                         }
                         if ($create) {
                             $this->create(new GalleyEntity(), [
@@ -187,7 +187,6 @@ class OJSImport extends ProcessExecutor {
                 }
             }
         }
-/*
         foreach ((new OJSUserEntity())->retrieve() as $user) {
             $first = trim($user->first_name ?? '');
             $middle = trim($user->middle_name ?? '');
@@ -207,7 +206,6 @@ class OJSImport extends ProcessExecutor {
                 "name" => $name,
             ]);
         }
-*/
     }
     
 }
