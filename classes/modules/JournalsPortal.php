@@ -68,8 +68,8 @@ class JournalsPortal extends Portal {
     }
     
     protected function _paper($paper, $issue) {
-        $short = JournalsUtils::short($this->context, $issue, $paper, true);
-        $key = str_replace('-', '_', $short);
+        $short = JournalsUtils::short($this->context, $issue, $paper);
+        $key = str_replace('-', '_', JournalsUtils::short($this->context, $issue, $paper, true));
         if ($this->cache->hasItem('paper', $key)) {
             return $this->cache->getItem('paper', $key);
         }
