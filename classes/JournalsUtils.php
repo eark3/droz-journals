@@ -2,23 +2,29 @@
 
 class JournalsUtils {
     
-    public static function journal($journal, $locale) {
-        $settings = self::settings('journal', $journal, $locale, $journal);
-        $models = [
-            'path'      => '/'.$journal->context,
-            'thumbnail' => '/public/journals/images/'.$journal->context.'/'.$settings['homepageImage']['uploadName'],
-            'settings'  => $settings
-        ];
-        return $models;
-    }
-    
-    public static function short($context, $issue, $paper = null) {
-        $short = $context.'_'.$issue->volume;
+    public static function short($context, $issue, $paper = null, $align = false) {
+        $volume = $issue->volume;
+        if ($align) {
+            $volume = Zord::str_pad($volume, 3, '0', STR_PAD_LEFT);
+        }
+        $short = $context.'_'.$volume;
         if ($issue->number) {
-            $short .= '.'.$issue->number;
+            $number = $issue->number;
+            if ($align) {
+                $number = Zord::str_pad($number, 2, '0', STR_PAD_LEFT);
+            }
+            $short .= '.'.$number;
         }
         if ($paper) {
-            $short .= '_'.$paper->pages;
+            $pages = $paper->pages;
+            if ($align) {
+                $tokens = explode('-', $pages);
+                foreach ($tokens as $index => $token) {
+                    $tokens[$index] = Zord::str_pad($token, 3, '0', STR_PAD_LEFT);
+                }
+                $pages = implode('-', $tokens);
+            }
+            $short .= '_'.$pages;
         }
         return $short;
     }
@@ -37,48 +43,6 @@ class JournalsUtils {
         return $reverse 
             ? $middle.$author->last.', '.$author->first
             : $author->first.' '.$middle.$author->last;
-    }
-    
-    public static function settings($type, $object, $locale, $journal) {
-        $_type = 'settings'.DS.$type.DS.$object->id;
-        $key = str_replace('-', '_' ,$locale);
-        if (Cache::hasItem($_type, $key)) {
-            return Cache::getItem($_type, $key);
-        }
-        $locales = [];
-        foreach ([$locale, $journal->locale, DEFAULT_LANG] as $_locale) {
-            if (!in_array($_locale, $locales)) {
-                $locales[] = $_locale;
-            }
-        }
-        $settings = [];
-        $criteria = ['object' => $object->id];
-        foreach ($locales as $_locale) {
-            $criteria['locale'] = $_locale;
-            $entities = (new SettingEntity($type))->retrieveAll($criteria);
-            foreach ($entities as $entity) {
-                if (!isset($settings[$entity->name])) {
-                    $value = $entity->value;
-                    switch ($entity->content) {
-                        case 'object': {
-                            $value = unserialize($value);
-                            break;
-                        }
-                        case 'bool': {
-                            $value = (boolean) $value;
-                            break;
-                        }
-                        case 'int': {
-                            $value = (int) $value;
-                            break;
-                        }
-                    }
-                    $settings[$entity->name] = $value;
-                }
-            }
-        }
-        Cache::setItem($_type, $key, $settings);
-        return $settings;
     }
     
 }

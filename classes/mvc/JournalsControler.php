@@ -4,10 +4,7 @@ class JournalsControler extends Controler {
     
     public $journal = null;
     public $issue = null;
-    public $section = null;
     public $paper = null;
-    public $authors = [];
-    public $galleys = [];
     
     public function handle($target, $replay = false) {
         if (!empty($target['context']) && $target['context'] !== 'root') {
@@ -17,18 +14,6 @@ class JournalsControler extends Controler {
             }
         }
         parent::handle($target, $replay);
-    }
-    
-    public function models() {
-        $models = parent::models();
-        foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
-            $models['journals'][] = JournalsUtils::journal($journal, $this->lang);
-        }
-        if (isset($this->journal)) {
-            $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
-            $models['journal'] = JournalsUtils::journal($this->journal, $this->lang);
-        }
-        return $models;
     }
     
     public function getTarget($url, $redirect = false) {
