@@ -43,6 +43,12 @@
 				"type": "FILTER_SANITIZE_STRING",
 				"id": "FILTER_SANITIZE_STRING"
 			}
+		},
+		"login": {
+			"shortcut": "login",
+			"parameters": {
+				"step": "FILTER_SANITIZE_STRING"
+			}
 		}
 	}
 }

@@ -150,18 +150,14 @@ class JournalsPortal extends Portal {
             $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
             $models['journal'] = $this->_journal($this->controler->journal);
         }
-        return $models;
-    }
-    
-    public function page($page = null, $models = []) {
-        $_page = $page ?? ($this->params['page'] ?? null);
+        $_page = $models['page'] ?? null;
         if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {
             $models['ariadne'] = [
                 'home'   => '/'.$this->context,
                 'active' => $this->locale->pages->$_page
             ];
         }
-        return parent::page($page, $models);
+        return $models;
     }
     
     public function home() {
@@ -476,6 +472,11 @@ class JournalsPortal extends Portal {
         }
         return $this->_settings($type, $object);
     }
+    
+    public function login() {
+        return $this->page('login');
+    }
+    
 }
 
 ?>

@@ -24,7 +24,8 @@
 		"contact": "Contact",
 		"policy": "Politique d'accès",
 		"license": "Mentions légales",
-		"subscription": "Abonnement"
+		"subscription": "Abonnement",
+		"login": "Se connecter"
 	},
 	"login": "Se connecter",
 	"logout": "Se déconnecter",
