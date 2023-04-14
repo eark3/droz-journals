@@ -5,18 +5,13 @@
 				<?php echo $journal['settings']['pageFooter']; ?>
 			</div>
 			<div class="col-md-4">
+<?php foreach (Zord::value('portal', ['menu','footer']) as $_type => $_pages) { ?>
+<?php   foreach ($_pages as $_page) { ?>
 				<p>
-					<a href="/CFS/comite-editorial"><?php echo $locale->footer->board; ?></a>
+					<a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a>
 				</p>
-				<p>
-					<a href="/CFS/about/contact"><?php echo $locale->footer->contact; ?></a>
-				</p>
-				<p>
-					<a href="/CFS/about"><?php echo $locale->footer->about; ?></a>
-				</p>
-				<p>
-					<a href="/CFS/licence"><?php echo $locale->footer->license; ?></a>
-				</p>
+<?php   } ?>
+<?php } ?>
 			</div>
 			<div class="col-md-4">
 				<img src="/journals/img/logo-droz-77x80.png" />

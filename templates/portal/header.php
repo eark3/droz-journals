@@ -35,15 +35,15 @@
 				<li><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->issue->last; ?></a></li>
 				<li><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->issue->previous; ?></a></li>
 				<li class="dropdown">
-					<a href="<?php echo $baseURL; ?>/about" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $locale->about->short; ?><span class="caret"></span></a>
+					<a href="<?php echo $baseURL; ?>/info/about" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $locale->about; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="<?php echo $baseURL; ?>/about/journal"><?php echo $locale->about->long; ?></a></li>
-						<li><a href="<?php echo $baseURL; ?>/about/comite-editorial"><?php echo $locale->board; ?></a></li>
-						<li><a href="<?php echo $baseURL; ?>/about/contact"><?php echo $locale->contact; ?></a></li>
-						<li><a href="<?php echo $baseURL; ?>/about/acces"><?php echo $locale->policy; ?></a></li>
-						<li><a href="<?php echo $baseURL; ?>/about/licence"><?php echo $locale->license; ?></a></li>
+<?php foreach (Zord::value('portal', ['menu','header']) as $_type => $_pages) { ?>
+<?php   foreach ($_pages as $_page) { ?>
+						<li><a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a></li>
+<?php   } ?>
+<?php } ?>
 					</ul>	
-				<li><a href="<?php echo $baseURL; ?>/subscription"><?php echo $locale->subscription; ?></a></li>
+				<li><a href="<?php echo $baseURL; ?>/page/subscription"><?php echo $locale->pages->subscription; ?></a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">

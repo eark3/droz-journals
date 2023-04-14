@@ -5,7 +5,7 @@
 <?php } ?>
 <?php $this->render($page); ?>
 	</main>
-<?php if (isset($issue)) { ?>
+<?php if ($context !== 'root') { ?>
 	<aside id="sidebar" class="pkp_structure_sidebar left col-xs-12 col-sm-4" role="complementary" aria-label="Barre de navigation">
 <?php foreach ($layout['aside'] as $component) { ?>
 <?php   $this->render('aside/'.$component); ?>

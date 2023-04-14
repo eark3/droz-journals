@@ -4,18 +4,17 @@ class JournalsPortal extends Portal {
     
     protected $cache = null;
     
-    protected function _journal($context, $locale) {
-        if ($this->cache->hasItem('journal', $context)) {
-            return $this->cache->getItem('journal', $context);
+    protected function _journal($journal) {
+        if ($this->cache->hasItem('journal', $journal->context)) {
+            return $this->cache->getItem('journal', $journal->context);
         }
-        $journal = (new JournalEntity())->retrieveOne($context);
-        $settings = $this->_settings('journal', $journal, $locale);
+        $settings = $this->_settings('journal', $journal);
         $result = [
-            'path'      => '/'.$context,
-            'thumbnail' => '/public/journals/images/'.$context.'/'.$settings['homepageImage']['uploadName'],
+            'path'      => '/'.$journal->context,
+            'thumbnail' => '/public/journals/images/'.$journal->context.'/'.$settings['homepageImage']['uploadName'],
             'settings'  => $settings
         ];
-        $this->cache->setItem('journal', $context, $result);
+        $this->cache->setItem('journal', $journal->context, $result);
         return $result;
     }
     
@@ -35,13 +34,13 @@ class JournalsPortal extends Portal {
             if ($issue->year) {
                 $serial .= ' ('.$issue->year.')';
             }
-            $settings = $this->_settings('issue', $issue, $this->lang);
+            $settings = $this->_settings('issue', $issue);
             $cover = '/public/journals/images/'.$this->context.'/'.$settings['coverImage'];
             $link = $this->baseURL.'/issue/view/'.$short;
             $_sections = [];
             foreach ($sections as $section) {
                 $_sections[$section->id] = [
-                    'settings' => $this->_settings('section', $section, $this->lang)
+                    'settings' => $this->_settings('section', $section)
                 ];
             }
             $result = [
@@ -78,14 +77,14 @@ class JournalsPortal extends Portal {
             'pages'    => $paper->pages,
             'status'   => $paper->status,
             'short'    => $short,
-            'settings' => $this->_settings('paper', $paper, $this->lang)
+            'settings' => $this->_settings('paper', $paper)
         ];
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
             $result['authors'][] = [
                 'name'     => JournalsUtils::name($author),
                 'email'    => $author->email,
-                'settings' => $this->_settings('author', $author, $this->lang)
+                'settings' => $this->_settings('author', $author)
             ];
         }
         if (!empty($result['authors'])) {
@@ -103,15 +102,15 @@ class JournalsPortal extends Portal {
         return $result;
     }
     
-    protected function _settings($type, $object, $locale) {
+    protected function _settings($type, $object) {
         $locales = [];
-        foreach ([$locale, $this->controler->journal->locale ?? null, DEFAULT_LANG] as $_locale) {
-            if (!empty($_locale) && !in_array($_locale, $locales)) {
+        foreach ([$this->lang, $this->controler->journal->locale ?? 'none', DEFAULT_LANG, '', null] as $_locale) {
+            if ($_locale !== 'none' && !in_array($_locale, $locales)) {
                 $locales[] = $_locale;
             }
         }
         $settings = [];
-        $criteria = ['object' => $object->id];
+        $criteria = ['object' => $object->id, 'order' => ['asc' => 'name']];
         foreach ($locales as $_locale) {
             $criteria['locale'] = $_locale;
             $entities = (new SettingEntity($type))->retrieveAll($criteria);
@@ -145,13 +144,24 @@ class JournalsPortal extends Portal {
     
     public function models($models) {
         foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
-            $models['journals'][] = $this->_journal($journal->context, $this->lang);
+            $models['journals'][] = $this->_journal($journal);
         }
         if (isset($this->controler->journal)) {
             $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
-            $models['journal'] = $this->_journal($this->context, $this->lang);
+            $models['journal'] = $this->_journal($this->controler->journal);
         }
         return $models;
+    }
+    
+    public function page($page = null, $models = []) {
+        $_page = $page ?? ($this->params['page'] ?? null);
+        if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {
+            $models['ariadne'] = [
+                'home'   => '/'.$this->context,
+                'active' => $this->locale->pages->$_page
+            ];
+        }
+        return parent::page($page, $models);
     }
     
     public function home() {
@@ -239,7 +249,7 @@ class JournalsPortal extends Portal {
                 return $this->error(404);
             }
             $_issue = $this->_issue($issue);
-            $_section = $this->_settings('section', $section, $this->lang);
+            $_section = $this->_settings('section', $section);
             $ariadne = [
                 'home' => '/'.$this->context,
                 'archive' => '/'.$this->context.'/issue/archive',
@@ -373,8 +383,8 @@ class JournalsPortal extends Portal {
         }
         $now = time();
         $issued = strtotime($issue->published);
-        $_paper = $this->_settings('paper', $paper, $this->lang);
-        $_journal = $this->_settings('journal', $journal, $this->lang);
+        $_paper = $this->_settings('paper', $paper);
+        $_journal = $this->_settings('journal', $journal);
         $short = JournalsUtils::short($this->context, $issue, $paper);
         $reference = [
             'type'            => 'article-journal',
@@ -402,6 +412,69 @@ class JournalsPortal extends Portal {
             ];
         }
         return $reference;
+    }
+    
+    public function info() {
+        $content = $this->params['content'] ?? null;
+        if (empty($content)) {
+            return $this->error(404, 'missing content');
+        }
+        $title = $this->locale->pages->$content ?? null;
+        $settings = $this->_settings('journal', $this->controler->journal);
+        if (!isset($settings[$content])) {
+            return $this->error(404, 'no setting');
+        }
+        return $this->page('info', [
+            'title'   => $title,
+            'content' => $settings[$content],
+            'ariadne' => [
+                'home'   => '/'.$this->context,
+                'active' => $title ?? $this->locale->ariadne->$content
+            ]
+        ]);
+    }
+    
+    public function settings() {
+        $type = $this->params['type'] ?? null;
+        $id = $this->params['id'] ?? null;
+        if (!isset($type) || !isset($id)) {
+            return $this->error(400);
+        }
+        $entity = null;
+        switch ($type) {
+            case 'journal': {
+                $entity = new JournalEntity();
+                break;
+            }
+            case 'section': {
+                $entity = new SectionEntity();
+                break;
+            }
+            case 'issue': {
+                $entity = new IssueEntity();
+                break;
+            }
+            case 'paper': {
+                $entity = new PaperEntity();
+                break;
+            }
+            case 'author': {
+                $entity = new AuthorEntity();
+                break;
+            }
+            case 'galley': {
+                $entity = new GalleyEntity();
+                break;
+            }
+        }
+        if (!isset($entity)) {
+            return $this->error(404);
+        }
+        $object = (new JournalEntity())->retrieveOne($id);
+        if ($object === false) {
+            return $this->error(404);
+        }
+        return $this->_settings($type, $object);
     }
 }
 

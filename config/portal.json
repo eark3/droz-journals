@@ -3,5 +3,37 @@
 		"csl": {
 			"style": "acm-sig-proceedings"
 		}
+	},
+	"menu": {
+		"header": {
+			"info": [
+				"about",
+				"editorialTeam"
+			],
+			"page": [
+				"contact",
+				"policy",
+				"license"
+			]
+		},
+		"footer": {
+			"info": [
+				"about",
+				"editorialTeam"
+			],
+			"page": [
+				"contact",
+				"license"
+			]
+		}
+	},
+	"aside": {
+		"infos": {
+			"pages": [
+				"readerInformation",
+				"authorInformation",
+				"librarianInformation"
+			]
+		}
 	}
 }

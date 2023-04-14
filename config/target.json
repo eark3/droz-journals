@@ -29,6 +29,20 @@
 				"style": "FILTER_SANITIZE_STRING",
 				"paper": "FILTER_SANITIZE_STRING"
 			}
+		},
+		"info": {
+			"shortcut": "info",
+			"parameters": {
+				"content": "FILTER_SANITIZE_STRING"
+			}
+		},
+		"settings": {
+			"shortcut": "settings",
+			"response": "DATA",
+			"parameters": {
+				"type": "FILTER_SANITIZE_STRING",
+				"id": "FILTER_SANITIZE_STRING"
+			}
 		}
 	}
 }

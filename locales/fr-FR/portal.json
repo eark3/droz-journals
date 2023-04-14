@@ -6,7 +6,10 @@
 	"ariadne": {
 		"aria": "Vous êtes ici:",
 		"home": "Accueil",
-		"archive": "Archives"
+		"archive": "Archives",
+		"readerInformation": "Information pour les lecteurs",
+		"authorInformation": "Information pour les auteurs",
+		"librarianInformation": "Information pour les bibliothécaires"
 	},
 	"issue": {
 		"last": "Dernier numéro",
@@ -14,15 +17,15 @@
 		"archive": "Voir tous les numéros",
 		"summary": "Sommaire <br />de ce numéro"
 	},
-	"about": {
-		"short": "À propos",
-		"long": "À propos de la revue"
+	"about": "À propos",
+	"pages": {
+		"about": "À propos de la revue",
+		"editorialTeam": "Comité éditorial",
+		"contact": "Contact",
+		"policy": "Politique d'accès",
+		"license": "Mentions légales",
+		"subscription": "Abonnement"
 	},
-	"board": "Comité éditorial",
-	"contact": "Contact",
-	"policy": "Politique d'accès",
-	"license": "Mentions légales",
-	"subscription": "Abonnement",
 	"login": "Se connecter",
 	"logout": "Se déconnecter",
 	"published": "Publié",
@@ -33,12 +36,6 @@
 		"html": "HTML",
 		"pdf": "PDF",
 		"shop": "PDF à l'achat"
-	},
-	"footer": {
-		"board": "Comité éditorial",
-		"contact": "Contact",
-		"about": "À propos de la revue",
-		"license": "Mentions légales"
 	},
 	"article": {
 		"quote": {
@@ -63,9 +60,11 @@
 		},
 		"infos": {
 			"title":"Informations",
-			"readers": "Pour les lecteurs",
-			"authors": "Pour les auteurs",
-			"librarians": "Pour les bibliothécaires"
+			"pages": {
+				"readerInformation": "Pour les lecteurs",
+				"authorInformation": "Pour les auteurs",
+				"librarianInformation": "Pour les bibliothécaires"
+			}
 		},
 		"search": {
 			"title":"Rechercher",
@@ -73,5 +72,9 @@
 			"authors": "Auteurs",
 			"submit": "Rechercher"
 		}
+	},
+	"contact": {
+		"main": "Contact principal",
+		"support": "Contact de soutien"
 	}
 }
