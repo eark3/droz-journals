@@ -25,10 +25,10 @@
 		"policy": "Politique d'accès",
 		"license": "Mentions légales",
 		"subscription": "Abonnement",
-		"login": "Se connecter"
+		"login": "Se connecter",
+		"login/lostPassword": "Demander un mot de passe"
+		
 	},
-	"login": "Se connecter",
-	"logout": "Se déconnecter",
 	"published": "Publié",
 	"access": {
 		"subscription": "Accès sous abonnement"
@@ -77,5 +77,16 @@
 	"contact": {
 		"main": "Contact principal",
 		"support": "Contact de soutien"
+	},
+	"login": {
+		"signIn": "Se connecter",
+		"signOut": "Se déconnecter",
+		"username": "Nom d'utilisateur",
+		"password": "Mot de passe",
+		"forgot": "Vous avez oublié votre mot de passe ?",
+		"remember": "Mémoriser mon nom d'usager et mon mot de passe",
+		"email": "Courriel de l'utilisateur inscrit",
+		"reset": "Réinitialiser le mot de passe",
+		"lost": "Pour des raisons de sécurité, ce système envoie un nouveau mot de passe par courriel aux utilisateurs inscrits au lieu de rappeler le mot de passe actuel.<br /><br />Indiquez votre adresse courriel ci-dessous pour réinitialiser votre mot de passe. Une demande de confirmation sera envoyée par courriel."
 	}
 }

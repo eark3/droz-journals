@@ -3,8 +3,7 @@
 			<div class="content">
 				<ul>
 					<li>
-						<form method="post" id="search-form" class="search-form" action="/CFS/search/search" role="search">
-							<input type="hidden" name="csrfToken" value="c786c8295b80c3ab3777b26098fb3163">
+						<form method="post" id="search-form" class="search-form" action="<?php echo $baseURL; ?>/search" role="search">
 							<p>
 								<label class="sr-only" for="query"><?php echo $locale->aside->search->contains; ?></label>
 								<input type="text" id="query" name="query" value="" class="query input-sm form-control" placeholder="Rechercher">

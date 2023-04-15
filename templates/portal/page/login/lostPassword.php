@@ -1,20 +1,14 @@
 <div class="alert alert-info" role="alert">
-	Pour des raisons de sécurité, ce système envoie un nouveau mot de passe
-	par courriel aux utilisateurs inscrits au lieu de rappeler le mot de
-	passe actuel.<br />
-	<br />
-	Indiquez votre adresse courriel ci-dessous pour réinitialiser
-	votre mot de passe. Une confirmation sera envoyée par courriel.
+	<?php echo $locale->login->lost; ?>
 </div>
 
 <form class="pkp_form lost_password" id="lostPasswordForm" action="<?php echo $baseURL; ?>/login/requestResetPassword" method="post">
-	<input type="hidden" name="csrfToken" value="2076765f605764b0278a154d189e0b06">
 <?php $this->render('/portal/widget/alert'); ?>
 	<div class="form-group">
-		<label for="login-email"> Courriel de l'utilisateur inscrit </label>
+		<label for="login-email"><?php echo $locale->login->email; ?></label>
 		<input type="email" name="email" class="form-control" id="login-email" placeholder="Courriel de l'utilisateur inscrit" value="" maxlenght="32" required>
 	</div>
 	<div class="buttons">
-		<button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
+		<button type="submit" class="btn btn-primary"><?php echo $locale->login->reset; ?></button>
 	</div>
 </form>

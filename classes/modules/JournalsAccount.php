@@ -2,6 +2,8 @@
 
 class JournalsAccount extends Account {
     
+    use JournalsModule;
+    
     protected function form($action = 'connect', $models = []) {
         $page = 'login';
         switch ($action) {
@@ -26,31 +28,28 @@ class JournalsAccount extends Account {
         return parent::message($type, $content);
     }
     
-    public function notifyReset($user) {
+    protected function _password($login) {
         $characters = RANDOM_PASSWORD_CHARACTERS;
         $password = '';
         for ($index = 0; $index < RANDOM_PASSWORD_LENGTH; $index++) {
             $password .= $characters[random_int(0, strlen($characters) - 1)];
         }
-        //(new UserEntity())->update($user->login, ['password' => $password]);
-        $models = [
-            'login'    => $user->login,
-            'password' => $password
-        ];
+        //$user = (new UserEntity())->update($login, ['password' => $password]);
+        $user = (new UserEntity())->retrieveOne($login);
+        $models = ['password' => $password];
         $send = $this->sendMail([
             'category'  => 'account'.DS.$user->login,
             'principal' => ['email' => $user->email, 'name' => $user->name],
-            'subject'   => $this->locale->mail->reset_password->subject.' ('.$user->login.')',
+            'subject'   => $this->locale->mail->reset_password->receive,
             'text'      => Zord::substitute($this->locale->mail->reset_password->new, $models)."\n".$this->locale->mail->noreply,
-            'content'   => '/mail/account/reset',
+            'content'   => '/mail/account/password',
             'models'    => $models,
             'styles'    => Zord::value('mail', ['styles','account']) ?? null
         ]);
-        $result = ['account' => htmlspecialchars($user->name.' <'.$user->email.'>')];
         if ($send !== true) {
-            $result['error'] = $this->message('error', $this->locale->messages->mail_error).'|'.$this->message('error', $send);
+            return $this->error(500);
         }
-        return $result;
+        return $this->page('login', ['message' => $this->message('success', $this->locale->mail->reset_password->sent)]);
     }
     
 }
