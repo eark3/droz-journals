@@ -34,8 +34,7 @@ class JournalsAccount extends Account {
         for ($index = 0; $index < RANDOM_PASSWORD_LENGTH; $index++) {
             $password .= $characters[random_int(0, strlen($characters) - 1)];
         }
-        //$user = (new UserEntity())->update($login, ['password' => $password]);
-        $user = (new UserEntity())->retrieveOne($login);
+        $user = (new UserEntity())->update($login, ['password' => $password]);
         $models = ['password' => $password];
         $send = $this->sendMail([
             'category'  => 'account'.DS.$user->login,
