@@ -1,4 +1,4 @@
-<form class="pkp_form login" id="login" method="post" action="<?php $baseURL; ?>/login/signIn">
+<form class="pkp_form login" id="login" method="post" action="<?php echo $baseURL; ?>/login/signIn">
 	<input type="hidden" name="csrfToken" value="2076765f605764b0278a154d189e0b06">
 	<input type="hidden" name="source" value="" />
 	<div class="form-group">
@@ -10,7 +10,7 @@
 		<input type="password" name="password" class="form-control" id="login-password" placeholder="Mot de passe" password="true" maxlength="32" required="$passwordRequired">
 	</div>
 	<div class="form-group">
-		<a href="<?php $baseURL; ?>/login/lostPassword">Vous avez oublié votre mot de passe ?</a>
+		<a href="<?php echo $baseURL; ?>/page/login/lostPassword">Vous avez oublié votre mot de passe ?</a>
 	</div>
 	<div class="checkbox">
 		<label>

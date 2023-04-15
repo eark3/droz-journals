@@ -7,9 +7,7 @@
 	votre mot de passe. Une confirmation sera envoyée par courriel.
 </div>
 
-<form class="pkp_form lost_password" id="lostPasswordForm"
-	action="https://revues.droz.org/index.php/CFS/login/requestResetPassword"
-	method="post">
+<form class="pkp_form lost_password" id="lostPasswordForm" action="<?php echo $baseURL; ?>/login/requestResetPassword" method="post">
 	<input type="hidden" name="csrfToken" value="2076765f605764b0278a154d189e0b06">
 	<div class="form-group">
 		<label for="login-email"> Courriel de l'utilisateur inscrit </label>
