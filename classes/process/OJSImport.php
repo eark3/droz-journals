@@ -25,7 +25,7 @@ class OJSImport extends ProcessExecutor {
                         "name"    => $name,
                         "value"   => $item['value'],
                         "content" => $item['content'],
-                        "locale"  => str_replace('_', '-', $locale)
+                        "locale"  => !empty($locale) ? str_replace('_', '-', $locale) : 'fr-FR'
                     ]);
                 }
             }
@@ -185,6 +185,38 @@ class OJSImport extends ProcessExecutor {
                         }
                     }
                 }
+            }
+        }
+        $settings = [
+            'RHP' => [
+                'bannerLink'   => 'https://www.shpf.fr/',
+                'bannerImages' => '/public/journals/images/annonce-shpf.jpg'
+            ],
+            'RFHL' => [
+                'bannerLink'   => 'http://sbg1866.canalblog.com/',
+                'bannerImages' => '/public/journals/images/RFHL_Lien_site.png'
+            ],
+            'CFS' => [
+                'bannerLink'   => 'https://www.cercleferdinanddesaussure.org/',
+                'bannerImages' => '/public/journals/images/CFS_Image_accueil.png'
+            ],
+            'RThPh' => [
+                'bannerLink'   => 'https://rthph.ch/',
+                'bannerImages' => '/public/journals/images/RTHPH_lien_site.png'
+            ],
+            'SLLMOO' => [
+                'bannerLink'   => 'http://www.conjointures.org/',
+                'bannerImages' => '/public/journals/images/BASE_SITE_CONJOINTURE.jpg'
+            ]
+        ];
+        foreach ((new JournalEntity())->retrieveAll(['context' => ['in' => array_keys($settings)]]) as $journal) {
+            foreach (array_keys($settings[$journal->context]) as $name) {
+                (new SettingEntity($entity->_type))->create([
+                    "type"    => 'journal',
+                    "object"  => $journal->id,
+                    "name"    => $name,
+                    "value"   => $settings[$journal->context][$name]
+                ]);
             }
         }
         foreach ((new OJSUserEntity())->retrieve() as $user) {

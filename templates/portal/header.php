@@ -58,9 +58,9 @@
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						<li>
 <?php if ($user->isConnected()) { ?>
-							<a href="<?php echo $baseURL; ?>/logout/signOut"><?php echo $locale->logout; ?></a>
+							<a href="<?php echo $baseURL; ?>/login/signOut"><?php echo $locale->logout; ?></a>
 <?php } else { ?>
-							<a href="<?php echo $baseURL; ?>/login"><?php echo $locale->login; ?></a>
+							<a href="<?php echo $baseURL; ?>/page/login"><?php echo $locale->login; ?></a>
 <?php } ?>
 						</li>
 					</ul>

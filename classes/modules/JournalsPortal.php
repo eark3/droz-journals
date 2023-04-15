@@ -104,7 +104,7 @@ class JournalsPortal extends Portal {
     
     protected function _settings($type, $object) {
         $locales = [];
-        foreach ([$this->lang, $this->controler->journal->locale ?? 'none', DEFAULT_LANG, '', null] as $_locale) {
+        foreach ([$this->lang, $this->controler->journal->locale ?? 'none', DEFAULT_LANG] as $_locale) {
             if ($_locale !== 'none' && !in_array($_locale, $locales)) {
                 $locales[] = $_locale;
             }
