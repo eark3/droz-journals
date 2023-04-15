@@ -1,6 +1,7 @@
 <form class="pkp_form login" id="login" method="post" action="<?php echo $baseURL; ?>/login/signIn">
 	<input type="hidden" name="csrfToken" value="2076765f605764b0278a154d189e0b06">
 	<input type="hidden" name="source" value="" />
+<?php $this->render('/portal/widget/alert'); ?>
 	<div class="form-group">
 		<label for="login-username">Nom d'utilisateur</label>
 		<input type="text" name="username" class="form-control" id="login-username" placeholder="Nom d'utilisateur" value="" maxlenght="32" required>

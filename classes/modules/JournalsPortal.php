@@ -92,10 +92,12 @@ class JournalsPortal extends Portal {
         }
         $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
         foreach ($galleys as $galley) {
-            $access = $this->user->isConnected() || $issue->open < date('Y-m-d') || $paper->status === 'free';
             $shop = $galley->type === 'shop';
-            if ($access !== $shop) {
-                $result['galleys'][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
+            foreach ([true, false] as $connected) {
+                $access = $connected || $issue->open < date('Y-m-d') || $paper->status === 'free';
+                if ($access !== $shop) {
+                    $result['galleys'][$connected][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
+                }
             }
         }
         $this->cache->setItem('paper', $key, $result);
@@ -474,6 +476,20 @@ class JournalsPortal extends Portal {
     }
     
     public function login() {
+        $step = $this->params['step'] ?? null;
+        $account = Zord::getInstance('Account', $this->controler);
+        switch ($step) {
+            case 'signIn': {
+                $account->setParam('login', $this->params['username'] ?? null);
+                return $account->connect();
+            }
+            case 'signOut': {
+                return $account->disconnect();
+            }
+            case 'requestResetPassword': {
+                return $account->reset();
+            }
+        }
         return $this->page('login');
     }
     

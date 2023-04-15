@@ -9,6 +9,7 @@
 
 <form class="pkp_form lost_password" id="lostPasswordForm" action="<?php echo $baseURL; ?>/login/requestResetPassword" method="post">
 	<input type="hidden" name="csrfToken" value="2076765f605764b0278a154d189e0b06">
+<?php $this->render('/portal/widget/alert'); ?>
 	<div class="form-group">
 		<label for="login-email"> Courriel de l'utilisateur inscrit </label>
 		<input type="email" name="email" class="form-control" id="login-email" placeholder="Courriel de l'utilisateur inscrit" value="" maxlenght="32" required>

@@ -1,0 +1,11 @@
+{
+	"messages": {
+		"auth_failed": "Nom d'usager ou mot de passe non valide. Veuillez essayer de nouveau.",
+		"mail_sent": "Un nouveau mot de passe vous a été envoyé par mail"
+	},
+	"mail": {
+		"reset_password": {
+			"new": "Votre nouveau mot de passe est : ${password}"
+		}
+	}
+}

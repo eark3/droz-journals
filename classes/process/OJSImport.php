@@ -229,13 +229,12 @@ class OJSImport extends ProcessExecutor {
                     $tokens[] = $token;
                 }
             }
-            $name = implode(' ', $tokens);
-            $entity = (new UserEntity())->create([
+            (new UserEntity())->create([
                 "login" => $user->username,
                 "password" => $user->password,
                 "password.crypted" => true,
                 "email" => $user->email,
-                "name" => $name,
+                "name" => implode(' ', $tokens),
             ]);
         }
     }
