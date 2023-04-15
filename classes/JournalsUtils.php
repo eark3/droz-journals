@@ -45,6 +45,13 @@ class JournalsUtils {
             : $author->first.' '.$middle.$author->last;
     }
     
+    public static function status($issue, $paper) {
+        return (($issue->open ?? $issue['open']) < date('Y-m-d') || ($paper->status ?? $paper['status']) === 'free') ? 'free' : 'subscription';
+    }
+    
+    public static function readable($user, $issue, $paper) {
+        return $user->isConnected() || self::status($issue, $paper) === 'free';
+    }
 }
 
 ?>

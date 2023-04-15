@@ -8,6 +8,7 @@ class JournalsPortal extends Portal {
         if (isset($this->controler->journal)) {
             $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'id']]);
             if ($issue) {
+                $this->controler->issue = $issue;
                 return $this->page('home', ['issue' => $this->_issue($issue)]);
             }
         }
@@ -45,6 +46,7 @@ class JournalsPortal extends Portal {
                         }
                     }
                     if ($issue) {
+                        $this->controler->issue = $issue;
                         $page = 'issue';
                         $issue = $this->_issue($issue);
                         $ariadne['active'] = $issue['serial'].' : '.$issue['settings']['title'];
@@ -83,6 +85,8 @@ class JournalsPortal extends Portal {
             if ($section === false) {
                 return $this->error(404);
             }
+            $this->controler->issue = $issue;
+            $this->controler->paper = $paper;
             $_paper = $this->_paper($paper, $issue);
             $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.(!empty($issue->number) ? '.'.$issue->number : '').DS.$_paper['short'].'.'.$display;
             if (isset($display) && (!file_exists($path) || !is_file($path))) {
@@ -95,6 +99,9 @@ class JournalsPortal extends Portal {
                 'archive' => '/'.$this->context.'/issue/archive',
                 'issue' => [$_issue['serial'].' : '.$_issue['settings']['title'], '/'.$this->context.'/issue/view/'.$_issue['short']]
             ];
+            if (in_array($display, ['html','pdf']) && !JournalsUtils::readable($this->user, $issue, $paper)) {
+                return $this->page('login', ['message' => 'warning='.$this->locale->warning->restricted]);
+            }
             switch ($page) {
                 case 'view': {
                     if (in_array($display, ['html','pdf'])) {
@@ -121,7 +128,7 @@ class JournalsPortal extends Portal {
                                 'paper' => $_paper,
                                 'issue' => $_issue,
                                 'content' => file_get_contents($path),
-                                'status' => ($issue->open < date('Y-m-d') || $paper->status === 'free') ? 'free' : 'subscription',
+                                'status' => JournalsUtils::status($issue, $paper),
                                 'section' => $_section['title']
                             ];
                             break;

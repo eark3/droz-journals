@@ -1,7 +1,7 @@
 								<div class="col-xs-12 articleSummaryWrapper">
 									<div class="media-body">
 										<div class="col-xs-3">
-<?php foreach ($paper['galleys'][$user->isConnected()] ?? [] as $type => $path) { ?>
+<?php foreach ($paper['galleys'][JournalsUtils::readable($user, $controler->issue, $paper)] ?? [] as $type => $path) { ?>
 <?php   $this->render('/portal/widget/galley', ['type' => $type, 'path' => $path]); ?>
 <?php } ?>
 										</div>

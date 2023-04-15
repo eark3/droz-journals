@@ -50,6 +50,7 @@ trait JournalsModule {
             $result = [
                 'cover'     => $cover,
                 'serial'    => $serial,
+                'open'      => $issue->open,
                 'published' => $issue->published,
                 'link'      => $link,
                 'short'     => $short,
@@ -98,7 +99,7 @@ trait JournalsModule {
         foreach ($galleys as $galley) {
             $shop = $galley->type === 'shop';
             foreach ([true, false] as $connected) {
-                $access = $connected || $issue->open < date('Y-m-d') || $paper->status === 'free';
+                $access = JournalsUtils::readable($connected, $issue, $paper);
                 if ($access !== $shop) {
                     $result['galleys'][$connected][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
                 }

@@ -88,5 +88,8 @@
 		"email": "Courriel de l'utilisateur inscrit",
 		"reset": "Réinitialiser le mot de passe",
 		"lost": "Pour des raisons de sécurité, ce système envoie un nouveau mot de passe par courriel aux utilisateurs inscrits au lieu de rappeler le mot de passe actuel.<br /><br />Indiquez votre adresse courriel ci-dessous pour réinitialiser votre mot de passe. Une demande de confirmation sera envoyée par courriel."
+	},
+	"warning": {
+		"restricted": "Accès réservé aux abonnés"
 	}
 }

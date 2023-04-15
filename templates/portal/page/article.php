@@ -21,7 +21,7 @@
 				</div>
 <?php } ?>
 			</div>
-<?php foreach ($paper['galleys'][$user->isConnected()] ?? [] as $type => $path) { ?>
+<?php foreach ($paper['galleys'][JournalsUtils::readable($user, $controler->issue, $controler->paper)] ?? [] as $type => $path) { ?>
 <?php   $this->render('/portal/widget/galley', ['type' => $type, 'path' => $path]); ?>
 <?php } ?>
 			<div class="panel panel-default copyright">
