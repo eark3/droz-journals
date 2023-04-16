@@ -34,6 +34,7 @@ class OJSImport extends ProcessExecutor {
     }
     
     public function execute($parameters = []) {
+/*
         $journals = [];
         foreach ((new OJSJournalEntity())->retrieveAll() as $journal) {
             $sections = [];
@@ -139,6 +140,7 @@ class OJSImport extends ProcessExecutor {
         (new GalleyEntity())->delete();
         (new SettingEntity())->delete();
         (new UserEntity())->delete();
+        (new UserHasRoleEntity())->delete();
         $ojs = new Tunnel('ojs');
         foreach ($journals as $journal) {
             $_journal = $this->create(new JournalEntity(), $journal);
@@ -219,7 +221,12 @@ class OJSImport extends ProcessExecutor {
                 ]);
             }
         }
+*/
+        
+        (new UserHasRoleEntity())->delete();
+        (new UserHasIPV4Entity())->delete();
         foreach ((new OJSUserEntity())->retrieve() as $user) {
+/*
             $first = trim($user->first_name ?? '');
             $middle = trim($user->middle_name ?? '');
             $last = trim($user->last_name ?? '');
@@ -236,6 +243,47 @@ class OJSImport extends ProcessExecutor {
                 "email" => $user->email,
                 "name" => implode(' ', $tokens),
             ]);
+*/
+            if ($user->username === 'ojsadmin') {
+                (new UserHasRoleEntity())->create([
+                    'user'    => $user->username,
+                    'context' => '*',
+                    'role'    => '*',
+                    'start'   => date('Y-m-d'),
+                    'end'     => '2038-01-19'
+                ]);
+            } else {
+                $journals = (new OJSJournalEntity())->retrieveAll();
+                $_journals = [];
+                foreach ($journals as $journal) {
+                    $_journals[] = $journal->journal_id;
+                }
+                $data['user'] = $user->username;
+                $data['role'] = 'reader';
+                foreach ((new OJSSubscriptionEntity())->retrieveAll([
+                    'journal_id' => ['in' => $_journals],
+                    'user_id'    => $user->user_id,
+                    'status'     => 1
+                ]) as $subscription) {
+                    $data['context'] = $subscription->journal_id;
+                    $data['start']   = $subscription->date_start;
+                    $data['end']     = $subscription->date_end;
+                    $type = (new OJSSubscriptionTypeEntity())->retrieveOne($subscription->type_id);
+                    if ($type->institutional) {
+                        $subscription = (new OJSInstitutionalSubscriptionEntity())->retrieveOne(['subscription_id' => $subscription->subscription_id]);
+                        (new UserEntity())->update($user->username, [
+                            "name" => $subscription->institution_name,
+                        ]);
+                        $ips = (new OJSInstitutionalSubscriptionIPEntity())->retrieveAll(['subscription_id' => $subscription->subscription_id]);
+                        foreach ($ips as $ip) {
+                            if (!empty($ip->ip_string)) {
+                                echo $user->username.' : '.$ip->ip_string."\n";
+                            }
+                        }
+                    }
+                    (new UserHasRoleEntity())->create($data);
+                }
+            }
         }
     }
     

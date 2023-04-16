@@ -49,8 +49,12 @@ class JournalsUtils {
         return (($issue->open ?? $issue['open']) < date('Y-m-d') || ($paper->status ?? $paper['status']) === 'free') ? 'free' : 'subscription';
     }
     
-    public static function readable($user, $issue, $paper) {
-        return $user->isConnected() || self::status($issue, $paper) === 'free';
+    public static function reader($user, $journal) {
+        return $user->hasRole('reader', $journal->context);
+    }
+    
+    public static function readable($user, $journal, $issue, $paper) {
+        return self::reader($user, $journal) || self::status($issue, $paper) === 'free';
     }
 }
 

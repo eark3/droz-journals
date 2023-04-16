@@ -99,7 +99,7 @@ trait JournalsModule {
         foreach ($galleys as $galley) {
             $shop = $galley->type === 'shop';
             foreach ([true, false] as $connected) {
-                $access = JournalsUtils::readable($connected, $issue, $paper);
+                $access = JournalsUtils::readable($connected, $this->controler->journal, $issue, $paper);
                 if ($access !== $shop) {
                     $result['galleys'][$connected][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
                 }

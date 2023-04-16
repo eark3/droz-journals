@@ -12,5 +12,6 @@
     			</div>
     		</h1>
     	</div>
+<?php $this->render('/portal/widget/login'); ?>
     </div>
 </header>
