@@ -1,4 +1,9 @@
 {
+	"user": {
+		"profile": [
+			"institution"
+		]
+	},
 	"default": {
 		"csl": {
 			"style": "acm-sig-proceedings"

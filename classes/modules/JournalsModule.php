@@ -98,10 +98,10 @@ trait JournalsModule {
         $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
         foreach ($galleys as $galley) {
             $shop = $galley->type === 'shop';
-            foreach ([true, false] as $connected) {
-                $access = JournalsUtils::readable($connected, $this->controler->journal, $issue, $paper);
+            foreach ([true, false] as $reader) {
+                $access = JournalsUtils::readable($reader, $this->controler->journal, $issue, $paper);
                 if ($access !== $shop) {
-                    $result['galleys'][$connected][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
+                    $result['galleys'][$reader][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
                 }
             }
         }
@@ -146,6 +146,7 @@ trait JournalsModule {
     }
     
     public function models($models) {
+        $_page = $models['page'] ?? null;
         foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
             $models['journals'][] = $this->_journal($journal);
         }
@@ -153,7 +154,6 @@ trait JournalsModule {
             $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
             $models['journal'] = $this->_journal($this->controler->journal);
         }
-        $_page = $models['page'] ?? null;
         if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {
             $models['ariadne'] = [
                 'home'   => '/'.$this->context,

@@ -1,0 +1,7 @@
+.pkp_structure_content.admin .pkp_structure_main {
+	width: 100% !important;
+}
+
+.list li div input, .list li div select, .list li div i {
+	height: 2em !important;
+}

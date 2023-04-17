@@ -1,5 +1,7 @@
 {
 	"Controler": "JournalsControler",
+	"User": "JournalsUser",
 	"Account": "JournalsAccount",
-	"Portal": "JournalsPortal"
+	"Portal": "JournalsPortal",
+	"Admin": "JournalsAdmin"
 }

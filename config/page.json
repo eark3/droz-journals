@@ -31,5 +31,14 @@
 				"href": "/journals/css/display.css"
 			}
 		]
+	},
+	"admin": {
+		"styles": [
+			{
+				"type": "text/css",
+				"media": "screen",
+				"href": "/journals/css/admin.css"
+			}
+		]
 	}
 }

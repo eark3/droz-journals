@@ -50,7 +50,7 @@ class JournalsUtils {
     }
     
     public static function reader($user, $journal) {
-        return $user->hasRole('reader', $journal->context);
+        return is_bool($user) ? $user : $user->hasRole('reader', $journal->context);
     }
     
     public static function readable($user, $journal, $issue, $paper) {

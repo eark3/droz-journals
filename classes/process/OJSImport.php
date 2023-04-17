@@ -34,7 +34,6 @@ class OJSImport extends ProcessExecutor {
     }
     
     public function execute($parameters = []) {
-/*
         $journals = [];
         foreach ((new OJSJournalEntity())->retrieveAll() as $journal) {
             $sections = [];
@@ -139,8 +138,6 @@ class OJSImport extends ProcessExecutor {
         (new AuthorEntity())->delete();
         (new GalleyEntity())->delete();
         (new SettingEntity())->delete();
-        (new UserEntity())->delete();
-        (new UserHasRoleEntity())->delete();
         $ojs = new Tunnel('ojs');
         foreach ($journals as $journal) {
             $_journal = $this->create(new JournalEntity(), $journal);
@@ -221,12 +218,11 @@ class OJSImport extends ProcessExecutor {
                 ]);
             }
         }
-*/
-        
+        (new UserEntity())->delete();
         (new UserHasRoleEntity())->delete();
+        (new UserHasProfileEntity())->delete();
         (new UserHasIPV4Entity())->delete();
         foreach ((new OJSUserEntity())->retrieve() as $user) {
-/*
             $first = trim($user->first_name ?? '');
             $middle = trim($user->middle_name ?? '');
             $last = trim($user->last_name ?? '');
@@ -243,7 +239,6 @@ class OJSImport extends ProcessExecutor {
                 "email" => $user->email,
                 "name" => implode(' ', $tokens),
             ]);
-*/
             if ($user->username === 'ojsadmin') {
                 (new UserHasRoleEntity())->create([
                     'user'    => $user->username,
@@ -256,30 +251,46 @@ class OJSImport extends ProcessExecutor {
                 $journals = (new OJSJournalEntity())->retrieveAll();
                 $_journals = [];
                 foreach ($journals as $journal) {
-                    $_journals[] = $journal->journal_id;
+                    $_journals[$journal->journal_id] = $journal->path;
                 }
                 $data['user'] = $user->username;
                 $data['role'] = 'reader';
                 foreach ((new OJSSubscriptionEntity())->retrieveAll([
-                    'journal_id' => ['in' => $_journals],
+                    'journal_id' => ['in' => array_keys($_journals)],
                     'user_id'    => $user->user_id,
                     'status'     => 1
                 ]) as $subscription) {
-                    $data['context'] = $subscription->journal_id;
+                    $data['context'] = $_journals[$subscription->journal_id];
                     $data['start']   = $subscription->date_start;
                     $data['end']     = $subscription->date_end;
                     $type = (new OJSSubscriptionTypeEntity())->retrieveOne($subscription->type_id);
                     if ($type->institutional) {
                         $subscription = (new OJSInstitutionalSubscriptionEntity())->retrieveOne(['subscription_id' => $subscription->subscription_id]);
-                        (new UserEntity())->update($user->username, [
-                            "name" => $subscription->institution_name,
-                        ]);
+                        $_user = User::get($user->username);
+                        $_user->setInstitution($subscription->institution_name);
+                        $_user->saveProfile();;
                         $ips = (new OJSInstitutionalSubscriptionIPEntity())->retrieveAll(['subscription_id' => $subscription->subscription_id]);
+                        $done = [];
+                        $undone = [];
                         foreach ($ips as $ip) {
                             if (!empty($ip->ip_string)) {
-                                echo $user->username.' : '.$ip->ip_string."\n";
+                                if (strpos($ip->ip_string, '/') > 0) {
+                                    $done[] = $ip->ip_string;
+                                } else {
+                                    $entry = explode('-', str_replace(' ', '', $ip->ip_string));
+                                    if (count($entry) > 1) {
+                                        $entry[0] = str_replace('*', '0', $entry[0]);
+                                        $entry[1] = str_replace('*', '255', $entry[1]);
+                                        $first = explode('.', $entry[0]);
+                                        $second = explode('.', $entry[1]);
+                                        $undone[] = $first[0].'.'.$first[1].'.'.$first[2].'-'.$second[2].'.'.$first[3].'-'.$second[3];
+                                    } else {
+                                        $undone[] = str_replace('*', '0-255', $entry[0]);
+                                    }
+                                }
                             }
                         }
+                        (new UserEntity())->update($user->username, ["ipv4" => implode(',', array_merge($done, Zord::IP($undone)))]);
                     }
                     (new UserHasRoleEntity())->create($data);
                 }

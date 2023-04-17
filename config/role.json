@@ -1,0 +1,4 @@
+{
+	"reader": ["read"],
+	"admin": ["read"]
+}
