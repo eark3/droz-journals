@@ -20,7 +20,6 @@ class OJSImport extends ProcessExecutor {
             foreach ($data['settings'] ?? [] as $name => $locales) {
                 foreach ($locales as $locale => $item) {
                     (new SettingEntity($entity->_type))->create([
-                        "type"    => $entity->_type,
                         "object"  => $object->id,
                         "name"    => $name,
                         "value"   => $item['value'],
@@ -29,6 +28,19 @@ class OJSImport extends ProcessExecutor {
                     ]);
                 }
             }
+        }
+        if ($entity->_type === 'journal') {
+            $journal = (new OJSJournalEntity())->retrieveOne(['path' => $object->context]);
+            $setting = (new OJSSettingEntity($entity->_type))->retrieveOne([
+                'setting_name' => 'description',
+                'journal_id'   => $journal->journal_id,
+                'locale'       => 'fr_CA'
+            ]);
+            (new SettingEntity('journal'))->create([
+                "object" => $object->id,
+                "name"   => 'rootDescription',
+                "value"  => $setting->setting_value
+            ]);
         }
         return $object;
     }

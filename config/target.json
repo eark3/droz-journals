@@ -41,7 +41,8 @@
 			"response": "DATA",
 			"parameters": {
 				"type": "FILTER_SANITIZE_STRING",
-				"id": "FILTER_SANITIZE_STRING"
+				"id": "FILTER_SANITIZE_STRING",
+				"name": "FILTER_SANITIZE_STRING"
 			}
 		},
 		"login": {

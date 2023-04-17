@@ -6,6 +6,12 @@ trait JournalsModule {
     
     public function configure() {
         $this->cache = Zord::getInstance('Cache', Zord::liveFolder('cache'));
+        $this->addStyle('/journals/css/'.$this->context.'/bootstrapTheme.css');
+        $this->addStyle('/journals/css/common.css');
+        $this->addStyle('/journals/css/'.$this->context.'/layout.css');
+        if ($this->context !== 'root') {
+            $this->addScript('/journals/js/journal.js');
+        }
     }
     
     protected function _journal($journal) {
@@ -109,7 +115,7 @@ trait JournalsModule {
         return $result;
     }
     
-    protected function _settings($type, $object) {
+    protected function _settings($type, $object, $name = null) {
         $locales = [];
         foreach ([$this->lang, $this->controler->journal->locale ?? 'none', DEFAULT_LANG] as $_locale) {
             if ($_locale !== 'none' && !in_array($_locale, $locales)) {
@@ -142,7 +148,7 @@ trait JournalsModule {
                 }
             }
         }
-        return $settings;
+        return isset($name) ? ($settings[$name] ?? null) : $settings;
     }
     
     public function models($models) {

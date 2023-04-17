@@ -9,7 +9,7 @@
 								<a href="<?php echo $journal['path']; ?>" rel="bookmark"><?php echo $journal['settings']['name']; ?></a>
 							</h3>
 							<div class="description">
-								<?php echo $journal['settings']['description']; ?>
+								<?php echo $journal['settings']['rootDescription']; ?>
 							</div>
 							<ul class="nav nav-pills">
 								<li class="view">

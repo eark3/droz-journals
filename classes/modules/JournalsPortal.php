@@ -284,6 +284,7 @@ class JournalsPortal extends Portal {
     public function settings() {
         $type = $this->params['type'] ?? null;
         $id = $this->params['id'] ?? null;
+        $name = $this->params['name'] ?? null;
         if (!isset($type) || !isset($id)) {
             return $this->error(400);
         }
@@ -321,7 +322,7 @@ class JournalsPortal extends Portal {
         if ($object === false) {
             return $this->error(404);
         }
-        return $this->_settings($type, $object);
+        return $this->_settings($type, $object, $name);
     }
     
     public function login() {
