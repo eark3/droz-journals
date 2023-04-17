@@ -24,19 +24,27 @@ jQuery(document).ready(function() {
 
 document.addEventListener("DOMContentLoaded", function(event) {
 	
+	var toggleMenu = function(toggle) {
+		var menu = toggle.nextElementSibling;
+		if (toggle.dataset.toggle == 'dropdown') {
+			toggle.dataset.toggle = 'pullup'
+			menu.style.display = 'block';
+		} else {
+			toggle.dataset.toggle = 'dropdown'
+			menu.style.display = 'none';
+			document.activeElement.blur();
+		}
+	};
+	
 	[].forEach.call(document.querySelectorAll('.dropdown-toggle'), function(toggle) {
 		toggle.addEventListener("click", function(event) {
 			event.preventDefault();
-			var menu = toggle.nextElementSibling;
-			if (toggle.dataset.toggle == 'dropdown') {
-				toggle.dataset.toggle = 'pullup'
-				menu.style.display = 'block';
-			} else {
-				toggle.dataset.toggle = 'dropdown'
-				menu.style.display = 'none';
-			}
+			toggleMenu(toggle);
 			event.stopPropagation();
 			return false;
+		});
+		toggle.nextElementSibling.addEventListener("mouseleave", function(event) {
+			toggleMenu(toggle);
 		});
 	});
 
