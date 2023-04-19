@@ -343,6 +343,64 @@ class JournalsPortal extends Portal {
         return $this->page('login');
     }
     
+    public function search() {
+        $query   = $this->params['query']   ?? null;
+        $authors = $this->params['authors'] ?? null;
+        $from    = $this->params['from']    ?? null;
+        $to      = $this->params['to']      ?? null;
+        $start   = $this->params['start']   ?? 0;
+        $results = [];
+        $models  = ['filters' => [
+            'query'   => $query,
+            'authors' => $authors,
+            'from'    => $from,
+            'to'      => $to
+        ]];
+        if (!empty($query)) {
+            $query = Zord::collapse($query, false);
+        }
+        $filters = ['journal' => $this->context];
+        if (!empty($from)) {
+            $filters['date']['from'] = $from;
+        }
+        if (!empty($to)) {
+            $filters['date']['to'] = $to;
+        }
+        if (!empty($authors)) {
+            $filters['authors'] = '*'.Zord::collapse($authors, false).'*';
+        }
+        $found = 0;
+        if (!empty($query)) {
+            list($found, $documents) = Store::search([
+                'query'   => $query,
+                'filters' => $filters,
+                'start'   => $start
+            ]);
+            if ($found > 0) {
+                foreach ($documents as $document) {
+                    $paper = (new PaperEntity())->retrieveOne($document['short_s']);
+                    if ($paper !== false) {
+                        $issue = (new IssueEntity())->retrieveOne($paper->issue);
+                        if ($issue !== false) {
+                            $results[] = [
+                                'paper' => $this->_paper($paper, $issue),
+                                'issue' => $issue
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+        if (count($results) > 0) {
+            $models['found']  = $found;
+            $models['count']  = count($results);
+            $models['papers'] = $results;
+        } else {
+            $models['message'] = $this->message('info', $this->locale->search->results->none);
+        }
+        return $this->page('search', $models);
+    }
+    
 }
 
 ?>

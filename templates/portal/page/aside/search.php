@@ -9,8 +9,8 @@
 								<input type="text" id="query" name="query" value="" class="query input-sm form-control" placeholder="Rechercher">
 							</p>
 							<p>
-								<label class="sr-only" for="query"><?php echo $locale->aside->search->authors; ?></label>
-								<input type="text" name="authors" value="" class="query input-sm form-control" placeholder="Auteurs" for="authors">
+								<label class="sr-only" for="authors"><?php echo $locale->aside->search->authors; ?></label>
+								<input type="text" name="authors" value="" class="query input-sm form-control" placeholder="Auteurs">
 							</p>
 							<p>
 								<input type="submit" value="<?php echo $locale->aside->search->submit; ?>" class="btn btn-sm btn-default"/>

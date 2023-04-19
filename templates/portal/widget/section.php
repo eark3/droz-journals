@@ -5,6 +5,6 @@
 								</p>
 							</div>
 <?php foreach ($section['papers'] as $paper) { ?>
-<?php   $this->render('paper', ['paper' => $paper]); ?>
+<?php   $this->render('#paper', ['paper' => $paper]); ?>
 <?php } ?>
 						</section>

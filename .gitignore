@@ -10,6 +10,7 @@
 .settings
 .buildpath
 .project
+.pydevproject
 
 # Netbeans
 /nbproject

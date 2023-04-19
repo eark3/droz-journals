@@ -56,6 +56,10 @@ class JournalsUtils {
     public static function readable($user, $journal, $issue, $paper) {
         return self::reader($user, $journal) || self::status($issue, $paper) === 'free';
     }
+    
+    public static function path($journal, $volume, $number, $short, $type) {
+        return STORE_FOLDER.'journals'.DS.$journal.DS.$volume.(isset($number) ? '.'.$number : '').DS.$short.'.'.$type;
+    }
 }
 
 ?>

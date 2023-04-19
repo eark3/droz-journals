@@ -3,5 +3,6 @@
 	"User": "JournalsUser",
 	"Account": "JournalsAccount",
 	"Portal": "JournalsPortal",
-	"Admin": "JournalsAdmin"
+	"Admin": "JournalsAdmin",
+	"Import": "JournalsImport"
 }

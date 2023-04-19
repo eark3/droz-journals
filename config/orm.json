@@ -48,6 +48,7 @@
 		"table": "papers",
 		"fields": [
 			"id",
+			"journal",
 			"issue",
 			"section",
 			"place",

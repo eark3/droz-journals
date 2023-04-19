@@ -46,6 +46,7 @@ class OJSImport extends ProcessExecutor {
     }
     
     public function execute($parameters = []) {
+/*
         $journals = [];
         foreach ((new OJSJournalEntity())->retrieveAll() as $journal) {
             $sections = [];
@@ -62,7 +63,7 @@ class OJSImport extends ProcessExecutor {
                 foreach ((new OJSPublicationEntity())->retrieveAll(['issue_id' => $issue->issue_id]) as $publication) {
                     $paper = (new OJSPaperEntity())->retrieveOne($publication->submission_id);
                     $status = $publication->access_status ? 'free' : 'subscription';
-                    $pages = JournalsUtils::pages($paper);
+                    $pages = str_replace('/', '-', JournalsUtils::pages($paper));
                     $section = $paper->section_id;
                     $place = $publication->seq;
                     $settings = $this->getSettings('submission', $publication);
@@ -166,6 +167,7 @@ class OJSImport extends ProcessExecutor {
                 $_issue = $this->create(new IssueEntity(), $issue);
                 echo "\tissue : ".JournalsUtils::short($_journal->context, $_issue)."\n";
                 foreach ($issue['papers'] as $paper) {
+                    $paper['journal'] = $_journal->id;
                     $paper['issue'] = $_issue->id;
                     $paper['section'] = $sections["OJS_".$paper['section']];
                     $_paper = $this->create(new PaperEntity(), $paper);
@@ -179,12 +181,13 @@ class OJSImport extends ProcessExecutor {
                         $path = $type === 'shop' ? $resource : null;
                         $create = true;
                         if ($type !== 'shop') {
-                            $folder = STORE_FOLDER.'journals'.DS.$journal['context'].DS.$issue['volume'].(isset($issue['number']) ? '_'.$issue['number'] : '').DS;
-                            $file = JournalsUtils::short($journal['context'], $_issue, $_paper).'.'.$type;
+                            $short = JournalsUtils::short($journal['context'], $_issue, $_paper);
+                            $file = JournalsUtils::path($journal->context, $issue->volume, $issue->number, $short, $type);
+                            $folder = dirname($file);
                             if (!file_exists($folder)) {
                                 mkdir($folder, 0755, true);
                             }
-                            $create = $ojs->recv($resource, $folder.$file);
+                            $create = $ojs->recv($resource, $file);
                         }
                         if ($create) {
                             $this->create(new GalleyEntity(), [
@@ -308,6 +311,15 @@ class OJSImport extends ProcessExecutor {
                 }
             }
         }
+*/
+        $import = Zord::getInstance('Import');
+        $import->setLang('fr-FR');
+        $issues = [];
+        foreach ((new IssueEntity())->retrieveAll() as $issue) {
+            $journal = (new JournalEntity())->retrieveOne($issue->journal);
+            $issues[] = JournalsUtils::short($journal->context, $issue);
+        }
+        $import->execute(['steps' => 'index', 'refs' => $issues, 'continue' => true]);
     }
     
 }

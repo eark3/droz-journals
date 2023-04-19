@@ -115,6 +115,13 @@ trait JournalsModule {
         return $result;
     }
     
+    protected function message($type, $content) {
+        if ($type === 'error') {
+            $type = 'danger';
+        }
+        return parent::message($type, $content);
+    }
+    
     protected function _settings($type, $object, $name = null) {
         $locales = [];
         foreach ([$this->lang, $this->controler->journal->locale ?? 'none', DEFAULT_LANG] as $_locale) {

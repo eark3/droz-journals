@@ -21,13 +21,6 @@ class JournalsAccount extends Account {
         return $this->page($page, $models);
     }
     
-    protected function message($type, $content) {
-        if ($type === 'error') {
-            $type = 'danger';
-        }
-        return parent::message($type, $content);
-    }
-    
     protected function _password($login) {
         $characters = RANDOM_PASSWORD_CHARACTERS;
         $password = '';

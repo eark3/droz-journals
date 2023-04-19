@@ -8,7 +8,7 @@
 					</div>
 					<div class="heading row">
 						<div class="col-md-4">
-<?php $this->render('/portal/widget/cover'); ?>
+<?php $this->render('#cover'); ?>
 						</div>
 						<div style="margin-top:;" class="issue-details col-md-8">
 							<div class="description">
@@ -39,7 +39,7 @@
 					</div>
 					<div class="sections">
 <?php foreach ($issue['sections'] as $id => $section) { ?>
-<?php   $this->render('section', ['id' => $id, 'section' => $section]); ?>
+<?php   $this->render('#section', ['id' => $id, 'section' => $section]); ?>
 <?php } ?>
 					</div>
 				</div>

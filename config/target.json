@@ -50,6 +50,13 @@
 			"parameters": {
 				"step": "FILTER_SANITIZE_STRING"
 			}
+		},
+		"search": {
+			"shortcut": "search",
+			"parameters": {
+				"query": "FILTER_SANITIZE_STRING",
+				"authors": "FILTER_SANITIZE_STRING"
+			}
 		}
 	}
 }

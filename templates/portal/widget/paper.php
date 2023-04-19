@@ -1,8 +1,8 @@
 								<div class="col-xs-12 articleSummaryWrapper">
 									<div class="media-body">
 										<div class="col-xs-3">
-<?php foreach ($paper['galleys'][JournalsUtils::readable($user, $controler->journal, $controler->issue, $paper)] ?? [] as $type => $path) { ?>
-<?php   $this->render('/portal/widget/galley', ['type' => $type, 'path' => $path]); ?>
+<?php foreach ($paper['galleys'][JournalsUtils::readable($user, $controler->journal, $issue ?? $controler->issue, $paper)] ?? [] as $type => $path) { ?>
+<?php   $this->render('#galley', ['type' => $type, 'path' => $path]); ?>
 <?php } ?>
 										</div>
 										<div class="col-xs-9">

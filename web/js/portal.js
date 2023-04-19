@@ -47,5 +47,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			toggleMenu(toggle);
 		});
 	});
+	
+	[].forEach.call(document.querySelectorAll('form.search-form'), function(form) {
+		form.addEventListener("submit", function(event) {
+			var query = form.querySelector('input[type="text"].query');
+			if (query && query.value === '') {
+				query.style.border = '1px red solid';
+				event.preventDefault();
+				event.stopPropagation();
+				return false;
+			}
+		});
+	});
 
 });

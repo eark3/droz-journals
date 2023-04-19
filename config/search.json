@@ -1,0 +1,11 @@
+{
+	"filters": {
+		"date": "DateFilter"
+	},
+	"fetch": [
+		"short"
+	],
+	"sort": {
+		"short": "ASC"
+	}
+}

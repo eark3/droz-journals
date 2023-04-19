@@ -92,5 +92,19 @@
 	},
 	"warning": {
 		"restricted": "Accès réservé aux abonnés"
+	},
+	"search": {
+		"title": "Rechercher",
+		"submit": "Rechercher",
+		"results": {
+			"title": "Résultats de recherche",
+			"none": "Aucun résultat"
+		},
+		"filters": {
+			"enhanced": "Filtres avancés",
+			"from": "De",
+			"to": "Jusqu'à",
+			"authors": "Auteurs"
+		}
 	}
 }
