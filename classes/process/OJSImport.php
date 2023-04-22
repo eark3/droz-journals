@@ -23,6 +23,13 @@ class OJSImport extends ProcessExecutor {
             ]);
             $settings['rootDescription'][$this->locale($object->primary_locale)] = $setting->setting_value;
         }
+        if ($type === 'submission') {
+            if (isset($settings['licenseURL'])) {
+                foreach (array_keys($settings['licenseURL']) as $locale) {
+                    $settings['licenseURL'][$locale]['value'] = str_replace('/licence', '/page/license', $settings['licenseURL'][$locale]['value']);
+                }
+            }
+        }
         return $settings;
     }
     
