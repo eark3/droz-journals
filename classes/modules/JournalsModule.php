@@ -29,14 +29,14 @@ trait JournalsModule {
     }
     
     protected function _issue($issue) {
-        $key = JournalsUtils::short($this->context, $issue, null, true);
+        $key = JournalsUtils::short($this->context, $issue->volume, $issue->number, null, true);
         $sections = (new SectionEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['asc' => 'place']]);
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
         if ($this->cache->hasItem('issue', $key)) {
             $result = $this->cache->getItem('issue', $key);
         } else {
             $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
-            $short = JournalsUtils::short($this->context, $issue);
+            $short = JournalsUtils::short($this->context, $issue->volume, $issue->number);
             $serial = 'Vol. '.$issue->volume;
             if ($issue->number) {
                 $serial .= ' n° '.$issue->number;
@@ -78,8 +78,8 @@ trait JournalsModule {
     }
     
     protected function _paper($paper, $issue) {
-        $short = JournalsUtils::short($this->context, $issue, $paper);
-        $key = str_replace('-', '_', JournalsUtils::short($this->context, $issue, $paper, true));
+        $short = JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages);
+        $key = str_replace('-', '_', JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages, true));
         if ($this->cache->hasItem('paper', $key)) {
             return $this->cache->getItem('paper', $key);
         }
@@ -107,7 +107,7 @@ trait JournalsModule {
             foreach ([true, false] as $reader) {
                 $access = JournalsUtils::readable($reader, $this->controler->journal, $issue, $paper);
                 if ($access !== $shop) {
-                    $result['galleys'][$reader][$galley->type] = !empty($galley->path) ? $galley->path : $this->baseURL.'/article/view/'.$short.'/'.$galley->type;
+                    $result['galleys'][$reader][] = $galley->type;
                 }
             }
         }

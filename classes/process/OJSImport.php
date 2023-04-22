@@ -2,69 +2,69 @@
 
 class OJSImport extends ProcessExecutor {
     
+    private function locale($locale) {
+        return !empty($locale) ? str_replace('_', '-', $locale) : 'fr-FR';
+    }
+    
     private function getSettings($type, $object) {
         $settings = [];
         $field = $type.'_id';
         foreach ((new OJSSettingEntity($type))->retrieveAll([$field => $object->$field]) as $entity) {
-            $settings[$entity->setting_name][$entity->locale] = [
+            $settings[$entity->setting_name][$this->locale($entity->locale)] = [
                 'content' => $entity->setting_type,
-                'value'   => str_replace(['site/images/ojsadmin','https://revues-dev.droz.org'], ['journals/images',''], $entity->setting_value)
+                'value'   => str_replace(['site/images/ojsadmin','https://revues-dev.droz.org','https://revues.droz.org/index.php'], ['journals/images','',''], $entity->setting_value)
             ];
+        }
+        if ($type === 'journal') {
+            $setting = (new OJSSettingEntity($type))->retrieveOne([
+                'setting_name' => 'description',
+                'journal_id'   => $object->journal_id,
+                'locale'       => 'fr_CA'
+            ]);
+            $settings['rootDescription'][$this->locale($object->primary_locale)] = $setting->setting_value;
         }
         return $settings;
     }
     
-    private function create($entity, $data) {
-        $object = $entity->create($data);
-        if ($object) {
-            foreach ($data['settings'] ?? [] as $name => $locales) {
-                foreach ($locales as $locale => $item) {
-                    (new SettingEntity($entity->_type))->create([
-                        "object"  => $object->id,
-                        "name"    => $name,
-                        "value"   => $item['value'],
-                        "content" => $item['content'],
-                        "locale"  => !empty($locale) ? str_replace('_', '-', $locale) : 'fr-FR'
-                    ]);
-                }
-            }
-        }
-        if ($entity->_type === 'journal') {
-            $journal = (new OJSJournalEntity())->retrieveOne(['path' => $object->context]);
-            $setting = (new OJSSettingEntity($entity->_type))->retrieveOne([
-                'setting_name' => 'description',
-                'journal_id'   => $journal->journal_id,
-                'locale'       => 'fr_CA'
-            ]);
-            (new SettingEntity('journal'))->create([
-                "object" => $object->id,
-                "name"   => 'rootDescription',
-                "value"  => $setting->setting_value
-            ]);
-        }
-        return $object;
-    }
-    
-    public function execute($parameters = []) {
-/*
+    protected function importData() {
+        $folder = Zord::liveFolder('import');
+        $ojs = new Tunnel('ojs');
         $journals = [];
+        $names = [];
         foreach ((new OJSJournalEntity())->retrieveAll() as $journal) {
             $sections = [];
             $issues   = [];
             foreach ((new OJSSectionEntity())->retrieveAll(['journal_id' => $journal->journal_id]) as $section) {
-                $sections[] = [
-                    'ojs'      => $section->section_id,
-                    'place'    => $section->seq,
-                    'settings' => $this->getSettings('section', $section),
-                ];
+                $settings = $this->getSettings('section', $section);
+                $name = false;
+                foreach ([$journal->primary_locale, 'fr_CA'] as $locale) {
+                    $name = $settings['abbrev'][$this->locale($locale)]['value'] ?? false;
+                    if ($name !== false) {
+                        break;
+                    }
+                }
+                if ($name !== false && !empty($name)) {
+                    $names[$section->section_id] = $name;
+                    $sections[] = [
+                        'name'     => $name,
+                        'ojs'      => $section->section_id,
+                        'place'    => $section->seq,
+                        'settings' => $settings,
+                    ];
+                } else {
+                    echo 'Missing section name for '.$journal->path.'_'.$section->seq.' ('.$section->section_id.')'."\n";
+                }
             }
             foreach ((new OJSIssueEntity())->retrieveAll(['journal_id' => $journal->journal_id]) as $issue) {
+                $short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null);
+                $ean = null;
                 $papers = [];
                 foreach ((new OJSPublicationEntity())->retrieveAll(['issue_id' => $issue->issue_id]) as $publication) {
                     $paper = (new OJSPaperEntity())->retrieveOne($publication->submission_id);
+                    $_short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null, $paper->pages);
                     $status = $publication->access_status ? 'free' : 'subscription';
                     $pages = str_replace('/', '-', JournalsUtils::pages($paper));
-                    $section = $paper->section_id;
+                    $section = $names[$paper->section_id];
                     $place = $publication->seq;
                     $settings = $this->getSettings('submission', $publication);
                     foreach ($settings['title'] ?? [] as $locale => $item) {
@@ -92,17 +92,29 @@ class OJSImport extends ProcessExecutor {
                         }
                     }
                     $entities = (new OJSGalleyEntity())->retrieveAll(['submission_id' => $publication->submission_id]);
-                    $resources = [];
+                    $galleys = [];
                     foreach ($entities as $entity) {
                         if (substr($entity->label, -strlen(" à l'achat")) === " à l'achat" && !empty($entity->remote_url) && substr($entity->remote_url, 0, strlen('https://www.droz.org/')) === 'https://www.droz.org/') {
-                            $resources['shop'] = $entity->remote_url;
+                            $galleys[] = 'shop';
+                            if (!isset($ean)) {
+                                $url = $entity->remote_url;
+                                if (substr($entity->remote_url, 0, strlen('https://www.droz.org/product/')) === 'https://www.droz.org/product/') {
+                                    $url = substr($entity->remote_url, strlen('https://www.droz.org/product/'));
+                                } else {
+                                    $url = substr($entity->remote_url, strlen('https://www.droz.org/'));
+                                }
+                                $tokens = explode('/', $url);
+                                if (count($tokens) === 2) {
+                                    $ean = $tokens[0];
+                                }
+                            }
                         }
                     }
                     $entities = (new OJSFileEntity())->retrieveAll(['submission_id' => $publication->submission_id,'file_stage' => 10,'file_type' => ['in' => ['application/pdf','text/html']]]);
                     foreach ($entities as $entity) {
                         $type = $entity->file_type === 'application/pdf' ? 'pdf' : 'html';
                         $date = date_format(date_create($entity->date_modified), 'Ymd');
-                        $resources[$type] = OJS::path([
+                        $path = OJS::path([
                             'journal'  => $journal->journal_id,
                             'article'  => $publication->submission_id,
                             'genre'    => $entity->genre_id ?? '',
@@ -112,21 +124,34 @@ class OJSImport extends ProcessExecutor {
                             'date'     => $date,
                             'type'     => $type
                         ]);
+                        $file = $folder.$short.DS.$_short.'.'.$type;
+                        $_folder = dirname($file);
+                        if (!file_exists($_folder)) {
+                            mkdir($_folder, 0755, true);
+                        }
+                        if (true /*!$ojs->recv($path, $file)*/) {
+                            if (!in_array($type, $galleys)) {
+                                $galleys[] = $type;
+                            }
+                        } else {
+                            echo "$_short.$type : Unable to get file $path\n";
+                        }
                     }
                     $papers[] = [
-                        'pages'     => $pages,
-                        'status'    => $status,
-                        'settings'  => $settings,
-                        'authors'   => $authors,
-                        'resources' => $resources,
-                        'section'   => $section,
-                        'place'     => $place
+                        'pages'    => $pages,
+                        'status'   => $status,
+                        'section'  => $section,
+                        'place'    => $place,
+                        'authors'  => $authors,
+                        'galleys'  => $galleys,
+                        'settings' => $settings
                     ];
                 }
                 $issues[] = [
                     'volume'    => $issue->volume,
                     'number'    => !empty($issue->number) ? $issue->number : null,
                     'year'      => $issue->year,
+                    'ean'       => $ean,
                     'published' => $issue->date_published,
                     'modified'  => $issue->last_modified,
                     'open'      => $issue->open_access_date,
@@ -143,7 +168,7 @@ class OJSImport extends ProcessExecutor {
                 'settings' => $this->getSettings('journal', $journal)
             ];
         }
-        //file_put_contents('/tmp/ojs.json', Zord::json_encode($journals));
+        /*
         (new JournalEntity())->delete();
         (new IssueEntity())->delete();
         (new SectionEntity())->delete();
@@ -151,56 +176,29 @@ class OJSImport extends ProcessExecutor {
         (new AuthorEntity())->delete();
         (new GalleyEntity())->delete();
         (new SettingEntity())->delete();
-        $ojs = new Tunnel('ojs');
+        */
         foreach ($journals as $journal) {
-            $_journal = $this->create(new JournalEntity(), $journal);
-            echo $_journal->context."\n";
-            $sections = [];
+            echo $journal['context']."\n";
+            //$_journal = JournalsUtils::create(new JournalEntity(), $journal);
+            $_journal = (new JournalEntity())->retrieveOne($journal['context']);
             foreach ($journal['sections'] ?? [] as $section) {
+                echo "  section : ".$section['name']." (".$section['ojs'].")\n";
                 $section["journal"] = $_journal->id;
-                $_section = $this->create(new SectionEntity(), $section);
-                $sections["OJS_".$section['ojs']] = $_section->id;
-                echo "\tsection : ".$_section->place."\n";
+                //$_section = JournalsUtils::create(new SectionEntity(), $section);
             }
             foreach ($journal['issues'] ?? [] as $issue) {
-                $issue["journal"] = $_journal->id;
-                $_issue = $this->create(new IssueEntity(), $issue);
-                echo "\tissue : ".JournalsUtils::short($_journal->context, $_issue)."\n";
+                $short = JournalsUtils::short($journal['context'], $issue['volume'], $issue['number'] ?? null);
+                echo "  issue : $short\n";
+                file_put_contents($folder.$short.'.json', Zord::json_encode($issue));
                 foreach ($issue['papers'] as $paper) {
-                    $paper['journal'] = $_journal->id;
-                    $paper['issue'] = $_issue->id;
-                    $paper['section'] = $sections["OJS_".$paper['section']];
-                    $_paper = $this->create(new PaperEntity(), $paper);
-                    echo "\t\tpaper : ".JournalsUtils::short($_journal->context, $_issue, $_paper)."\n";
-                    foreach ($paper['authors'] as $author) {
-                        $author['paper'] = $_paper->id;
-                        $_author = $this->create(new AuthorEntity(), $author);
-                        echo "\t\t\tauthor : ".JournalsUtils::name($_author)."\n";
-                    }
-                    foreach ($paper['resources'] as $type => $resource) {
-                        $path = $type === 'shop' ? $resource : null;
-                        $create = true;
-                        if ($type !== 'shop') {
-                            $short = JournalsUtils::short($journal['context'], $_issue, $_paper);
-                            $file = JournalsUtils::path($journal->context, $issue->volume, $issue->number, $short, $type);
-                            $folder = dirname($file);
-                            if (!file_exists($folder)) {
-                                mkdir($folder, 0755, true);
-                            }
-                            $create = $ojs->recv($resource, $file);
-                        }
-                        if ($create) {
-                            $this->create(new GalleyEntity(), [
-                                'type'  => $type,
-                                'paper' => $_paper->id,
-                                'path'  => $path
-                            ]);
-                            echo "\t\t\tgalley : ".$type."\n";
-                        }
-                    }
+                    $_short = JournalsUtils::short($journal['context'], $issue['volume'], $issue['number'] ?? null, $paper['pages']);
+                    echo "    paper : ".$_short." (".implode(',', $paper['galleys'] ?? []).")\n";
                 }
             }
         }
+    }
+    
+    protected function addSettings() {
         $settings = [
             'RHP' => [
                 'bannerLink'   => 'https://www.shpf.fr/',
@@ -225,7 +223,7 @@ class OJSImport extends ProcessExecutor {
         ];
         foreach ((new JournalEntity())->retrieveAll(['context' => ['in' => array_keys($settings)]]) as $journal) {
             foreach (array_keys($settings[$journal->context]) as $name) {
-                (new SettingEntity($entity->_type))->create([
+                (new SettingEntity('journal'))->create([
                     "type"    => 'journal',
                     "object"  => $journal->id,
                     "name"    => $name,
@@ -233,6 +231,9 @@ class OJSImport extends ProcessExecutor {
                 ]);
             }
         }
+    }
+    
+    protected function importUsers() {
         (new UserEntity())->delete();
         (new UserHasRoleEntity())->delete();
         (new UserHasProfileEntity())->delete();
@@ -311,15 +312,13 @@ class OJSImport extends ProcessExecutor {
                 }
             }
         }
-*/
-        $import = Zord::getInstance('Import');
-        $import->setLang('fr-FR');
-        $issues = [];
-        foreach ((new IssueEntity())->retrieveAll() as $issue) {
-            $journal = (new JournalEntity())->retrieveOne($issue->journal);
-            $issues[] = JournalsUtils::short($journal->context, $issue);
-        }
-        $import->execute(['steps' => 'index', 'refs' => $issues, 'continue' => true]);
+    }
+    
+    public function execute($parameters = []) {
+        $this->importData();
+        //Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
+        //$this->addSettings();
+        //$this->importUsers();
     }
     
 }

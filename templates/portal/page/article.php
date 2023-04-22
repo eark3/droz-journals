@@ -21,8 +21,8 @@
 				</div>
 <?php } ?>
 			</div>
-<?php foreach ($paper['galleys'][JournalsUtils::readable($user, $controler->journal, $controler->issue, $controler->paper)] ?? [] as $type => $path) { ?>
-<?php   $this->render('/portal/widget/galley', ['type' => $type, 'path' => $path]); ?>
+<?php foreach ($paper['galleys'][JournalsUtils::readable($user, $controler->journal, $controler->issue, $controler->paper)] ?? [] as $type) { ?>
+<?php   $this->render('/portal/widget/galley', array_merge($models, ['type' => $type])); ?>
 <?php } ?>
 			<div class="panel panel-default copyright">
 				<div class="panel-body">

@@ -2,5 +2,6 @@
 	"PASSWORD_ALGO": "BCRYPT",
 	"RANDOM_PASSWORD_LENGTH": 12,
 	"RANDOM_PASSWORD_CHARACTERS": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?./+=*:;,!%$@_-#",
-	"CHECK_IP_WHEN_RESET_PASSWORD": false
+	"CHECK_IP_WHEN_RESET_PASSWORD": false,
+	"SHOP_BASE_URL": "https://www.droz.org/product" 
 }

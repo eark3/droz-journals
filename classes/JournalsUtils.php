@@ -2,21 +2,18 @@
 
 class JournalsUtils {
     
-    public static function short($context, $issue, $paper = null, $align = false) {
-        $volume = $issue->volume;
+    public static function short($context, $volume, $number, $pages = null, $align = false) {
         if ($align) {
             $volume = Zord::str_pad($volume, 3, '0', STR_PAD_LEFT);
         }
         $short = $context.'_'.$volume;
-        if ($issue->number) {
-            $number = $issue->number;
+        if ($number) {
             if ($align) {
                 $number = Zord::str_pad($number, 2, '0', STR_PAD_LEFT);
             }
             $short .= '.'.$number;
         }
-        if ($paper) {
-            $pages = $paper->pages;
+        if ($pages) {
             if ($align) {
                 $tokens = explode('-', $pages);
                 foreach ($tokens as $index => $token) {
@@ -57,9 +54,49 @@ class JournalsUtils {
         return self::reader($user, $journal) || self::status($issue, $paper) === 'free';
     }
     
-    public static function path($journal, $volume, $number, $short, $type) {
+    public static function path($journal, $volume, $number, $pages, $type) {
+        $short = JournalsUtils::short($journal, $volume, $number, $pages, true);
         return STORE_FOLDER.'journals'.DS.$journal.DS.$volume.(isset($number) ? '.'.$number : '').DS.$short.'.'.$type;
     }
+    
+    public static  function create($entity, $data) {
+        $object = $entity->create($data);
+        if ($object) {
+            foreach ($data['settings'] ?? [] as $name => $locales) {
+                foreach ($locales as $locale => $item) {
+                    (new SettingEntity($entity->_type))->create([
+                        "object"  => $object->id,
+                        "name"    => $name,
+                        "value"   => $item['value'],
+                        "content" => $item['content'],
+                        "locale"  => $locale
+                    ]);
+                }
+            }
+        }
+        return $object;
+    }
+    
+    public static function url($context, $issue, $paper, $type) {
+        $ean    = ($issue->ean    ?? $issue['ean']);
+        $volume = ($issue->volume ?? $issue['volume']);
+        $number = ($issue->number ?? $issue['number']);
+        $pages  = ($paper->pages  ?? $paper['pages']);
+        $short  = JournalsUtils::short($context, $volume, $number, $pages);
+        switch ($type) {
+            case 'shop': {
+                return SHOP_BASE_URL.'/'.$ean.'/'.$short;
+            }
+            case 'html': 
+            case 'pdf': {
+                return '/'.$context.'/article/view/'.$short.'/'.$type;
+            }
+            default: {
+                return '/'.$context;
+            }
+        }
+    }
+    
 }
 
 ?>

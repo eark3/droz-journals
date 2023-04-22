@@ -203,7 +203,7 @@ class JournalsPortal extends Portal {
                 $view->setMark(false);
                 $content = $view->render();
                 return isset($content) ? $this->download(
-                    JournalsUtils::short($this->context, $issue, $paper).'.'.Zord::value('quote', ['download',$style,'extension']),
+                    JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages).'.'.Zord::value('quote', ['download',$style,'extension']),
                     null,
                     $content
                 ) : $this->error(501);
@@ -232,7 +232,7 @@ class JournalsPortal extends Portal {
         $issued = strtotime($issue->published);
         $_paper = $this->_settings('paper', $paper);
         $_journal = $this->_settings('journal', $journal);
-        $short = JournalsUtils::short($this->context, $issue, $paper);
+        $short = JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages);
         $reference = [
             'type'            => 'article-journal',
             'id'              => $short,

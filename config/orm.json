@@ -28,6 +28,7 @@
 			"journal",
 			"volume",
 			"number",
+			"ean",
 			"year",
 			"published",
 			"modified",
@@ -40,6 +41,7 @@
 		"fields": [
 			"id",
 			"journal",
+			"name",
 			"place"
 		],
 		"key": "id"
@@ -75,8 +77,7 @@
 		"fields": [
 			"id",
 			"paper",
-			"type",
-			"path"
+			"type"
 		],
 		"key": "id"
 	}
