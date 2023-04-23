@@ -124,7 +124,7 @@ class JournalsUtils {
     }
     
     public static function url($context, $issue, $paper, $type) {
-        $ean    = ($issue->ean    ?? $issue['ean']);
+        $ean    = ($issue->ean    ?? ($issue['ean'] ?? null));
         $volume = ($issue->volume ?? $issue['volume']);
         $number = ($issue->number ?? $issue['number']);
         $pages  = ($paper->pages  ?? $paper['pages']);
