@@ -83,8 +83,8 @@ class OJSImport extends ProcessExecutor {
                     $place = $publication->seq;
                     $settings = $this->getSettings('submission', $publication);
                     $doi = $settings['pub-id::doi'][$this->locale($journal->primary_locale)]['value'] ?? '';
-                    if (!empty($doi) && substr($doi, 0, strlen('10.47421/')) === '10.47421/') {
-                        $suffix = substr($doi, strlen('10.47421/'));
+                    if (!empty($doi) && substr($doi, 0, strlen(DROZ_DOI_PREFIX)) === DROZ_DOI_PREFIX) {
+                        $suffix = substr($doi, strlen(DROZ_DOI_PREFIX));
                         $mapping[$suffix] = $_short;
                     }
                     foreach ($settings['title'] ?? [] as $locale => $item) {
