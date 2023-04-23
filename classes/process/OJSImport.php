@@ -322,7 +322,7 @@ class OJSImport extends ProcessExecutor {
     
     public function execute($parameters = []) {
         $this->importData();
-        //Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
+        Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
         $this->addSettings();
         //$this->importUsers();
     }
