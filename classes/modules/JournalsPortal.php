@@ -6,7 +6,7 @@ class JournalsPortal extends Portal {
     
     public function home() {
         if (isset($this->controler->journal)) {
-            $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'id']]);
+            $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
             if ($issue) {
                 $this->controler->issue = $issue;
                 return $this->page('home', ['issue' => $this->_issue($issue)]);
@@ -38,7 +38,7 @@ class JournalsPortal extends Portal {
                     $ariadne['archive'] = '/'.$this->context.'/issue/archive';
                     $issue = false;
                     if ($page === 'current') {
-                        $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'id']]);
+                        $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
                     } else {
                         $issue = $this->params['issue'] ?? null;
                         if ($issue) {
@@ -73,6 +73,7 @@ class JournalsPortal extends Portal {
             if (!isset($paper)) {
                 return $this->error(404);
             }
+            $paper = Zord::value('mapping', $paper) ?? $paper;
             $paper = (new PaperEntity())->retrieveOne($paper);
             if ($paper === false) {
                 return $this->error(404);

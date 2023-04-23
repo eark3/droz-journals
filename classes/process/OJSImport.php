@@ -11,15 +11,8 @@ class OJSImport extends ProcessExecutor {
         $field = $type.'_id';
         foreach ((new OJSSettingEntity($type))->retrieveAll([$field => $object->$field]) as $entity) {
             $value = str_replace(['site/images/ojsadmin','https://revues-dev.droz.org','https://revues.droz.org/index.php'], ['journals/images','',''], $entity->setting_value);
-            $value = preg_replace_callback(
-                '!s:(\d+):"(.*?)";!',
-                function($match) {
-                    return 's:'.strlen($match[2]).':"'.$match[2].'";';
-                },
-                $value
-            );
             if ($entity->setting_type === 'object') {
-                $value = base64_encode($value);
+                $value = base64_encode(Zord::sanitize($value));
             }
             $settings[$entity->setting_name][$this->locale($entity->locale)] = [
                 'content' => $entity->setting_type,
@@ -76,6 +69,7 @@ class OJSImport extends ProcessExecutor {
                     echo 'Missing section name for '.$journal->path.'_'.$section->seq.' ('.$section->section_id.')'."\n";
                 }
             }
+            $mapping = Zord::getConfig('mapping');
             foreach ((new OJSIssueEntity())->retrieveAll(['journal_id' => $journal->journal_id]) as $issue) {
                 $short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null);
                 $ean = null;
@@ -88,6 +82,11 @@ class OJSImport extends ProcessExecutor {
                     $section = $names[$paper->section_id];
                     $place = $publication->seq;
                     $settings = $this->getSettings('submission', $publication);
+                    $doi = $settings['pub-id::doi'][$this->locale($journal->primary_locale)]['value'] ?? '';
+                    if (!empty($doi) && substr($doi, 0, strlen('10.47421/')) === '10.47421/') {
+                        $suffix = substr($doi, strlen('10.47421/'));
+                        $mapping[$suffix] = $_short;
+                    }
                     foreach ($settings['title'] ?? [] as $locale => $item) {
                         if ($item['value'] === "PDF du dossier") {
                             $settings['title'][$locale]['value'] = 'Dossier complet';
@@ -180,6 +179,7 @@ class OJSImport extends ProcessExecutor {
                     'settings'  => $this->getSettings('issue', $issue)
                 ];
             }
+            Zord::saveConfig('mapping', $mapping);
             $journals[] = [
                 'context'  => $journal->path,
                 'locale'   => $journal->primary_locale,
@@ -189,6 +189,7 @@ class OJSImport extends ProcessExecutor {
                 'settings' => $this->getSettings('journal', $journal)
             ];
         }
+        /*
         (new JournalEntity())->delete();
         Zord::resetFolder($folder);
         foreach ($journals as $journal) {
@@ -202,6 +203,7 @@ class OJSImport extends ProcessExecutor {
                 file_put_contents($folder.$short.'.json', Zord::json_encode($issue));
             }
         }
+        */
     }
     
     protected function addSettings() {
@@ -322,8 +324,8 @@ class OJSImport extends ProcessExecutor {
     
     public function execute($parameters = []) {
         $this->importData();
-        Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
-        $this->addSettings();
+        //Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
+        //$this->addSettings();
         //$this->importUsers();
     }
     

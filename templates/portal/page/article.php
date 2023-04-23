@@ -14,7 +14,7 @@
 			</div>
 			<div>
 				<div class="list-group-item date-published"><?php echo $locale->published; ?> <?php echo $issue['published']; ?></div>
-<?php if (!empty($paper['settings']['doi'])) { ?>
+<?php if (!empty($paper['settings']['pub-id::doi'])) { ?>
 				<div class="list-group-item doi">
 					<strong>DOI : </strong>
 					<a href="https://doi.org/<?php echo $paper['settings']['pub-id::doi']; ?>"><?php echo $paper['settings']['pub-id::doi']; ?></a>
