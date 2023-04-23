@@ -53,6 +53,8 @@ trait JournalsModule {
                 ];
             }
             $result = [
+                'volume'    => $issue->volume,
+                'number'    => $issue->number,
                 'cover'     => $cover,
                 'serial'    => $serial,
                 'open'      => $issue->open,
