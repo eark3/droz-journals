@@ -59,7 +59,7 @@ class JournalsUtils {
         return STORE_FOLDER.'journals'.DS.$journal.DS.$volume.(isset($number) ? '.'.$number : '').DS.$short.'.'.$type;
     }
     
-    public static  function create($entity, $data) {
+    public static function create($entity, $data) {
         $object = $entity->create($data);
         if ($object) {
             foreach ($data['settings'] ?? [] as $name => $locales) {
@@ -73,6 +73,52 @@ class JournalsUtils {
                     ]);
                 }
             }
+        }
+        return $object;
+    }
+    
+    public static function update($entity, $object, $data) {
+        $object = $entity->update($object->id, $data);
+        if ($object) {
+            foreach ($data['settings'] ?? [] as $name => $locales) {
+                foreach ($locales as $locale => $item) {
+                    $key = [
+                        "object"  => $object->id,
+                        "name"    => $name,
+                        "locale"  => $locale
+                    ];
+                    $_data = [
+                        'value'   => $item['value'],
+                        'content' => $item['content']
+                    ];
+                    $setting = (new SettingEntity($entity->_type))->retrieveOne($key);
+                    if ($setting === false) {
+                        (new SettingEntity($entity->_type))->create(array_merge($key, $_data));
+                    } else {
+                        (new SettingEntity($entity->_type))->update($setting->id, $_data);
+                    }
+                }
+            }
+        }
+        return $object;
+    }
+    
+    public static function import($type, $data) {
+        $class = ucfirst($type).'Entity';
+        $fields = Zord::value('import', ['fields',$type]);
+        $key = [];
+        $_data = $data;
+        foreach ($data as $field => $value) {
+            if (in_array($field, $fields)) {
+                $key[$field] = $value;
+                unset($_data[$field]);
+            }
+        }
+        $object = (new $class())->retrieveOne($key);
+        if ($object === false) {
+            $object = self::create(new $class(), array_merge($key, $_data));
+        } else {
+            $object = self::update(new $class(), $object, $_data);
         }
         return $object;
     }

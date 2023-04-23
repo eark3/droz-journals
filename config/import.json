@@ -1,0 +1,32 @@
+{
+	"steps": {
+		"__RESET__": [
+			"check",
+			"resources",
+			"metadata",
+			"index"
+		]
+	},
+	"fields": {
+		"issue": [
+			"journal",
+			"volume",
+			"number"
+		],
+		"paper": [
+			"journal",
+			"issue",
+			"pages"
+		],
+		"author": [
+			"paper",
+			"first",
+			"middle",
+			"last"
+		],
+		"galley": [
+			"paper",
+			"type"
+		]
+	}
+}

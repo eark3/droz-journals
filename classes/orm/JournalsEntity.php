@@ -8,8 +8,14 @@ abstract class JournalsEntity extends Entity {
     
     protected abstract function retrieveBy();
     
-    public function retrieveOne($criteria) {
-        $object = parent::retrieveOne($criteria);
+    protected function reset($id) {
+        $class = get_class($this);
+        $type = strtolower(substr($class, 0, strpos($class, 'Entity')));
+        (new SettingEntity($type))->deleteAll(['object' => $id]);
+    }
+    
+    public function retrieveOne($criteria, $deep = false) {
+        $object = parent::retrieveOne($criteria, $deep);
         return isset($object->id) ? $object : false;
     }
     
@@ -60,6 +66,20 @@ abstract class JournalsEntity extends Entity {
             return $this->retrieveBy();
         }
         return parent::retrieve($criteria, $deep);
+    }
+    
+    public function delete($criteria = null, $deep = false) {
+        $entity = parent::retrieve($criteria = null, $deep = false);
+        parent::delete($criteria, $deep);
+        if ($entity) {
+            if ($this->is_many($criteria)) {
+                foreach ($entity as $entry) {
+                    $this->reset($entry->id);
+                }
+            } else {
+                $this->reset($entity->id);
+            }
+        }
     }
     
 }

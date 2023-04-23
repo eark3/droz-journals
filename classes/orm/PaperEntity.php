@@ -4,6 +4,12 @@ class PaperEntity extends JournalsEntity {
     
     public $_type = 'paper';
     
+    protected function reset($id) {
+        parent::reset($id);
+        (new AuthorEntity())->deleteAll(['paper' => $id]);
+        (new GalleyEntity())->deleteAll(['paper' => $id]);
+    }
+    
     public function retrieveBy() {
         if ($this->paper !== false) {
             return $this->paper;

@@ -3,7 +3,7 @@
 				<div class="media-left media-top">
 					<div class="homepage-image">
 						<a class="fancybox" href="<?php echo $journal['thumbnail']; ?>">
-							<img class="img-responsive" src="<?php echo $journal['thumbnail']; ?>" alt="<?php echo $controler->journal->name; ?>">
+							<img class="img-responsive" src="/public/journals/images/<?php echo $context; ?>/<?php echo $journal['settings']['homepageImage']['uploadName']; ?>" alt="<?php echo $journal['settings']['homepageImage']['altText'] ?? ''; ?>">
 						</a>
 					</div>
 				</div>

@@ -5,9 +5,38 @@ class JournalsImport extends Import {
     protected $journals = [];
     protected $journal  = null;
     protected $issue    = null;
+    protected $empty    = true;
+    protected $cache    = null;
+    
+    public function parameters($string) {
+        $this->refs = explode(',', $string);
+    }
+    
+    private function journal($issue) {
+        $tokens = explode('_', $issue);
+        if (count($tokens) !== 2) {
+            return false;
+        }
+        list($journal,$issue) = $tokens;
+        if (!is_numeric($issue)) {
+            return false;
+        }
+        return $this->journals[$journal] ?? false;
+    }
+    
+    private function purge($type, $issue, $paper = null) {
+        $key = str_replace('-', '_' ,JournalsUtils::short($this->journal->context, $issue->volume, $issue->number, $paper->pages ?? null, true));
+        if ($this->cache->hasItem($type, $key)) {
+            $this->cache->deleteItem($type, $key);
+        }
+    }
     
     protected function configure($parameters = []) {
         parent::configure($parameters);
+        $this->cache = Cache::instance();
+        foreach ((new JournalEntity())->retrieveAll() as $journal) {
+            $this->journals[$journal->context] = $journal;
+        }
         if (!isset($this->refs)) {
             $set = $this->folder.'*';
             $issues = glob($set.'.json');
@@ -15,16 +44,12 @@ class JournalsImport extends Import {
             $this->refs = [];
             foreach ([$issues, $papers] as $items) {
                 foreach ($items as $item) {
-                    $issue = pathinfo($item, PATHINFO_FILENAME);
-                    $tokens = explode('_', $issue);
-                    if (count($tokens) !== 2) {
-                        continue;
+                    if (is_file($item)) {
+                        $issue = pathinfo($item, PATHINFO_FILENAME);
+                    } else if (is_dir($item)) {
+                        $issue = pathinfo($item, PATHINFO_BASENAME);
                     }
-                    list($journal,$issue) = $tokens;
-                    if (!is_numeric($issue)) {
-                        continue;
-                    }
-                    $journal = $this->journals[$journal] ?? (new JournalEntity())->retrieveOne($journal);
+                    $journal = $this->journal($issue);
                     if ($journal === false) {
                         continue;
                     }
@@ -36,40 +61,83 @@ class JournalsImport extends Import {
         }
     }
     
+    protected function resetRef($ean) {
+        parent::resetRef($ean);
+        $this->journal = null;
+        $this->issue = null;
+        $this->empty = true;
+    }
+    
     protected function metadata($ean) {
-        $issue["journal"] = $this->journal->id;
-        $_issue = JournalsUtils::create(new IssueEntity(), $issue);
-        echo "\tissue : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number)."\n";
-        foreach ($issue['papers'] as $paper) {
+        if (empty($this->issue)) {
+            $this->info(2, $this->locale->messages->metadata->info->nodata);
+            return true;
+        }
+        $this->issue["journal"] = $this->journal->id;
+        $_issue = JournalsUtils::import('issue', $this->issue);
+        $this->purge('issue', $_issue);
+        $this->info(2, "issue : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number));
+        if ($this->issue['reset'] ?? false) {
+            (new PaperEntity())->delete(['issue' => $_issue->id]);
+        }
+        foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
-            $_paper = JournalsUtils::create(new PaperEntity(), $paper);
-            echo "\t\tpaper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages)."\n";
+            $section = (new SectionEntity())->retrieveOne([
+                'journal' => $this->journal->id,
+                'name'    => $paper['section']
+            ]);
+            $paper['section'] = $section->id;
+            $_paper = JournalsUtils::import('paper', $paper);
+            $this->purge('paper', $_issue, $_paper);
+            $this->info(3, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));
+            if ($paper['reset'] ?? false) {
+                foreach (explode(',', $paper['reset']) as $reset) {
+                    switch ($reset) {
+                        case 'authors': {
+                            (new AuthorEntity())->delete(['paper' => $_paper->id]);
+                            break;
+                        }
+                        case 'galleys': {
+                            (new GalleyEntity())->delete(['paper' => $_paper->id]);
+                            break;
+                        }
+                    }
+                }
+            }
             foreach ($paper['authors'] as $author) {
                 $author['paper'] = $_paper->id;
-                $_author = JournalsUtils::create(new AuthorEntity(), $author);
-                echo "\t\t\tauthor : ".JournalsUtils::name($_author)."\n";
+                $_author = JournalsUtils::import('author', $author);
+                $this->info(4, "author : ".JournalsUtils::name($_author));
             }
+            $galleys = [];
             foreach ($paper['galleys'] as $type) {
-                JournalsUtils::create(new GalleyEntity(), [
+                JournalsUtils::import('galley', [
                     'type'  => $type,
                     'paper' => $_paper->id
                 ]);
-                echo "\t\t\tgalley : ".$type."\n";
+                $galleys[] = $type;
             }
+            $this->info(4, "galleys : ".implode(', ', $galleys));
         }
         return true;
     }
     
     protected function folders($ean) {
+        if ($this->empty) {
+            return null;
+        }
         list($journal,$issue) = explode('_', $ean);
         return [
-            'source' => $this->folder.$ean,
-            'target' => STORE_FOLDER.'journals'.$journal.DS.$issue
+            $this->folder.$ean,
+            STORE_FOLDER.'journals'.DS.$journal.DS.$issue
         ];
     }
     
     protected function contents($ean) {
+        if ($this->empty) {
+            return null;
+        }
         $contents = [];
         $issue = (new IssueEntity())->retrieveOne($ean);
         $journal = (new JournalEntity())->retrieveOne($issue->journal);
@@ -101,6 +169,12 @@ class JournalsImport extends Import {
             }
         }
         return $contents;
+    }
+    
+    protected function check($ean) {
+        $this->journal = $this->journal($ean);
+        $this->issue = Zord::arrayFromJSONFile($this->folder.$ean.'.json');
+        return true;
     }
     
 }

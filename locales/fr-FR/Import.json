@@ -1,0 +1,25 @@
+{
+	"steps": {
+		"check": "Vérification des données"
+	},
+	"messages": {
+		"check": {
+			"error": {
+				"missing": {
+					"file": "Il manque le fichier ${file}",
+					"ean": "Le numéro EAN doit être renseigneé"
+				}
+			}
+		},
+		"metadata": {
+			"info": {
+				"nodata": "Pas de métadonnées à importer"
+			}
+		},
+		"resources": {
+			"info": {
+				"none": "Pas de fichier html/pdf pour ce numéro"
+			}
+		}
+	}
+}

@@ -5,7 +5,7 @@ trait JournalsModule {
     protected $cache = null;
     
     public function configure() {
-        $this->cache = Zord::getInstance('Cache', Zord::liveFolder('cache'));
+        $this->cache = Cache::instance();
         $this->addStyle('/journals/css/'.$this->context.'/bootstrapTheme.css');
         $this->addStyle('/journals/css/common.css');
         $this->addStyle('/journals/css/'.$this->context.'/layout.css');
@@ -20,9 +20,8 @@ trait JournalsModule {
         }
         $settings = $this->_settings('journal', $journal);
         $result = [
-            'path'      => '/'.$journal->context,
-            'thumbnail' => '/public/journals/images/'.$journal->context.'/'.$settings['homepageImage']['uploadName'],
-            'settings'  => $settings
+            'path'     => '/'.$journal->context,
+            'settings' => $settings
         ];
         $this->cache->setItem('journal', $journal->context, $result);
         return $result;
@@ -139,7 +138,7 @@ trait JournalsModule {
                     $value = $entity->value;
                     switch ($entity->content) {
                         case 'object': {
-                            $value = unserialize($value);
+                            $value = unserialize(base64_decode($value));
                             break;
                         }
                         case 'bool': {
