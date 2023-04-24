@@ -8,10 +8,6 @@ class JournalsImport extends Import {
     protected $empty    = false;
     protected $cache    = null;
     
-    public function parameters($string) {
-        $this->refs = explode(',', $string);
-    }
-    
     private function journal($issue) {
         $tokens = explode('_', $issue);
         if (count($tokens) !== 2) {
