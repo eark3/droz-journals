@@ -4,5 +4,6 @@
 	"RANDOM_PASSWORD_CHARACTERS": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?./+=*:;,!%$@_-#",
 	"CHECK_IP_WHEN_RESET_PASSWORD": false,
 	"SHOP_BASE_URL": "https://www.droz.org/product",
-	"DROZ_DOI_PREFIX": "10.47421/"
+	"DROZ_DOI_PREFIX": "10.47421/",
+	"PDFTOTEXT_COMMAND": "pdftotext ${file}"
 }

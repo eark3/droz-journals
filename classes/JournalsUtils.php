@@ -55,7 +55,7 @@ class JournalsUtils {
     }
     
     public static function path($journal, $volume, $number, $pages, $type) {
-        $short = JournalsUtils::short($journal, $volume, $number, $pages, true);
+        $short = JournalsUtils::short($journal, $volume, $number, $pages);
         return STORE_FOLDER.'journals'.DS.$journal.DS.$volume.(isset($number) ? '.'.$number : '').DS.$short.'.'.$type;
     }
     

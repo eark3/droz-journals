@@ -144,11 +144,11 @@ class JournalsImport extends Import {
             return null;
         }
         $contents = [];
-        $issue = (new IssueEntity())->retrieveOne($ean);
-        $journal = (new JournalEntity())->retrieveOne($issue->journal);
-        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
-        $context = $journal->context;
-        $date = $issue->date;
+        $issue    = (new IssueEntity())->retrieveOne($ean);
+        $journal  = (new JournalEntity())->retrieveOne($issue->journal);
+        $papers   = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
+        $context  = $journal->context;
+        $date     = $issue->date;
         foreach ($papers as $paper) {
             $authors = [];
             foreach ((new AuthorEntity())->retrieveAll(['paper' => $paper->id]) as $author) {
@@ -156,10 +156,15 @@ class JournalsImport extends Import {
             }
             $authors = implode(' ', $authors);
             $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
-            foreach (['html'/*,'pdf'*/] as $type) {
+            foreach (['html','pdf'] as $type) {
                 $name = $paper->pages.'_'.$type;
-                $file = JournalsUtils::path($journal->context, $issue->volume, $issue->number, $paper->pages, 'html');
+                $file = JournalsUtils::path($journal->context, $issue->volume, $issue->number, $paper->pages, $type);
                 if (file_exists($file)) {
+                    $this->info(2, basename($file));
+                    if ($type === 'pdf') {
+                        Zord::execute('exec', PDFTOTEXT_COMMAND, ['file' => $file]);
+                        $file = str_replace('.pdf', '.txt', $file);
+                    }
                     $content = Store::align(file_get_contents($file), $type, true);
                     $contents[] = [
                         'name'    => $name,

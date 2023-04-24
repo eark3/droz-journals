@@ -1,7 +1,7 @@
 					<li class="media panel panel-default" style="padding: 15px;">
  						<div class="media-left">
 							<a href="<?php echo $journal['path']; ?>">
-								<img class="media-object" src="<?php echo $journal['thumbnail']; ?>">
+								<img class="media-object" src="/public/journals/images<?php echo $journal['path']; ?>/<?php echo $journal['settings']['homepageImage']['uploadName']; ?>">
 							</a>
 						</div>
 						<div class="media-body">

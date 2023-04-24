@@ -88,13 +88,13 @@ class JournalsPortal extends Portal {
             }
             $this->controler->issue = $issue;
             $this->controler->paper = $paper;
-            $_paper = $this->_paper($paper, $issue);
-            $path = STORE_FOLDER.'journals'.DS.$this->context.DS.$issue->volume.(!empty($issue->number) ? '.'.$issue->number : '').DS.$_paper['short'].'.'.$display;
+            $path = JournalsUtils::path($this->context, $issue->volume, $issue->number, $paper->pages, $display);
             if (isset($display) && (!file_exists($path) || !is_file($path))) {
                 return $this->error(404);
             }
             $_issue = $this->_issue($issue);
             $_section = $this->_settings('section', $section);
+            $_paper = $this->_paper($paper, $issue);
             $ariadne = [
                 'home' => '/'.$this->context,
                 'archive' => '/'.$this->context.'/issue/archive',
