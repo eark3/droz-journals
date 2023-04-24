@@ -5,7 +5,7 @@ class JournalsImport extends Import {
     protected $journals = [];
     protected $journal  = null;
     protected $issue    = null;
-    protected $empty    = true;
+    protected $empty    = false;
     protected $cache    = null;
     
     public function parameters($string) {
@@ -65,7 +65,7 @@ class JournalsImport extends Import {
         parent::resetRef($ean);
         $this->journal = null;
         $this->issue = null;
-        $this->empty = true;
+        $this->empty = false;
     }
     
     protected function metadata($ean) {
@@ -76,7 +76,6 @@ class JournalsImport extends Import {
         $this->issue["journal"] = $this->journal->id;
         $_issue = JournalsUtils::import('issue', $this->issue);
         $this->purge('issue', $_issue);
-        $this->info(2, "issue : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number));
         if ($this->issue['reset'] ?? false) {
             (new PaperEntity())->delete(['issue' => $_issue->id]);
         }
@@ -90,7 +89,7 @@ class JournalsImport extends Import {
             $paper['section'] = $section->id;
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
-            $this->info(3, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));
+            $this->info(2, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));
             if ($paper['reset'] ?? false) {
                 foreach (explode(',', $paper['reset']) as $reset) {
                     switch ($reset) {
@@ -105,11 +104,15 @@ class JournalsImport extends Import {
                     }
                 }
             }
+            $authors = [];
             foreach ($paper['authors'] as $author) {
                 $author['paper'] = $_paper->id;
                 $_author = JournalsUtils::import('author', $author);
-                $this->info(4, "author : ".JournalsUtils::name($_author));
+                $authors[] = JournalsUtils::name($_author);
             }
+            if (!empty($authors)) {
+                $this->info(3, "authors : ".implode(', ', $authors));
+            };
             $galleys = [];
             foreach ($paper['galleys'] as $type) {
                 JournalsUtils::import('galley', [
@@ -118,7 +121,9 @@ class JournalsImport extends Import {
                 ]);
                 $galleys[] = $type;
             }
-            $this->info(4, "galleys : ".implode(', ', $galleys));
+            if (!empty($galleys)) {
+                $this->info(3, "galleys : ".implode(', ', $galleys));
+            }
         }
         return true;
     }
@@ -173,8 +178,54 @@ class JournalsImport extends Import {
     
     protected function check($ean) {
         $this->journal = $this->journal($ean);
+        if ($this->journal === false) {
+            $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
+            return false;
+        }
         $this->issue = Zord::arrayFromJSONFile($this->folder.$ean.'.json');
-        return true;
+        if (empty($this->issue) && !file_exists($this->folder.$ean)) {
+            $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
+            return false;
+        }
+        $result = true;
+        list($source,$target) = $this->folders($ean);
+        foreach ($this->issue['papers'] ?? [] as $paper) {
+            $section = $paper['section'] ?? null;
+            if ($section) {
+                $_section = (new SectionEntity())->retrieveOne([
+                    'journal' => $this->journal->id,
+                    'name'    => $section
+                ]);
+                if ($_section === false) {
+                    $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $section]));
+                    $result &= false;
+                }
+            }
+            $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
+            foreach ($paper['galleys'] ?? [] as $galley) {
+                if ($galley === 'shop') {
+                    if (!isset($this->issue['ean'])) {
+                        $this->error(3, $this->locale->messages->check->error->missing->ean);
+                        $result &= false;
+                    }
+                } else {
+                    $found = false;
+                    foreach ([$source,$target] as $folder) {
+                        $file = $folder.DS.$short.'.'.$galley;
+                        if (file_exists($file) && is_file($file) && is_readable($file)) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->file, ['file' => $ean.DS.$short.'.'.$galley]));
+                        $result &= false;
+                    }
+                }
+            }
+        }
+        $this->empty = !file_exists($this->folder.$ean);
+        return $result;
     }
     
 }

@@ -7,7 +7,11 @@
 			"error": {
 				"missing": {
 					"file": "Il manque le fichier ${file}",
-					"ean": "Le numéro EAN doit être renseigneé"
+					"ean": "Le numéro EAN doit être renseigné",
+					"section": "La section ${section} n'est pas définie"
+				},
+				"ref": {
+					"wrong": "${ref} n'est pas une référence valide"
 				}
 			}
 		},
