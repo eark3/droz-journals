@@ -16,26 +16,33 @@ trait JournalsModule {
     
     protected function _journal($journal) {
         if ($this->cache->hasItem('journal', $journal->context)) {
-            return $this->cache->getItem('journal', $journal->context);
+            $result = $this->cache->getItem('journal', $journal->context);
+        } else {
+            $settings = $this->_settings('journal', $journal);
+            $result = [
+                'context'  => $journal->context,
+                'settings' => $settings
+            ];
+            $this->cache->setItem('journal', $journal->context, $result);
         }
-        $settings = $this->_settings('journal', $journal);
-        $result = [
-            'path'     => '/'.$journal->context,
-            'settings' => $settings
-        ];
-        $this->cache->setItem('journal', $journal->context, $result);
+        $issues = (new IssueEntity())->retrieveAll(['journal' => $journal->id, 'order' => ['desc' => 'published']]);
+        $_issues = [];
+        foreach ($issues as $issue) {
+            $_issues[] = $this->_issue($issue, $journal);
+        }
+        $result['issues'] = $_issues;
         return $result;
     }
     
-    protected function _issue($issue) {
-        $key = JournalsUtils::short($this->context, $issue->volume, $issue->number, null, true);
-        $sections = (new SectionEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['asc' => 'place']]);
-        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
+    protected function _issue($issue, $journal = null) {
+        $context = $journal->context ?? $this->context;
+        $key = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
         if ($this->cache->hasItem('issue', $key)) {
             $result = $this->cache->getItem('issue', $key);
         } else {
+            $sections = (new SectionEntity())->retrieveAll(['journal' => $issue->journal, 'order' => ['asc' => 'place']]);
             $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
-            $short = JournalsUtils::short($this->context, $issue->volume, $issue->number);
+            $short = JournalsUtils::short($context, $issue->volume, $issue->number);
             $serial = 'Vol. '.$issue->volume;
             if ($issue->number) {
                 $serial .= ' n° '.$issue->number;
@@ -44,11 +51,12 @@ trait JournalsModule {
                 $serial .= ' ('.$issue->year.')';
             }
             $settings = $this->_settings('issue', $issue);
-            $cover = '/public/journals/images/'.$this->context.'/'.$settings['coverImage'];
+            $cover = '/public/journals/images/'.$context.'/'.$settings['coverImage'];
             $link = $this->baseURL.'/issue/view/'.$short;
             $_sections = [];
             foreach ($sections as $section) {
                 $_sections[$section->id] = [
+                    'name'     => $section->name,
                     'settings' => $this->_settings('section', $section)
                 ];
             }
@@ -67,8 +75,9 @@ trait JournalsModule {
             ];
             $this->cache->setItem('issue', $key, $result);
         }
+        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
         foreach ($papers as $paper) {
-            $result['sections'][$paper->section]['papers'][] = $this->_paper($paper, $issue);
+            $result['sections'][$paper->section]['papers'][] = $this->_paper($paper, $issue, $journal);
         }
         foreach ($result['sections'] as $id => $section) {
             if (empty($section['papers'])) {
@@ -78,9 +87,10 @@ trait JournalsModule {
         return $result;
     }
     
-    protected function _paper($paper, $issue) {
-        $short = JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages);
-        $key = str_replace('-', '_', JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages, true));
+    protected function _paper($paper, $issue, $journal = null) {
+        $context = $journal->context ?? $this->context;
+        $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);
+        $key = str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages, true));
         if ($this->cache->hasItem('paper', $key)) {
             return $this->cache->getItem('paper', $key);
         }
@@ -103,10 +113,11 @@ trait JournalsModule {
             $result['names'] = implode(', ', array_map(function($author) {return $author['name'];}, $result['authors']));
         }
         $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
+        //$journal = $this->controler->journal ?? (new JournalEntity())->retrieveOne($issue->journal);
         foreach ($galleys as $galley) {
             $shop = $galley->type === 'shop';
             foreach ([true, false] as $reader) {
-                $access = JournalsUtils::readable($reader, $this->controler->journal, $issue, $paper);
+                $access = JournalsUtils::readable($reader, $journal ?? $this->controler->journal, $issue, $paper);
                 if ($access !== $shop) {
                     $result['galleys'][$reader][] = $galley->type;
                 }

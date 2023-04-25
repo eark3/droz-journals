@@ -1,4 +1,4 @@
-jQuery(document). ready(function() {
+jQuery(document).ready(function() {
 	/* Génération de la table des matières */
 	jQuery("#toc").toc({content: ".main", headings: "p.h1,p.h2,p.h3"});
 	/* Génération des Tabs */

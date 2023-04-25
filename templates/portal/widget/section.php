@@ -1,4 +1,4 @@
-						<section id="<?php echo $id; ?>" class="section" style="clear: both;">
+						<section id="<?php echo $section['name']; ?>" class="section" style="clear: both;">
 							<div class="page-header">
 								<p>
 									<?php echo $section['settings']['title']; ?>

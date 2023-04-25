@@ -14,7 +14,7 @@
 						<a href="/" class="dropdown-toggle" data-toggle="dropdown">revues.droz.org<b class="caret"></b></a>
 	 					<ul class="dropdown-menu dropdown-menu-right">
 <?php foreach ($journals as $_journal) { ?>
-							<li><a href="<?php echo $_journal['path']; ?>"><?php echo $_journal['settings']['name']; ?></a></li>
+							<li><a href="/<?php echo $_journal['context']; ?>"><?php echo $_journal['settings']['name']; ?></a></li>
 <?php } ?>
 						</ul>
 					</li>

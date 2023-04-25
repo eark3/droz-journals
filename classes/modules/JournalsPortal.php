@@ -107,7 +107,7 @@ class JournalsPortal extends Portal {
                 case 'view': {
                     if (in_array($display, ['html','pdf'])) {
                         $view = 'display';
-                        $ariadne['section'] = [$_section['title'], '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$section->id];
+                        $ariadne['section'] = [$_section['title'], '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$section->name];
                         $ariadne['active'] = [$_paper['settings']['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
                     } else {
                         $page = 'article';
@@ -280,50 +280,6 @@ class JournalsPortal extends Portal {
                 'active' => $title ?? $this->locale->ariadne->$content
             ]
         ]);
-    }
-    
-    public function settings() {
-        $type = $this->params['type'] ?? null;
-        $id = $this->params['id'] ?? null;
-        $name = $this->params['name'] ?? null;
-        if (!isset($type) || !isset($id)) {
-            return $this->error(400);
-        }
-        $entity = null;
-        switch ($type) {
-            case 'journal': {
-                $entity = new JournalEntity();
-                break;
-            }
-            case 'section': {
-                $entity = new SectionEntity();
-                break;
-            }
-            case 'issue': {
-                $entity = new IssueEntity();
-                break;
-            }
-            case 'paper': {
-                $entity = new PaperEntity();
-                break;
-            }
-            case 'author': {
-                $entity = new AuthorEntity();
-                break;
-            }
-            case 'galley': {
-                $entity = new GalleyEntity();
-                break;
-            }
-        }
-        if (!isset($entity)) {
-            return $this->error(404);
-        }
-        $object = (new JournalEntity())->retrieveOne($id);
-        if ($object === false) {
-            return $this->error(404);
-        }
-        return $this->_settings($type, $object, $name);
     }
     
     public function login() {

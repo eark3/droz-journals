@@ -36,15 +36,6 @@
 				"content": "FILTER_SANITIZE_STRING"
 			}
 		},
-		"settings": {
-			"shortcut": "settings",
-			"response": "DATA",
-			"parameters": {
-				"type": "FILTER_SANITIZE_STRING",
-				"id": "FILTER_SANITIZE_STRING",
-				"name": "FILTER_SANITIZE_STRING"
-			}
-		},
 		"login": {
 			"shortcut": "login",
 			"parameters": {
@@ -56,6 +47,20 @@
 			"parameters": {
 				"query": "FILTER_SANITIZE_STRING",
 				"authors": "FILTER_SANITIZE_STRING"
+			}
+		}
+	},
+	"Admin": {
+		"objects": {
+			"response": "DATA"
+		},
+		"settings": {
+			"shortcut": "settings",
+			"response": "DATA",
+			"parameters": {
+				"type": "FILTER_SANITIZE_STRING",
+				"id": "FILTER_SANITIZE_STRING",
+				"name": "FILTER_SANITIZE_STRING"
 			}
 		}
 	}

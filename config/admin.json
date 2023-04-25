@@ -1,0 +1,31 @@
+{
+	"settings": {
+		"styles": [
+			{
+				"media": "screen",
+				"type": "text/css",
+				"href": "/journals/css/treeview.css"
+			},
+			{
+				"media": "screen",
+				"type": "text/css",
+				"href": "/journals/css/fontawesome.css"
+			},
+			{
+				"media": "screen",
+				"type": "text/css",
+				"href": "/journals/css/admin/settings.css"
+			}
+		],
+		"scripts": [
+			{
+				"type": "text/javascript",
+				"src": "/journals/js/treeview.js"
+			},
+			{
+				"type": "text/javascript",
+				"src": "/journals/js/admin/settings.js"
+			}
+		]
+	}
+}

@@ -22,5 +22,7 @@ myIframe.addEventListener("load", function() {
 		var style = document.createElement('style');
 		style.textContent = '.center {text-align:center;color: #606060;}';
 	}
-	myIframe.contentDocument.head.appendChild(style);
+	if (myIframe.contentDocument !== undefined && myIframe.contentDocument !== null) {
+		myIframe.contentDocument.head.appendChild(style);
+	}
 });

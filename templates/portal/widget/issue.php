@@ -28,8 +28,8 @@
 									</div>
 									<div class="right">
 										<ul style="text-align: right; font-size: 16px">
-<?php foreach ($issue['sections'] as $id => $section) { ?>
-											<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $id; ?>"><?php echo $section['settings']['title']; ?></a></li>
+<?php foreach ($issue['sections'] as $section) { ?>
+											<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $section['name']; ?>"><?php echo $section['settings']['title']; ?></a></li>
 <?php } ?>
 										</ul>
 									</div>
@@ -38,8 +38,8 @@
 						</div>
 					</div>
 					<div class="sections">
-<?php foreach ($issue['sections'] as $id => $section) { ?>
-<?php   $this->render('#section', ['id' => $id, 'section' => $section]); ?>
+<?php foreach ($issue['sections'] as $section) { ?>
+<?php   $this->render('#section', ['section' => $section]); ?>
 <?php } ?>
 					</div>
 				</div>
