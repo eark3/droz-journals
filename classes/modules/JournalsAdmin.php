@@ -16,6 +16,10 @@ class JournalsAdmin extends Admin {
         $type = $this->params['type'] ?? null;
         $id = $this->params['id'] ?? null;
         $name = $this->params['name'] ?? null;
+        $update = $this->params['update'] ?? null;
+        if (!empty($update)) {
+            $update = Zord::objectToArray(json_decode($update));
+        }
         if (!isset($type) || !isset($id)) {
             return $this->error(400);
         }
@@ -27,7 +31,22 @@ class JournalsAdmin extends Admin {
         if ($object === false) {
             return $this->error(404);
         }
-        return $this->_settings($type, $object, $name);
+        if (empty($update)) {
+            return $this->_settings($type, $object, $name);
+        } else {
+            $this->response = 'DATA';
+            foreach ($update as $name => $value) {
+                if (is_array($value)) {
+                    $value = base64_encode(serialize($value));
+                }
+                (new SettingEntity($type))->updateOne([
+                    'object' => $object->id,
+                    'name'   => $name,
+                    'locale' => $this->lang,
+                ], ['value' => $value]);
+            }
+            return true;
+        }
     }
     
     public function cache() {

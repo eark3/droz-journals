@@ -1,4 +1,12 @@
 #journals {
 	text-align: left;
+	overflow-y: scroll;
+}
+
+#spliter {
 	margin: 0 25px;
+}
+
+.rapSpliter {
+	border: none;
 }

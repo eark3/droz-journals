@@ -1,4 +1,9 @@
 $(document).ready(function() {
+	$('#spliter').jsRapSpliter({
+		position: 0.25,
+		spliterWidth: 2,
+		height: '1000px'
+	});
 	invokeZord({
 		module:  'Admin',
 		action:  'journals',
@@ -90,6 +95,18 @@ $(document).ready(function() {
 				multy : false,
 				callback: function(event, element, parameters) {
 					console.log(parameters.type + ' ' + parameters.id + ' ');
+					invokeZord({
+						module   : 'Portal',
+						action   : 'view',
+						template : '/portal/page/admin/settings/form',
+						models   : JSON.stringify({
+							type : parameters.type,
+							id   : parameters.id
+						}),
+						success  : function(form) {
+							$('#settings').html(form);
+						}
+					});
 				}
 			}, tree);
 		}

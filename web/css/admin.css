@@ -1,3 +1,8 @@
+.pkp_structure_content.admin {
+	width: 100%;
+	max-width: 1300px;
+}
+
 .pkp_structure_content.admin .pkp_structure_main {
 	width: 100% !important;
 }
