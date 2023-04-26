@@ -1,1 +1,1 @@
-<div id="objects"></div>
+<div id="journals"></div>

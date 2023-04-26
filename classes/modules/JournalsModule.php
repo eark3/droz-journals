@@ -14,15 +14,19 @@ trait JournalsModule {
         }
     }
     
+    protected function properties($type, $object) {
+        foreach (Zord::value('orm', [ucfirst($type).'Entity','fields']) as $field) {
+            $result[$field] = $object->$field;
+        }
+        $result['settings'] = $this->_settings($type, $object);
+        return $result;
+    }
+    
     protected function _journal($journal) {
         if ($this->cache->hasItem('journal', $journal->context)) {
             $result = $this->cache->getItem('journal', $journal->context);
         } else {
-            $settings = $this->_settings('journal', $journal);
-            $result = [
-                'context'  => $journal->context,
-                'settings' => $settings
-            ];
+            $result = $this->properties('journal', $journal);
             $this->cache->setItem('journal', $journal->context, $result);
         }
         $issues = (new IssueEntity())->retrieveAll(['journal' => $journal->id, 'order' => ['desc' => 'published']]);
@@ -40,7 +44,7 @@ trait JournalsModule {
         if ($this->cache->hasItem('issue', $key)) {
             $result = $this->cache->getItem('issue', $key);
         } else {
-            $sections = (new SectionEntity())->retrieveAll(['journal' => $issue->journal, 'order' => ['asc' => 'place']]);
+            $result = $this->properties('issue', $issue);
             $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
             $serial = 'Vol. '.$issue->volume;
@@ -50,29 +54,21 @@ trait JournalsModule {
             if ($issue->year) {
                 $serial .= ' ('.$issue->year.')';
             }
-            $settings = $this->_settings('issue', $issue);
-            $cover = '/public/journals/images/'.$context.'/'.$settings['coverImage'];
+            $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
             $link = $this->baseURL.'/issue/view/'.$short;
             $_sections = [];
+            $sections = (new SectionEntity())->retrieveAll(['journal' => $issue->journal, 'order' => ['asc' => 'place']]);
             foreach ($sections as $section) {
-                $_sections[$section->id] = [
-                    'name'     => $section->name,
-                    'settings' => $this->_settings('section', $section)
-                ];
+                $_sections[$section->id] = $this->properties('section', $section);
             }
-            $result = [
-                'volume'    => $issue->volume,
-                'number'    => $issue->number,
+            $result = Zord::array_merge($result, [
                 'cover'     => $cover,
                 'serial'    => $serial,
-                'open'      => $issue->open,
-                'published' => $issue->published,
                 'link'      => $link,
                 'short'     => $short,
                 'copyright' => $copyright,
-                'settings'  => $settings,
                 'sections'  => $_sections
-            ];
+            ]);
             $this->cache->setItem('issue', $key, $result);
         }
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
@@ -94,26 +90,21 @@ trait JournalsModule {
         if ($this->cache->hasItem('paper', $key)) {
             return $this->cache->getItem('paper', $key);
         }
-        $result = [
-            'id'       => $paper->id,
-            'pages'    => $paper->pages,
-            'status'   => $paper->status,
-            'short'    => $short,
-            'settings' => $this->_settings('paper', $paper)
-        ];
+        $result = $this->properties('paper', $paper);
+        $result['short'] = $short;
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
-            $result['authors'][] = [
+            $_author = $this->properties('author', $author);
+            $_author = Zord::array_merge($_author, [
                 'name'     => JournalsUtils::name($author),
-                'email'    => $author->email,
-                'settings' => $this->_settings('author', $author)
-            ];
+                'reverse'  => JournalsUtils::name($author, true)
+            ]);
+            $result['authors'][] = $_author;
         }
         if (!empty($result['authors'])) {
             $result['names'] = implode(', ', array_map(function($author) {return $author['name'];}, $result['authors']));
         }
         $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
-        //$journal = $this->controler->journal ?? (new JournalEntity())->retrieveOne($issue->journal);
         foreach ($galleys as $galley) {
             $shop = $galley->type === 'shop';
             foreach ([true, false] as $reader) {

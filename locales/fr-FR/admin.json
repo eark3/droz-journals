@@ -6,5 +6,20 @@
 		"settings": {
 			"title": "Réglages"
 		}
+	},
+	"settings": {
+		"node": "Réglage $[settings.types.${type}]",
+		"list": "Liste $[settings.types.${type}]",
+		"types": {
+			"journal": "de la revue",
+			"issue": "du numéro",
+			"issues": "des numéros",
+			"section": "de la section",
+			"sections": "des sections",
+			"paper": "de l'article",
+			"papers": "des articles",
+			"author": "de l'auteur",
+			"authors": "des auteurs"
+		}
 	}
 }
