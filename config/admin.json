@@ -4,17 +4,7 @@
 			{
 				"media": "screen",
 				"type": "text/css",
-				"href": "/journals/css/spliter.css"
-			},
-			{
-				"media": "screen",
-				"type": "text/css",
-				"href": "/journals/css/treeview.css"
-			},
-			{
-				"media": "screen",
-				"type": "text/css",
-				"href": "/journals/css/fontawesome.css"
+				"href": "/journals/js/trumbowyg/ui/trumbowyg.css"
 			},
 			{
 				"media": "screen",
@@ -25,11 +15,7 @@
 		"scripts": [
 			{
 				"type": "text/javascript",
-				"src": "/journals/js/spliter.js"
-			},
-			{
-				"type": "text/javascript",
-				"src": "/journals/js/treeview.js"
+				"src": "/journals/js/trumbowyg/trumbowyg.js"
 			},
 			{
 				"type": "text/javascript",

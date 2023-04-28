@@ -1,4 +1,6 @@
-<div id=spliter>
-	<div id="journals"></div>
-	<div id="settings"></div>
+<div id=settings>
+	<div id="select">
+<?php $this->render('select'); ?>
+	</div>
+	<div id="form"></div>
 </div>

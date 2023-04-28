@@ -1,12 +1,84 @@
-#journals {
+#settings {
+	padding: 0 20px;
+	display: flex;
+}
+
+#select {
+	width: 25%;
+}
+
+#form {
+	width: 75%;
+}
+
+#select, #form {
+	display: inline;
 	text-align: left;
-	overflow-y: scroll;
 }
 
-#spliter {
-	margin: 0 25px;
+#form form {
+	padding-left: 20px;
 }
 
-.rapSpliter {
-	border: none;
+#select select,
+#form textarea,
+#form input {
+	display: block;
+	width: 100%;
+}
+
+#form label:not(:first-of-type) {
+	margin-top: 20px;
+}
+
+#form .trumbowyg-box {
+	min-height: 0;
+}
+
+#form .trumbowyg-editor-box {
+	background: white;
+}
+
+#form .preview img {
+	display :block;
+	margin: 10px auto 0 auto;
+	padding: 10px;
+	border: 1px solid black;
+	text-align: center;
+}
+
+#form .preview img[src=""] {
+	display: none;
+}
+
+#form .homepageImage img {
+	max-width: 250px;
+}
+
+#form .bannerImage img {
+	max-width: 395px;
+}
+
+#form label + .trumbowyg-box .trumbowyg-editor-box {
+	margin: 0 auto;
+}
+
+#form label[for="pageFooter"] + .trumbowyg-box .trumbowyg-editor-box {
+	width: 360px;
+}
+
+#form label[for="additionalHomeContent"] + .trumbowyg-box .trumbowyg-editor-box {
+	width: 730px;
+}
+
+#form label[for="description"] + .trumbowyg-box .trumbowyg-editor-box {
+	width: 500px;
+}
+
+#form label[for="rootDescription"] + .trumbowyg-box .trumbowyg-editor-box {
+	width: 560px;
+}
+
+#form #mailingAddress {
+	width: 730px;
 }

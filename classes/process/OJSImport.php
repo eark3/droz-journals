@@ -209,24 +209,24 @@ class OJSImport extends ProcessExecutor {
     protected function addSettings() {
         $settings = [
             'RHP' => [
-                'bannerLink'   => 'https://www.shpf.fr/',
-                'bannerImages' => '/public/journals/images/annonce-shpf.jpg'
+                'bannerLink'  => 'https://www.shpf.fr/',
+                'bannerImage' => '/public/journals/images/annonce-shpf.jpg'
             ],
             'RFHL' => [
-                'bannerLink'   => 'http://sbg1866.canalblog.com/',
-                'bannerImages' => '/public/journals/images/RFHL_Lien_site.png'
+                'bannerLink'  => 'http://sbg1866.canalblog.com/',
+                'bannerImage' => '/public/journals/images/RFHL_Lien_site.png'
             ],
             'CFS' => [
-                'bannerLink'   => 'https://www.cercleferdinanddesaussure.org/',
-                'bannerImages' => '/public/journals/images/CFS_Image_accueil.png'
+                'bannerLink'  => 'https://www.cercleferdinanddesaussure.org/',
+                'bannerImage' => '/public/journals/images/CFS_Image_accueil.png'
             ],
             'RThPh' => [
-                'bannerLink'   => 'https://rthph.ch/',
-                'bannerImages' => '/public/journals/images/RTHPH_lien_site.png'
+                'bannerLink'  => 'https://rthph.ch/',
+                'bannerImage' => '/public/journals/images/RTHPH_lien_site.png'
             ],
             'SLLMOO' => [
-                'bannerLink'   => 'http://www.conjointures.org/',
-                'bannerImages' => '/public/journals/images/BASE_SITE_CONJOINTURE.jpg'
+                'bannerLink'  => 'http://www.conjointures.org/',
+                'bannerImage' => '/public/journals/images/BASE_SITE_CONJOINTURE.jpg'
             ]
         ];
         foreach ((new JournalEntity())->retrieveAll(['context' => ['in' => array_keys($settings)]]) as $journal) {

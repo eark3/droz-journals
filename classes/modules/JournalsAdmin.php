@@ -4,48 +4,47 @@ class JournalsAdmin extends Admin {
         
     use JournalsModule;
     
-    public function journals() {
-        $journals = [];
-        foreach ((new JournalEntity())->retrieveAll() as $journal) {
-            $journals[] = $this->_journal($journal);
-        }
-        return $journals;
-    }
-    
     public function settings() {
         $type = $this->params['type'] ?? null;
         $id = $this->params['id'] ?? null;
-        $name = $this->params['name'] ?? null;
-        $update = $this->params['update'] ?? null;
-        if (!empty($update)) {
-            $update = Zord::objectToArray(json_decode($update));
-        }
-        if (!isset($type) || !isset($id)) {
+        $return = $this->params['return'] ?? 'data';
+        if (!isset($type) || !isset($id) || !in_array($return, ['data','form']) || !in_array($type, CACHED_OBJECT_TYPES)) {
             return $this->error(400);
-        }
-        if (!in_array($type, CACHED_OBJECT_TYPES)) {
-            return $this->error(404);
         }
         $class = ucfirst($type).'Entity';
         $object = (new $class())->retrieveOne($id);
         if ($object === false) {
             return $this->error(404);
         }
-        if (empty($update)) {
-            return $this->_settings($type, $object, $name);
-        } else {
-            $this->response = 'DATA';
-            foreach ($update as $name => $value) {
-                if (is_array($value)) {
-                    $value = base64_encode(serialize($value));
+        switch ($return) {
+            case 'data': {
+                $update = $this->params['update'] ?? null;
+                if (!empty($update)) {
+                    $update = Zord::objectToArray(json_decode($update));
+                    foreach ($update as $name => $value) {
+                        if (is_array($value)) {
+                            $value = base64_encode(serialize($value));
+                        }
+                        (new SettingEntity($type))->updateOne([
+                            'object' => $object->id,
+                            'name'   => $name,
+                            'locale' => $this->lang,
+                        ], ['value' => $value]);
+                    }
+                    return true;
+                } else {
+                    $name = $this->params['name'] ?? null;
+                    return $this->_settings($type, $object, $name);
                 }
-                (new SettingEntity($type))->updateOne([
-                    'object' => $object->id,
-                    'name'   => $name,
-                    'locale' => $this->lang,
-                ], ['value' => $value]);
             }
-            return true;
+            case 'form': {
+                $form = new View(
+                    '/portal/page/admin/settings/form',
+                    ['type' => $type, 'id' => $object->id, 'action' => $this->baseURL, 'settings' => $this->_settings($type, $object)],
+                    $this->controler, 'admin'
+                );
+                return $form->render();
+            }
         }
     }
     

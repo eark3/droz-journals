@@ -20,6 +20,31 @@
 			"papers": "des articles",
 			"author": "de l'auteur",
 			"authors": "des auteurs"
+		},
+		"forms": {
+			"journal": {
+				"name": "Nom de la revue",
+				"rootDescription": "Description en page principale",
+				"description": "Description en page d'accueil de la revue",
+				"homepageImage": "Vignette en page d'acceuil de la revue",
+				"additionalHomeContent": "Contenu supplémentaire en page d'acceuil de la revue",
+				"pageFooter": "Contenu en pied de page",
+				"mailingAddress": "Adresse postale",
+				"contactName": "Nom de la personne à contacter",
+				"contactAffiliation": "Affiliation de la personne à contacter",
+				"contactEmail": "Adresse couriel de la personne à contacter",
+				"supportName": "Nom du contact secondaire",
+				"supportEmail": "Adresse couriel du contact secondaire",
+				"bannerLink": "Lien vers un site externe",
+				"bannerImage": "Image du lien vers le site externe"
+			}
+		},
+		"select": {
+			"journal": "Liste des revues",
+			"issue": "Liste des numéros",
+			"section": "Liste des sections",
+			"paper": "Liste des articles",
+			"author": "Liste des auteurs"
 		}
 	}
 }
