@@ -21,12 +21,18 @@
 }
 
 #select select,
+#select #next,
 #form textarea,
 #form input {
 	display: block;
 	width: 100%;
 }
 
+#select #next {
+	margin-top: 10px;
+}
+
+#select label:not(:first-of-type),
 #form label:not(:first-of-type) {
 	margin-top: 20px;
 }

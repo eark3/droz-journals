@@ -19,6 +19,14 @@
 			},
 			{
 				"type": "text/javascript",
+				"src": "/journals/js/trumbowyg/langs/fr.js"
+			},
+			{
+				"type": "text/javascript",
+				"src": "/journals/js/trumbowyg/langs/de.js"
+			},
+			{
+				"type": "text/javascript",
 				"src": "/journals/js/admin/settings.js"
 			}
 		]

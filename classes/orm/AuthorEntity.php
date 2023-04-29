@@ -1,12 +1,8 @@
 <?php
 
-class AuthorEntity extends JournalsEntity {
+class AuthorEntity extends Entity {
     
     public $_type = 'author';
-    
-    protected function retrieveBy() {
-        return $this->paper ? parent::retrieveAll(['paper' => $this->paper->id]) : false;
-    }
     
 }
 

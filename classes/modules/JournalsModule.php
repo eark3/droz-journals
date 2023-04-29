@@ -55,7 +55,7 @@ trait JournalsModule {
                 $serial .= ' ('.$issue->year.')';
             }
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
-            $link = $this->baseURL.'/issue/view/'.$short;
+            $link = '/'.$context.'/issue/view/'.$short;
             $_sections = [];
             $sections = (new SectionEntity())->retrieveAll(['journal' => $issue->journal, 'order' => ['asc' => 'place']]);
             foreach ($sections as $section) {

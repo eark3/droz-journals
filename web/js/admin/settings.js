@@ -1,13 +1,29 @@
-var displayForm = function(parameters) {
-	invokeZord({
+var displayUI = function(type, id) {
+	var parameters = {
 		module  : 'Admin',
 		action  : 'settings',
-		type    : parameters.type,
-		id      : parameters.id,
-		return  : 'form',
-		success : function(form) {
-			$('#form').html(form);
-			$('#form textarea.html').trumbowyg({autogrow:true});
+		type    : type,
+		id      : id,
+		return  : 'ui',
+		success : function(result) {
+			$('#select').html(result.select);
+			[].forEach.call(['journal','issue','section','paper','author'], function(type) {
+				$('#select #' + type).bind({
+					change: function() {
+						displayUI(this.name, this.value);
+					}
+				});
+			});
+			$('#select #next').bind({
+				click: function() {
+					displayUI(this.dataset.type, 'first');
+				}
+			});
+			$('#form').html(result.form);
+			$('#form textarea.html').trumbowyg({
+				autogrow : true,
+				lang     : LANG.substr(0, 2)
+			});
 			$('#form input.image').change(function() {
 				const file = this.files[0];
 				const preview = this.id;
@@ -20,22 +36,16 @@ var displayForm = function(parameters) {
 				}
 			});
 		}
+	};
+	[].forEach.call(['journal','issue','section','paper','author'], function(type) {
+		select = document.getElementById(type);
+		if (select !== undefined && select !== null) {
+			parameters[type] = select.value;
+		}
 	});
+	invokeZord(parameters);
 };
 
 $(document).ready(function() {
-	[].forEach.call(['journal','issue','section','paper','author'], function(type) {
-		$('#' + type).bind({
-			change: function(event) {
-				displayForm({
-					type : this.name,
-					id   : this.value
-				});
-			}
-		});
-	});
-	displayForm({
-		type : 'journal',
-		id   : document.getElementById('journal').value
-	});
+	displayUI('journal', 'first');
 });

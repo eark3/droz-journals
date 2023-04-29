@@ -8,18 +8,13 @@
 		}
 	},
 	"settings": {
-		"node": "Réglage $[settings.types.${type}]",
-		"list": "Liste $[settings.types.${type}]",
-		"types": {
-			"journal": "de la revue",
-			"issue": "du numéro",
-			"issues": "des numéros",
-			"section": "de la section",
-			"sections": "des sections",
-			"paper": "de l'article",
-			"papers": "des articles",
-			"author": "de l'auteur",
-			"authors": "des auteurs"
+		"select": {
+			"list": "Liste $[settings.select.${type}]",
+			"journal": "des revues",
+			"issue": "des numéros",
+			"section": "des sections",
+			"paper": "des articles",
+			"author": "des auteurs"
 		},
 		"forms": {
 			"journal": {
@@ -38,13 +33,6 @@
 				"bannerLink": "Lien vers un site externe",
 				"bannerImage": "Image du lien vers le site externe"
 			}
-		},
-		"select": {
-			"journal": "Liste des revues",
-			"issue": "Liste des numéros",
-			"section": "Liste des sections",
-			"paper": "Liste des articles",
-			"author": "Liste des auteurs"
 		}
 	}
 }

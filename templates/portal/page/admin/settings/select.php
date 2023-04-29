@@ -1,14 +1,11 @@
-<label for="journal"><?php echo $locale->settings->select->journal; ?></label>
-<select id="journal" name="journal">
-<?php foreach ((new JournalEntity())->retrieveAll() as $journal) { ?>
-	<option value="<?php echo $journal->context; ?>"><?php echo $journal->context; ?></option>
-<?php }?>
+<?php foreach ($choices as $type => $options) {?>
+<label for="<?php echo $type; ?>"><?php echo Zord::resolve($locale->settings->select->list, ['type' => $type], $locale); ?></label>
+<select id="<?php echo $type; ?>" name="<?php echo $type; ?>">
+<?php   foreach ($options as $option) { ?>
+	<option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+<?php   }?>
 </select>
-<label for="issue"><?php echo $locale->settings->select->issue; ?></label>
-<select id="issue" name="issue"></select>
-<label for="section"><?php echo $locale->settings->select->section; ?></label>
-<select id="section" name="section"></select>
-<label for="paper"><?php echo $locale->settings->select->paper; ?></label>
-<select id="paper" name="paper"></select>
-<label for="author"><?php echo $locale->settings->select->author; ?></label>
-<select id="author" name="author"></select>
+<?php   if ($current === $type && isset($next)) { ?>
+<button id="next" data-type="<?php echo $next; ?>"><?php echo Zord::resolve($locale->settings->select->list, ['type' => $next], $locale); ?></button>
+<?php   }?>
+<?php } ?>
