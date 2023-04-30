@@ -6,5 +6,6 @@
 	"SHOP_BASE_URL": "https://www.droz.org/product",
 	"DROZ_DOI_PREFIX": "10.47421/",
 	"PDFTOTEXT_COMMAND": "pdftotext ${file}",
-	"CACHED_OBJECT_TYPES": ["journal","issue","section","paper","author","galley"]
+	"CACHED_OBJECT_TYPES": ["journal","issue","paper"],
+	"TUNABLE_OBJECT_TYPES": ["journal","issue","section","paper","author"]
 }

@@ -33,6 +33,15 @@
 		}
 	},
 	"aside": {
+		"layout": {
+			"default": [
+				"search",
+				"shop",
+				"information",
+				"banner",
+				"summary"
+			]
+		},
 		"infos": {
 			"pages": [
 				"readerInformation",

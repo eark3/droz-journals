@@ -167,7 +167,7 @@ trait JournalsModule {
             $models['journals'][] = $this->_journal($journal);
         }
         if (isset($this->controler->journal)) {
-            $models['layout'] = Zord::value('layout', $this->context) ?? Zord::value('layout', 'default');
+            $models['aside'] = Zord::value('portal', ['aside', 'layout', $this->context]) ?? Zord::value('portal', ['aside', 'layout', 'default']);
             $models['journal'] = $this->_journal($this->controler->journal);
         }
         if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {

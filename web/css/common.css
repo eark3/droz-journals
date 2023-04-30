@@ -113,3 +113,7 @@
 #cslCitationFormats li span {
 	cursor: pointer;
 }
+
+.pkp_structure_content.home aside .block_banner {
+	display: none;
+}

@@ -29,6 +29,13 @@
 				"type": "text/javascript",
 				"src": "/journals/js/admin/settings.js"
 			}
-		]
+		],
+		"order" : {
+			"journal": {"asc": "place"},
+			"issue": [{"asc": "volume"}, {"asc": "number"}],
+			"section": {"asc": "place"},
+			"paper": {"asc": "place"},
+			"author": [{"asc": "last"}, {"asc": "first"}]
+		}
 	}
 }

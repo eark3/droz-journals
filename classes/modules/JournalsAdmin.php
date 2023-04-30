@@ -4,39 +4,173 @@ class JournalsAdmin extends Admin {
         
     use JournalsModule;
     
-    public function settings() {
-        $type = $this->params['type'] ?? 'journal';
-        $id = $this->params['id'] ?? 'first';
-        $return = $this->params['return'] ?? 'data';
-        if (!in_array($return, ['data','ui']) || !in_array($type, CACHED_OBJECT_TYPES)) {
-            return $this->error(400);
-        }
-        $order = false;
+    protected function __settings($type, $criteria) {
+        $object  = false;
+        $choices = [];
+        $next    = null;
+        $journal = false;
+        $issue   = false;
+        $section = false;
+        $paper   = false;
+        $author  = false;
+        $_criteria = [];
         switch ($type) {
             case 'journal': {
-                $order = ['asc' => 'place'];
+                if ($criteria !== 'first') {
+                    $object = (new JournalEntity())->retrieveOne($criteria);
+                }
+                $next = 'issue';
                 break;
             }
             case 'issue': {
-                $order = [['asc' => 'volume'],['asc' => 'number']];
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
+                if ($criteria !== 'first') {
+                    $object = (new IssueEntity())->retrieveOne($criteria);
+                }
+                $next = 'section';
                 break;
             }
             case 'section': {
-                $order = ['asc' => 'place'];
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
+                $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
+                if ($criteria !== 'first') {
+                    $object = (new SectionEntity())->retrieveOne($criteria);
+                }
+                $next = 'paper';
                 break;
             }
             case 'paper': {
-                $order = ['asc' => 'place'];
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
+                $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
+                $section = (new SectionEntity())->retrieveOne($this->params['section']);
+                if ($criteria !== 'first') {
+                    $object = (new PaperEntity())->retrieveOne($criteria);
+                }
+                $next = 'author';
                 break;
             }
             case 'author': {
-                $order = [['asc' => 'last'],['asc' => 'first']];
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
+                $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
+                $section = (new SectionEntity())->retrieveOne($this->params['section']);
+                $paper   = (new PaperEntity())->retrieveOne($this->params['paper']);
+                if ($criteria !== 'first') {
+                    $object = (new AuthorEntity())->retrieveOne($criteria);
+                }
                 break;
             }
         }
+        $_criteria['journal'] = [
+            'order' => Zord::value('admin', ['settings','order','journal'])
+        ];
+        foreach ((new JournalEntity())->retrieveAll($_criteria['journal']) as $_journal) {
+            $selected = false;
+            if ($journal !== false) {
+                $selected = ($_journal->id === $journal->id);
+            } else if ($type === 'journal' && $object !== false) {
+                $selected = ($_journal->id === $object->id);
+            }
+            $choices['journal'][] = [
+                'value'    => $_journal->id,
+                'label'    => $_journal->context,
+                'selected' => $selected
+            ];
+        }
+        if ($journal !== false) {
+            $_criteria['issue'] = [
+                'journal' => $journal->id,
+                'order'   => Zord::value('admin', ['settings','order','issue'])
+            ];
+            foreach ((new IssueEntity())->retrieveAll($_criteria['issue']) as $_issue) {
+                $selected = false;
+                if ($issue !== false) {
+                    $selected = ($_issue->id === $issue->id);
+                } else if ($type === 'issue' && $object !== false) {
+                    $selected = ($_issue->id === $object->id);
+                }
+                $choices['issue'][] = [
+                    'value'    => $_issue->id,
+                    'label'    => JournalsUtils::short($journal->context, $_issue->volume, $_issue->number),
+                    'selected' => $selected
+                ];
+            }
+        }
+        if ($journal !== false && $issue !== false) {
+            $_criteria['section'] = [
+                'journal' => $journal->id,
+                'order'   => Zord::value('admin', ['settings','order','section'])
+            ];
+            foreach ((new SectionEntity())->retrieveAll($_criteria['section']) as $_section) {
+                $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'section' => $_section->id]);
+                if ($papers->getIterator()->valid()) {
+                    $selected = false;
+                    if ($section !== false) {
+                        $selected = ($_section->id === $section->id);
+                    } else if ($type === 'section' && $object !== false) {
+                        $selected = ($_section->id === $object->id);
+                    }
+                    $choices['section'][] = [
+                        'value'    => $_section->id,
+                        'label'    => $_section->name,
+                        'selected' => $selected
+                    ];
+                }
+            }
+        }
+        if ($issue !== false && $section !== false) {
+            $_criteria['paper'] = [
+                'issue'   => $issue->id,
+                'section' => $section->id,
+                'order'   => Zord::value('admin', ['settings','order','paper'])
+            ];
+            foreach ((new PaperEntity())->retrieveAll($_criteria['paper']) as $_paper) {
+                $selected = false;
+                if ($paper !== false) {
+                    $selected = ($_paper->id === $paper->id);
+                } else if ($type === 'paper' && $object !== false) {
+                    $selected = ($_paper->id === $object->id);
+                }
+                $choices['paper'][] = [
+                    'value'    => $_paper->id,
+                    'label'    => JournalsUtils::short($journal->context, $issue->volume, $issue->number, $_paper->pages),
+                    'selected' => $selected
+                ];
+            }
+        }
+        if ($paper !== false) {
+            $_criteria['author'] = [
+                'paper'   => $paper->id,
+                'order'   => Zord::value('admin', ['settings','order','author'])
+            ];
+            foreach ((new AuthorEntity())->retrieveAll($_criteria['paper']) as $_author) {
+                $selected = false;
+                if ($author !== false) {
+                    $selected = ($_author->id === $author->id);
+                } else if ($type === 'author' && $object !== false) {
+                    $selected = ($_author->id === $object->id);
+                }
+                $choices['author'][] = [
+                    'value'    => $_author->id,
+                    'label'    => JournalsUtils::name($_author, true),
+                    'selected' => $selected
+                ];
+            }
+        }
         $class = ucfirst($type).'Entity';
-        $id = ($id === 'first') ? ['first' => true, 'order' => $order] : $id;
-        $object = (new $class())->retrieveOne($id);
+        if ($criteria === 'first') {
+            $object = (new $class())->retrieveFirst($_criteria[$type]);
+        }
+        return [$object, $choices, $next];
+    }
+    
+    public function settings() {
+        $type = $this->params['type'] ?? 'journal';
+        $criteria = $this->params['id'] ?? 'first';
+        $return = $this->params['return'] ?? 'data';
+        if (!in_array($return, ['data','ui']) || !in_array($type, TUNABLE_OBJECT_TYPES)) {
+            return $this->error(400);
+        }
+        list($object, $choices, $next) = $this->__settings($type, $criteria);
         if ($object === false) {
             return $this->error(404);
         }
@@ -62,111 +196,6 @@ class JournalsAdmin extends Admin {
                 }
             }
             case 'ui': {
-                $choices = [];
-                $next    = null;
-                $journal = false;
-                $issue   = false;
-                $section = false;
-                $paper   = false;
-                $author  = false;
-                switch ($type) {
-                    case 'journal': {
-                        $journal = $object;
-                        $next = 'issue';
-                        break;
-                    }
-                    case 'issue': {
-                        $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                        $issue = $object;
-                        $next = 'section';
-                        break;
-                    }
-                    case 'section': {
-                        $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                        $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
-                        $section = $object;
-                        $next = 'paper';
-                        break;
-                    }
-                    case 'paper': {
-                        $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                        $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
-                        $section = (new SectionEntity())->retrieveOne($this->params['section']);
-                        $paper   = $object;
-                        $next = 'author';
-                        break;
-                    }
-                    case 'author': {
-                        $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                        $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
-                        $section = (new SectionEntity())->retrieveOne($this->params['section']);
-                        $paper   = (new PaperEntity())->retrieveOne($this->params['paper']);
-                        $author  = $object;
-                        break;
-                    }
-                }
-                if ($journal !== false) {
-                    foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $_journal) {
-                        $choices['journal'][] = [
-                            'value'    => $_journal->id,
-                            'label'    => $_journal->context,
-                            'selected' => ($_journal->id === $journal->id)
-                        ];
-                    }
-                }
-                if ($issue !== false) {
-                    foreach ((new IssueEntity())->retrieveAll([
-                        'journal' => $journal->id,
-                        'order'   => [['asc' => 'volume'],['asc' => 'number']]
-                    ]) as $_issue) {
-                        $choices['issue'][] = [
-                            'value'    => $_issue->id,
-                            'label'    => JournalsUtils::short($journal->context, $_issue->volume, $_issue->number),
-                            'selected' => ($_issue->id === $issue->id)
-                        ];
-                    }
-                }
-                if ($section !== false) {
-                    foreach ((new SectionEntity())->retrieveAll([
-                        'journal' => $journal->id,
-                        'order'   => ['asc' => 'place']
-                    ]) as $_section) {
-                        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'section' => $_section->id]);
-                        if ($papers->getIterator()->valid()) {
-                            $value = $_section->name;
-                            $choices['section'][] = [
-                                'value'    => $_section->id,
-                                'label'    => $_section->name,
-                                'selected' => ($_section->id === $section->id)
-                            ];
-                        }
-                    }
-                }
-                if ($paper !== false) {
-                    foreach ((new PaperEntity())->retrieveAll([
-                        'issue'   => $issue->id,
-                        'section' => $section->id,
-                        'order'   => ['asc' => 'place']
-                    ]) as $_paper) {
-                        $choices['paper'][] = [
-                            'value'    => $_paper->id,
-                            'label'    => JournalsUtils::short($journal->context, $issue->volume, $issue->number, $_paper->pages),
-                            'selected' => ($_paper->id === $paper->id)
-                        ];
-                    }
-                }
-                if ($author !== false) {
-                    foreach ((new AuthorEntity())->retrieveAll([
-                        'paper'   => $paper->id,
-                        'order'   => [['asc' => 'last'],['asc' => 'first']]
-                    ]) as $_author) {
-                        $choices['author'][] = [
-                            'value'    => $_author->id,
-                            'label'    => JournalsUtils::name($_author, true),
-                            'selected' => ($_author->id === $author->id)
-                        ];
-                    }
-                }
                 $select = new View(
                     '/portal/page/admin/settings/select',
                     ['choices' => $choices, 'current' => $type, 'next' => $next],

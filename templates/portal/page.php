@@ -7,7 +7,7 @@
 	</main>
 <?php if ($context !== 'root' && $page !== 'admin') { ?>
 	<aside id="sidebar" class="pkp_structure_sidebar left col-xs-12 col-sm-4" role="complementary" aria-label="Barre de navigation">
-<?php foreach ($layout['aside'] as $component) { ?>
+<?php foreach ($aside as $component) { ?>
 <?php   $this->render('aside/'.$component); ?>
 <?php } ?>
 	</aside>
