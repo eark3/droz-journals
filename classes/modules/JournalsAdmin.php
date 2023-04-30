@@ -5,14 +5,15 @@ class JournalsAdmin extends Admin {
     use JournalsModule;
     
     protected function __settings($type, $criteria) {
-        $object  = false;
-        $choices = [];
-        $next    = null;
-        $journal = false;
-        $issue   = false;
-        $section = false;
-        $paper   = false;
-        $author  = false;
+        $object   = false;
+        $choices  = [];
+        $settings = [];
+        $next     = null;
+        $journal  = false;
+        $issue    = false;
+        $section  = false;
+        $paper    = false;
+        $author   = false;
         $_criteria = [];
         switch ($type) {
             case 'journal': {
@@ -160,7 +161,20 @@ class JournalsAdmin extends Admin {
         if ($criteria === 'first') {
             $object = (new $class())->retrieveFirst($_criteria[$type]);
         }
-        return [$object, $choices, $next];
+        $settings['journal'] = $this->_settings('journal', $journal !== false ? $journal : $object);
+        if ($journal !== false) {
+            $settings['issue'] = $this->_settings('issue', $issue !== false ? $issue : $object);
+        }
+        if ($journal !== false && $issue !== false) {
+            $settings['section'] = $this->_settings('section', $section !== false ? $section : $object);
+        }
+        if ($issue !== false && $section !== false) {
+            $settings['paper'] = $this->_settings('paper', $paper !== false ? $paper : $object);
+        }
+        if ($paper !== false) {
+            $settings['author'] = $this->_settings('author', $author !== false ? $author : $object);
+        }
+        return [$object, $choices, $next, $settings];
     }
     
     public function settings() {
@@ -170,7 +184,7 @@ class JournalsAdmin extends Admin {
         if (!in_array($return, ['data','ui']) || !in_array($type, TUNABLE_OBJECT_TYPES)) {
             return $this->error(400);
         }
-        list($object, $choices, $next) = $this->__settings($type, $criteria);
+        list($object, $choices, $next, $settings) = $this->__settings($type, $criteria);
         if ($object === false) {
             return $this->error(404);
         }
@@ -203,7 +217,7 @@ class JournalsAdmin extends Admin {
                 );
                 $form = new View(
                     '/portal/page/admin/settings/form',
-                    ['type' => $type, 'id' => $object->id, 'action' => $this->baseURL, 'settings' => $this->_settings($type, $object)],
+                    ['type' => $type, 'id' => $object->id, 'action' => $this->baseURL, 'settings' => $settings],
                     $this->controler, 'admin'
                 );
                 return ['select' => $select->render(), 'form' => $form->render()];

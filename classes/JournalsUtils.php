@@ -9,7 +9,11 @@ class JournalsUtils {
         $short = $context.'_'.$volume;
         if ($number) {
             if ($align) {
-                $number = Zord::str_pad($number, 2, '0', STR_PAD_LEFT);
+                $tokens = explode('-', $number);
+                foreach ($tokens as $index => $token) {
+                    $tokens[$index] = Zord::str_pad($token, 2, '0', STR_PAD_LEFT);
+                }
+                $number = implode('-', $tokens);
             }
             $short .= '.'.$number;
         }

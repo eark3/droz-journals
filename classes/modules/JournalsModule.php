@@ -40,7 +40,7 @@ trait JournalsModule {
     
     protected function _issue($issue, $journal = null) {
         $context = $journal->context ?? $this->context;
-        $key = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
+        $key = str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, null, true));
         if ($this->cache->hasItem('issue', $key)) {
             $result = $this->cache->getItem('issue', $key);
         } else {

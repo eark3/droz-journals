@@ -20,6 +20,7 @@ var displayUI = function(type, id) {
 				}
 			});
 			$('#form').html(result.form);
+			$("#form .fancybox").fancybox();
 			$('#form textarea.html').trumbowyg({
 				autogrow : true,
 				lang     : LANG.substr(0, 2)

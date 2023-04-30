@@ -30,12 +30,83 @@
 				"src": "/journals/js/admin/settings.js"
 			}
 		],
-		"order" : {
+		"order": {
 			"journal": {"asc": "place"},
 			"issue": [{"asc": "volume"}, {"asc": "number"}],
 			"section": {"asc": "place"},
 			"paper": {"asc": "place"},
 			"author": [{"asc": "last"}, {"asc": "first"}]
+		},
+		"fields": {
+			"journal": {
+				"name": {
+					"template": "text"
+				},
+				"rootDescription": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"description": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"homepageImage": {
+					"template": "image",
+					"src": "/public/journals/images/${journal.acronym}/${journal.homepageImage.uploadName}",
+					"alt": "${journal.homepageImage.altText}"
+				},
+				"additionalHomeContent": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"pageFooter": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"mailingAddress": {
+					"template": "text",
+					"multiline": true,
+					"rows": 6
+				},
+				"contactName": {
+					"template": "text"
+				},
+				"contactAffiliation": {
+					"template": "text"
+				},
+				"contactEmail": {
+					"template": "text"
+				},
+				"supportName": {
+					"template": "text"
+				},
+				"bannerLink": {
+					"template": "text"
+				},
+				"bannerImage": {
+					"template": "image",
+					"src": "${journal.bannerImage}"
+				}
+			},
+			"issue": {
+				"title": {
+					"template": "text"
+				},
+				"description": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"coverImage": {
+					"template": "image",
+					"src": "/public/journals/images/${journal.acronym}/${issue.coverImage}",
+					"alt": "${issue.coverImageAltText}"
+				}
+			}
 		}
 	}
 }

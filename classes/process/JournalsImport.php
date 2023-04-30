@@ -14,8 +14,11 @@ class JournalsImport extends Import {
             return false;
         }
         list($journal,$issue) = $tokens;
-        if (!is_numeric($issue)) {
-            return false;
+        $tokens = explode('-', $issue);
+        foreach ($tokens as $issue) {
+            if (!is_numeric($issue)) {
+                return false;
+            }
         }
         return $this->journals[$journal] ?? false;
     }
