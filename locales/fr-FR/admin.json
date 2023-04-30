@@ -37,6 +37,17 @@
 				"title": "Titre du numéro",
 				"description": "Description du numéro",
 				"coverImage": "Image de couverture"
+			},
+			"section": {
+				"title": "Titre de la section"
+			},
+			"paper": {
+				"title": "Titre de l'article",
+				"subtitle": "Sous-titre de l'article",
+				"pub-id::doi": "DOI de l'article"
+			},
+			"author": {
+				"affiliation": "Affiliation de l'auteur"
 			}
 		}
 	}
