@@ -85,6 +85,18 @@ class JournalsImport extends Import {
                 'journal' => $this->journal->id,
                 'name'    => $paper['section']
             ]);
+            if ($section === false) {
+                list($name, $place, $title) = explode(':', $paper['section']);
+                JournalsUtils::create(new SectionEntity(),[
+                    'journal'  => $this->journal->id,
+                    'name'     => $name,
+                    'place'    => $place,
+                    'settings' => ['title' => [$this->lang => [
+                        'value' => $title,
+                        'content' => 'string'
+                    ]]]
+                ]);
+            }
             $paper['section'] = $section->id;
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
