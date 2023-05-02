@@ -1,4 +1,8 @@
 {
+	"language": "Langue",
+	"lang": {
+		"de-DE": "Allemand (DE)"
+	},
 	"root": {
 		"journal": "Voir la revue",
 		"current": "Numéro courant"

@@ -252,6 +252,8 @@ class JournalsAdmin extends Admin {
                             } else {
                                 (new SettingEntity($type))->create(array_merge($key, $set));
                             }
+                            //$key = $this->_key($type, $object, $context, $issue);
+                            //$this->cache->deleteItem($type, $key);
                         }
                     }
                     return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? ['message' => $this->locale->settings->updated] : $this->redirect($this->baseURL.'/admin'); 

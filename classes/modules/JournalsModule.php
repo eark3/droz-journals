@@ -22,12 +22,27 @@ trait JournalsModule {
         return $result;
     }
     
+    protected function _key($type, $object, $context = null, $issue = null) {
+        switch ($type) {
+            case 'journal': {
+                return $object->context;
+            }
+            case 'issue': {
+                return str_replace('-', '_', JournalsUtils::short($context, $object->volume, $object->number, null, true));
+            }
+            case 'paper': {
+                return str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, $object->pages, true));
+            }
+        }
+    }
+    
     protected function _journal($journal) {
-        if ($this->cache->hasItem('journal', $journal->context)) {
-            $result = $this->cache->getItem('journal', $journal->context);
+        $key = $this->_key('journal', $journal);
+        if ($this->cache->hasItem('journal', $key)) {
+            $result = $this->cache->getItem('journal', $key);
         } else {
             $result = $this->properties('journal', $journal);
-            $this->cache->setItem('journal', $journal->context, $result);
+            $this->cache->setItem('journal', $key, $result);
         }
         $issues = (new IssueEntity())->retrieveAll(['journal' => $journal->id, 'order' => ['desc' => 'published']]);
         $_issues = [];
@@ -40,6 +55,7 @@ trait JournalsModule {
     
     protected function _issue($issue, $journal = null) {
         $context = $journal->context ?? $this->context;
+        $key = $this->_key('issue', $issue, $context);
         $key = str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, null, true));
         if ($this->cache->hasItem('issue', $key)) {
             $result = $this->cache->getItem('issue', $key);
@@ -86,7 +102,7 @@ trait JournalsModule {
     protected function _paper($paper, $issue, $journal = null) {
         $context = $journal->context ?? $this->context;
         $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);
-        $key = str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages, true));
+        $key = $this->_key('paper', $paper, $context, $issue);
         if ($this->cache->hasItem('paper', $key)) {
             return $this->cache->getItem('paper', $key);
         }
