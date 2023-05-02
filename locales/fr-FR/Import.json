@@ -10,6 +10,9 @@
 					"ean": "Le numéro EAN doit être renseigné",
 					"section": "La section ${section} n'est pas définie"
 				},
+				"without": {
+					"section": "L'article ${paper} n'a pas de section définie"
+				},
 				"ref": {
 					"wrong": "${ref} n'est pas une référence valide"
 				}

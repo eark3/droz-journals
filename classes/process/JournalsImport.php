@@ -81,12 +81,12 @@ class JournalsImport extends Import {
         foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
+            list($name, $place, $title) = explode(':', $paper['section']);
             $section = (new SectionEntity())->retrieveOne([
                 'journal' => $this->journal->id,
-                'name'    => $paper['section']
+                'name'    => $name
             ]);
             if ($section === false) {
-                list($name, $place, $title) = explode(':', $paper['section']);
                 JournalsUtils::create(new SectionEntity(),[
                     'journal'  => $this->journal->id,
                     'name'     => $name,
@@ -206,18 +206,28 @@ class JournalsImport extends Import {
         $result = true;
         list($source,$target) = $this->folders($ean);
         foreach ($this->issue['papers'] ?? [] as $paper) {
+            $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $section = $paper['section'] ?? null;
             if ($section) {
+                $tokens = explode(':', $paper['section']);
+                $name = null;
+                if (count($tokens) === 1) {
+                    $name = $section;
+                } else if (count($tokens) === 3) {
+                    list($name, $place, $title) = $tokens;
+                }
                 $_section = (new SectionEntity())->retrieveOne([
                     'journal' => $this->journal->id,
-                    'name'    => $section
+                    'name'    => $name
                 ]);
                 if ($_section === false) {
                     $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $section]));
                     $result &= false;
                 }
+            } else {
+                $this->error(3, Zord::substitute($this->locale->messages->check->error->without->section, ['paper' => $short]));
+                $result &= false;
             }
-            $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             foreach ($paper['galleys'] ?? [] as $galley) {
                 if ($galley === 'shop') {
                     if (!isset($this->issue['ean'])) {

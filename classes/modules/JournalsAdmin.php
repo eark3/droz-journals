@@ -177,6 +177,46 @@ class JournalsAdmin extends Admin {
         return [$object, $choices, $next, $settings];
     }
     
+    protected function adjusted($type, $name, $value, $settings) {
+        $config = Zord::value('admin', ['settings','fields', $type, $name]) ?? [];
+        if ($config['template'] === 'image' && isset($_FILES[$name])) {
+            $source = $_FILES[$name]['tmp_name'];
+            if (empty($source)) {
+                return false;
+            }
+            $filename = $_FILES[$name]['name'];
+            $folder = STORE_FOLDER.'public'.DS.'journals'.DS.'images';
+            switch ($name) {
+                case 'homepageImage': {
+                    $filename = $settings['journal']['acronym'].DS.$filename;
+                    list($width, $height) = getimagesize($source);
+                    $value = [
+                        'name'         => $filename,
+                        'uploadName'   => $name.'_'.str_replace('-', '_', $this->lang).'.'.pathinfo($filename, PATHINFO_EXTENSION),
+                        'width'        => $width,
+                        'heigth'       => $height,
+                        'dateUploaded' => date('Y-m-d H:i:s'),
+                        'altText'      => ''
+                    ];
+                    break;
+                }
+                case 'bannerImage': {
+                    $value = $filename;
+                }
+            }
+            $target = $folder.DS.$filename;
+            if (!empty($source) && !is_dir($target)) {
+                move_uploaded_file($source, $target);
+            }
+        }
+        $content = 'string';
+        if (is_array($value)) {
+            $value   = base64_encode(serialize($value));
+            $content = 'object';
+        }
+        return [$value, $content];
+    }
+    
     public function settings() {
         $type = $this->params['type'] ?? 'journal';
         $criteria = $this->params['id'] ?? 'first';
@@ -191,19 +231,30 @@ class JournalsAdmin extends Admin {
         switch ($return) {
             case 'data': {
                 $update = $this->params['update'] ?? null;
+                $update = array_merge($update, $_FILES);
                 if (!empty($update)) {
-                    $update = Zord::objectToArray(json_decode($update));
                     foreach ($update as $name => $value) {
-                        if (is_array($value)) {
-                            $value = base64_encode(serialize($value));
+                        $adjusted = $this->adjusted($type, $name, $value, $settings);
+                        if ($adjusted) {
+                            list($value, $content) = $adjusted;
+                            $key = [
+                                'object' => $object->id,
+                                'name'   => $name,
+                                'locale' => $this->lang
+                            ];
+                            $set = [
+                                'value'   => $value,
+                                'content' => $content
+                            ];
+                            $setting = (new SettingEntity($type))->retrieveOne($key);
+                            if ($setting !== false) {
+                                (new SettingEntity($type))->updateOne($key, $set);
+                            } else {
+                                (new SettingEntity($type))->create(array_merge($key, $set));
+                            }
                         }
-                        (new SettingEntity($type))->updateOne([
-                            'object' => $object->id,
-                            'name'   => $name,
-                            'locale' => $this->lang,
-                        ], ['value' => $value]);
                     }
-                    return true;
+                    return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? ['message' => $this->locale->settings->updated] : $this->redirect($this->baseURL.'/admin'); 
                 } else {
                     $name = $this->params['name'] ?? null;
                     return $this->_settings($type, $object, $name);
@@ -215,9 +266,20 @@ class JournalsAdmin extends Admin {
                     ['choices' => $choices, 'current' => $type, 'next' => $next],
                     $this->controler, 'admin'
                 );
+                $hidden = [];
+                foreach ($choices as $name => $options) {
+                    $value = $options[0]['value'];
+                    foreach ($options as $option) {
+                        if ($option['selected']) {
+                            $value = $option['value'];
+                            break;
+                        }
+                    }
+                    $hidden[$name] = $value;
+                }
                 $form = new View(
                     '/portal/page/admin/settings/form',
-                    ['type' => $type, 'id' => $object->id, 'action' => $this->baseURL, 'settings' => $settings],
+                    ['hidden' => $hidden, 'type' => $type, 'id' => $object->id, 'settings' => $settings],
                     $this->controler, 'admin'
                 );
                 return ['select' => $select->render(), 'form' => $form->render()];

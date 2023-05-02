@@ -36,6 +36,24 @@ var displayUI = function(type, id) {
 					reader.readAsDataURL(file);
 				}
 			});
+			$('#form form').bind({
+				submit: function(event) {
+					event.preventDefault();
+					invokeZord({
+						form: this,
+						upload: true,
+						uploading: function() {
+							$dialog.wait();
+						},
+						uploaded: function() {
+							$dialog.hide();
+						},
+						success: function(result) {
+							alert(result.message);
+						}
+					});
+				}
+			});
 		}
 	};
 	[].forEach.call(['journal','issue','section','paper','author'], function(type) {

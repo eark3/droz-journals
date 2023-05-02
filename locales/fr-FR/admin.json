@@ -48,7 +48,9 @@
 			},
 			"author": {
 				"affiliation": "Affiliation de l'auteur"
-			}
-		}
+			},
+			"submit": "Enregistrer les modifications"
+		},
+		"updated" : "Les modifications ont été enregistrées"
 	}
 }
