@@ -39,9 +39,9 @@
 		"layout": {
 			"default": [
 				"search",
-				"shop",
 				"information",
 				"banner",
+				"shop",
 				"summary"
 			]
 		},
