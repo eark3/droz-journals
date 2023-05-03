@@ -143,7 +143,7 @@ class JournalsAdmin extends Admin {
                 'paper'   => $paper->id,
                 'order'   => Zord::value('admin', ['settings','order','author'])
             ];
-            foreach ((new AuthorEntity())->retrieveAll($_criteria['paper']) as $_author) {
+            foreach ((new AuthorEntity())->retrieveAll($_criteria['author']) as $_author) {
                 $selected = false;
                 if ($author !== false) {
                     $selected = ($_author->id === $author->id);
@@ -252,8 +252,53 @@ class JournalsAdmin extends Admin {
                             } else {
                                 (new SettingEntity($type))->create(array_merge($key, $set));
                             }
-                            //$key = $this->_key($type, $object, $context, $issue);
-                            //$this->cache->deleteItem($type, $key);
+                            switch ($type) {
+                                case 'journal': {
+                                    $key = $this->_key($type, ['context' => $object->context]);
+                                    if ($this->cache->hasItem($type, $key)) {
+                                        $this->cache->deleteItem($type, $key);
+                                    }
+                                    break;
+                                }
+                                case 'issue': {
+                                    $journal = (new JournalEntity())->retrieveOne($object->journal);
+                                    $key = $this->_key($type, ['context' => $journal->context, 'issue' => $object]);
+                                    if ($this->cache->hasItem($type, $key)) {
+                                        $this->cache->deleteItem($type, $key);
+                                    }
+                                    break;
+                                }
+                                case 'section': {
+                                    $journal = (new JournalEntity())->retrieveOne($object->journal);
+                                    foreach ((new PaperEntity())->retrieveAll(['section' => $object->id]) as $paper) {
+                                        $issue = (new IssueEntity())->retrieveOne($paper->issue);
+                                        $key = $this->_key('issue', ['context' => $journal->context, 'issue' => $issue]);
+                                        if ($this->cache->hasItem('issue', $key)) {
+                                            $this->cache->deleteItem('issue', $key);
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 'paper': {
+                                    $journal = (new JournalEntity())->retrieveOne($object->journal);
+                                    $issue   = (new IssueEntity())->retrieveOne($object->issue);
+                                    $key = $this->_key($type, ['context' => $journal->context, 'issue' => $issue, 'paper' => $object]);
+                                    if ($this->cache->hasItem($type, $key)) {
+                                        $this->cache->deleteItem($type, $key);
+                                    }
+                                    break;
+                                }
+                                case 'author': {
+                                    $paper   = (new PaperEntity())->retrieveOne($object->paper);
+                                    $journal = (new JournalEntity())->retrieveOne($paper->journal);
+                                    $issue   = (new IssueEntity())->retrieveOne($paper->issue);
+                                    $key = $this->_key('paper', ['context' => $journal->context, 'issue' => $issue, 'paper' => $paper]);
+                                    if ($this->cache->hasItem('paper', $key)) {
+                                        $this->cache->deleteItem('paper', $key);
+                                    }
+                                    break;
+                                }
+                            }
                         }
                     }
                     return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? ['message' => $this->locale->settings->updated] : $this->redirect($this->baseURL.'/admin'); 

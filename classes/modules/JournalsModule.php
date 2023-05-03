@@ -22,22 +22,25 @@ trait JournalsModule {
         return $result;
     }
     
-    protected function _key($type, $object, $context = null, $issue = null) {
+    protected function _key($type, $objects) {
+        $context = $objects['context'] ?? $this->context;
+        $paper   = $objects['paper']   ?? null;
+        $issue   = $objects['issue']   ?? (isset($paper) ? (new IssueEntity())->retrieveOne($paper->issue) : null);
         switch ($type) {
             case 'journal': {
-                return $object->context;
+                return $context;
             }
             case 'issue': {
-                return str_replace('-', '_', JournalsUtils::short($context, $object->volume, $object->number, null, true));
+                return str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, null, true));
             }
             case 'paper': {
-                return str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, $object->pages, true));
+                return str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages, true));
             }
         }
     }
     
     protected function _journal($journal) {
-        $key = $this->_key('journal', $journal);
+        $key = $this->_key('journal', ['context' => $journal->context]);
         if ($this->cache->hasItem('journal', $key)) {
             $result = $this->cache->getItem('journal', $key);
         } else {
@@ -55,7 +58,7 @@ trait JournalsModule {
     
     protected function _issue($issue, $journal = null) {
         $context = $journal->context ?? $this->context;
-        $key = $this->_key('issue', $issue, $context);
+        $key = $this->_key('issue', ['issue' => $issue, 'context' => $context]);
         $key = str_replace('-', '_', JournalsUtils::short($context, $issue->volume, $issue->number, null, true));
         if ($this->cache->hasItem('issue', $key)) {
             $result = $this->cache->getItem('issue', $key);
@@ -102,7 +105,7 @@ trait JournalsModule {
     protected function _paper($paper, $issue, $journal = null) {
         $context = $journal->context ?? $this->context;
         $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);
-        $key = $this->_key('paper', $paper, $context, $issue);
+        $key = $this->_key('paper', ['paper' => $paper, 'context' => $context, 'issue' => $issue]);
         if ($this->cache->hasItem('paper', $key)) {
             return $this->cache->getItem('paper', $key);
         }
