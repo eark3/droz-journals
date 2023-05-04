@@ -81,12 +81,18 @@ class JournalsImport extends Import {
         foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
-            list($name, $place, $title) = explode(':', $paper['section']);
+            $name = $paper['section'];
+            $place = null;
+            $title = null;
+            $tokens = explode(':', $name);
+            if (count($tokens) === 3) {
+                list($name, $place, $title) = $tokens;
+            }
             $section = (new SectionEntity())->retrieveOne([
                 'journal' => $this->journal->id,
                 'name'    => $name
             ]);
-            if ($section === false) {
+            if ($section === false && isset($place) && isset($title)) {
                 JournalsUtils::create(new SectionEntity(),[
                     'journal'  => $this->journal->id,
                     'name'     => $name,
