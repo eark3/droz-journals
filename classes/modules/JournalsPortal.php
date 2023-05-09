@@ -358,6 +358,56 @@ class JournalsPortal extends Portal {
         return $this->page('search', $models);
     }
     
+    public function papers() {
+        $ean = $this->params['ean'];
+        if (empty($ean) || preg_match('/^97[89][0-9]{10}$/', $ean) !== 1) {
+            return $this->error(406);
+        }
+        $papers = [];
+        $issue = (new IssueEntity())->retrieveOne($ean);
+        if ($issue !== false) {
+            $journal = (new JournalEntity())->retrieveOne($issue->journal);
+            foreach ((new PaperEntity())->retrieveAll(['issue' => $issue->id, 'status' => 'subscription']) as $paper) {
+                $galley = (new GalleyEntity())->retrieveOne(['paper' => $paper->id, 'type' => 'shop']);
+                if ($galley !== false) {
+                    $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
+                    list($context,$number,$pages) = explode('_', $short);
+                    $settings = $this->_settings('paper', $paper);
+                    $tokens = explode('-', $pages);
+                    $start = $tokens[0];
+                    $end = count($tokens) > 1 ? $tokens[1] : $start;
+                    $file = $short.'.pdf';
+                    $papers[$short] = [
+                        'chapter'  => $short,
+                        'title'    => $settings['title'],
+                        'subtitle' => $settings['subtitle'] ?? null,
+                        'start'    => $start,
+                        'end'      => $end,
+                        'file'     => $short.'.pdf',
+                        'date'     => $issue->published,
+                        'open'     => $issue->open,
+                        'source'   => STORE_FOLDER.'journals'.DS.$context.DS.$number.DS.$file,
+                        'type'     => $settings['title'] === 'Dossier complet' ? 'dossier' : 'article'
+                    ];
+                    foreach ((new AuthorEntity())->retrieveAll(['paper' => $paper->id]) as $author) {
+                        $papers[$short]['authors'][] = [
+                            'firstName' => $author->first,
+                            'lastName'  => $author->last
+                        ];
+                    }
+                    $entities = (new SettingEntity('paper'))->retrieveAll([
+                        'object' => $paper->id,
+                        'name'   => 'abstract'
+                    ]);
+                    foreach ($entities as $setting) {
+                        $papers[$short]['abstracts'][$setting->locale] = $setting->value;
+                    }
+                }
+            }
+        }
+        return $papers;
+    }
+    
 }
 
 ?>

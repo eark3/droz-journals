@@ -54,6 +54,11 @@ var displayUI = function(type, id) {
 					});
 				}
 			});
+		},
+		failure: function(error) {
+			if (error.code === '404') {
+				alert(error.message);
+			}
 		}
 	};
 	[].forEach.call(['journal','issue','section','paper','author'], function(type) {

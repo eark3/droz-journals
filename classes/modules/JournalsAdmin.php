@@ -226,7 +226,7 @@ class JournalsAdmin extends Admin {
         }
         list($object, $choices, $next, $settings) = $this->__settings($type, $criteria);
         if ($object === false) {
-            return $this->error(404);
+            return $this->error(404, $criteria === 'first' ? Zord::resolve($this->locale->settings->empty, ['type' => $type], $this->locale) : $this->locale->settings->unknown->$type);
         }
         switch ($return) {
             case 'data': {

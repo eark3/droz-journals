@@ -8,6 +8,13 @@
 		}
 	},
 	"settings": {
+		"unknown": {
+			"journal": "Revue inconnue",
+			"issue": "Numéro inconnu",
+			"section": "Section inconnue",
+			"paper": "Article inconnu",
+			"author": "Auteur inconnu"
+		},
 		"select": {
 			"list": "Liste $[settings.select.${type}]",
 			"journal": "des revues",
@@ -51,6 +58,7 @@
 			},
 			"submit": "Enregistrer les modifications"
 		},
-		"updated" : "Les modifications ont été enregistrées"
+		"updated" : "Les modifications ont été enregistrées",
+		"empty": "La liste $[settings.select.${type}] est vide"
 	}
 }

@@ -64,6 +64,12 @@ abstract class JournalsEntity extends Entity {
                 }
             }
             return $this->retrieveBy();
+        } else if (is_string($criteria) && preg_match('/^97[89]\d{10}$/', $criteria)) {
+            $this->issue = (new IssueEntity())->retrieveOne(['ean' => $criteria]);
+            if ($this->issue !== false) {
+                $this->journal = (new JournalEntity())->retrieveOne($this->issue->journal);
+            }
+            return $this->retrieveBy();
         }
         return parent::retrieve($criteria, $deep);
     }

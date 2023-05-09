@@ -48,6 +48,13 @@
 				"query": "FILTER_SANITIZE_STRING",
 				"authors": "FILTER_SANITIZE_STRING"
 			}
+		},
+		"papers": {
+			"response": "DATA",
+			"shortcut": "papers",
+			"parameters": {
+				"ean": "FILTER_SANITIZE_STRING"
+			}
 		}
 	},
 	"Admin": {

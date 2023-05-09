@@ -151,28 +151,30 @@ trait JournalsModule {
             }
         }
         $settings = [];
-        $criteria = ['object' => $object->id, 'order' => ['asc' => 'name']];
-        foreach ($locales as $_locale) {
-            $criteria['locale'] = $_locale;
-            $entities = (new SettingEntity($type))->retrieveAll($criteria);
-            foreach ($entities as $entity) {
-                if (!isset($settings[$entity->name])) {
-                    $value = $entity->value;
-                    switch ($entity->content) {
-                        case 'object': {
-                            $value = unserialize(base64_decode($value));
-                            break;
+        if (isset($object) && $object !== false) {
+            $criteria = ['object' => $object->id, 'order' => ['asc' => 'name']];
+            foreach ($locales as $_locale) {
+                $criteria['locale'] = $_locale;
+                $entities = (new SettingEntity($type))->retrieveAll($criteria);
+                foreach ($entities as $entity) {
+                    if (!isset($settings[$entity->name])) {
+                        $value = $entity->value;
+                        switch ($entity->content) {
+                            case 'object': {
+                                $value = unserialize(base64_decode($value));
+                                break;
+                            }
+                            case 'bool': {
+                                $value = (boolean) $value;
+                                break;
+                            }
+                            case 'int': {
+                                $value = (int) $value;
+                                break;
+                            }
                         }
-                        case 'bool': {
-                            $value = (boolean) $value;
-                            break;
-                        }
-                        case 'int': {
-                            $value = (int) $value;
-                            break;
-                        }
+                        $settings[$entity->name] = $value;
                     }
-                    $settings[$entity->name] = $value;
                 }
             }
         }
