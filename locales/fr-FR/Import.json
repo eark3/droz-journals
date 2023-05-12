@@ -1,6 +1,7 @@
 {
 	"steps": {
-		"check": "Vérification des données"
+		"check": "Vérification des données",
+		"crossref": "Enregistrement des DOI"
 	},
 	"messages": {
 		"check": {
@@ -26,6 +27,21 @@
 		"resources": {
 			"info": {
 				"none": "Pas de fichier html/pdf pour ce numéro"
+			}
+		},
+		"crossref": {
+			"error": {
+				"issue": {
+					"unknown": "Numéro inconnu"
+				},
+				"journal": {
+					"unknown": "Revue inconnue"
+				}
+			},
+			"info": {
+				"file": {
+					"sending": "Envoi du fichier"
+				}
 			}
 		}
 	}

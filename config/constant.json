@@ -7,5 +7,8 @@
 	"DROZ_DOI_PREFIX": "10.47421/",
 	"PDFTOTEXT_COMMAND": "pdftotext ${file}",
 	"CACHED_OBJECT_TYPES": ["journal","issue","paper"],
-	"TUNABLE_OBJECT_TYPES": ["journal","issue","section","paper","author"]
+	"TUNABLE_OBJECT_TYPES": ["journal","issue","section","paper","author"],
+	"CROSSREF_DEPOSITOR_NAME": "Ivan Jaffrin",
+	"CROSSREF_DEPOSITOR_EMAIL": "ivan.jaffrin@droz.org",
+	"CROSSREF_REGISTRANT": "Librairie Droz"
 }

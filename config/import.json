@@ -4,7 +4,8 @@
 			"check",
 			"resources",
 			"metadata",
-			"index"
+			"index",
+			"crossref"
 		]
 	},
 	"fields": {

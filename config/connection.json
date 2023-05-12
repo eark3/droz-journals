@@ -36,5 +36,18 @@
 			"host": "okjp.ftp.infomaniak.com",
 			"user": "okjq_numerique"
 		}
+	},
+	"crossref": {
+		"url": "https://api.crossref.org/v2/deposits",
+		"config": {
+			"headers": {
+				"User-Agent": "ojs2"
+			}
+		},
+		"parameters": {
+			"usr": "lidr",
+			"pwd": "li_4720_yzl",
+			"operation": "doMDUpload"
+		}
 	}
 }

@@ -42,6 +42,12 @@
 				"name": {
 					"template": "text"
 				},
+				"printIssn": {
+					"template": "text"
+				},
+				"onlineIssn": {
+					"template": "text"
+				},
 				"rootDescription": {
 					"template": "text",
 					"multiline": true,

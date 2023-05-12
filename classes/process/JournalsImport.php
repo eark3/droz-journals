@@ -1,5 +1,8 @@
 <?php
 
+use \GuzzleHttp\Client;
+use \GuzzleHttp\Exception\RequestException;
+
 class JournalsImport extends Import {
     
     protected $journals = [];
@@ -82,28 +85,23 @@ class JournalsImport extends Import {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
             $name = $paper['section'];
-            $place = null;
-            $title = null;
             $tokens = explode(':', $name);
             if (count($tokens) === 3) {
                 list($name, $place, $title) = $tokens;
             }
-            $section = (new SectionEntity())->retrieveOne([
+            $_section = (new SectionEntity())->retrieveOne([
                 'journal' => $this->journal->id,
                 'name'    => $name
             ]);
-            if ($section === false && isset($place) && isset($title)) {
-                JournalsUtils::create(new SectionEntity(),[
+            if ($_section === false && isset($place) && isset($title)) {
+                $_section = JournalsUtils::create(new SectionEntity(), [
                     'journal'  => $this->journal->id,
                     'name'     => $name,
                     'place'    => $place,
-                    'settings' => ['title' => [$this->lang => [
-                        'value' => $title,
-                        'content' => 'string'
-                    ]]]
+                    'settings' => ['title' => [$this->journal->locale => ['value' => $title]]]
                 ]);
             }
-            $paper['section'] = $section->id;
+            $paper['section'] = $_section->id;
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
             $this->info(2, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));
@@ -215,18 +213,17 @@ class JournalsImport extends Import {
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $section = $paper['section'] ?? null;
             if ($section) {
-                $tokens = explode(':', $paper['section']);
-                $name = null;
+                $tokens = explode(':', $section);
                 if (count($tokens) === 1) {
                     $name = $section;
                 } else if (count($tokens) === 3) {
                     list($name, $place, $title) = $tokens;
                 }
-                $_section = (new SectionEntity())->retrieveOne([
+                $_section = isset($name) ? (new SectionEntity())->retrieveOne([
                     'journal' => $this->journal->id,
                     'name'    => $name
-                ]);
-                if ($_section === false) {
+                ]) : false;
+                if ($_section === false && (!isset($name) || !isset($place) || !isset($title))) {
                     $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $section]));
                     $result &= false;
                 }
@@ -260,6 +257,99 @@ class JournalsImport extends Import {
         return $result;
     }
     
+    protected function crossref($ean) {
+        $connection = Zord::value('connection', 'crossref');
+        $filename = Zord::liveFolder('build', true).'crossref_'.$ean.'.xml';
+        $models = [];
+        $issue = (new IssueEntity())->retrieveOne($ean);
+        if ($issue === false) {
+            $this->error(2, $this->locale->messages->crossref->error->issue->unknown);
+            return false;
+        }
+        $journal = (new JournalEntity())->retrieveOne($issue->journal);
+        if ($journal === false) {
+            $this->error(2, $this->locale->messages->crossref->error->journal->unknown);
+            return false;
+        }
+        $models['baseURL'] = Zord::getContextURL($journal->context);
+        $settings = JournalsUtils::settings('journal', $journal, $journal->locale);
+        $models['journal'] = [
+            'title'  => $settings['name'],
+            'abbrev' => $journal->context,
+            'issn'   => [
+                'print'  => $settings['printIssn'],
+                'online' => $settings['onlineIssn'],
+            ]
+        ];
+        $settings = JournalsUtils::settings('issue', $issue, $journal->locale);
+        $published = strtotime($issue->published);
+        $models['issue'] = [
+            'short'  => JournalsUtils::short($journal->context, $issue->volume, $issue->number),
+            'date'   => [
+                'year'  => date('Y', $published),
+                'month' => date('m', $published),
+                'day'   => date('d', $published)
+            ],
+            'volume' => $issue->volume,
+            'number' => $issue->number,
+            'ean'    => $issue->ean
+        ];
+        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
+        foreach ($papers as $paper) {
+            $settings = JournalsUtils::settings('paper', $paper, $journal->locale);
+            if ($settings['pub-id::doi'] ?? false) {
+                $this->info(2, $settings['pub-id::doi']);
+                list($start, $end) = JournalsUtils::pages($paper, true);
+                $article = [
+                    'title'    => $settings['title'],
+                    'abstract' => $settings['abstract'] ?? null,
+                    'start'    => $start,
+                    'end'      => $end,
+                    'doi'      => $settings['pub-id::doi'],
+                    'short'    => JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages)
+                ];
+                $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
+                foreach ($authors as $author) {
+                    $article['authors'][] = [
+                        'first' => $author->first,
+                        'last'  => $author->last
+                    ];
+                }
+                $models['articles'][] = $article;
+            }
+        }
+        $this->info(2, $filename);
+        file_put_contents($filename, (new View('/xml/crossref', Zord::array_map_recursive(function($item) {return htmlentities(str_replace('&nbsp;', ' ', strip_tags($item)), ENT_XML1, 'UTF-8');}, $models)))->render());
+        $httpClient = new Client($connection['config']);
+        $multipart = [];
+        foreach ($connection['parameters'] as $name => $contents) {
+            $multipart[] = ['name' => $name, 'contents' => $contents];
+        }
+        $multipart[] = ['name' => 'mdFile', 'contents' => fopen($filename, 'r')];
+        try {
+            $this->info(2, $this->locale->messages->crossref->info->file->sending, false, true);
+            $httpClient->request('POST', $connection['url'], ['multipart' => $multipart]);
+            $this->report(0, 'OK', 'OK');
+        } catch(RequestException $error) {
+            $this->report(0, 'KO', 'KO');
+            $returnMessage = $error->getMessage();
+            if ($error->hasResponse()) {
+                $responseBody = $error->getResponse()->getBody(true);
+                $statusCode = $error->getResponse()->getStatusCode();
+                if ($statusCode == 403) {
+                    $xmlDoc = new DOMDocument();
+                    $xmlDoc->loadXML($responseBody);
+                    $msg = $xmlDoc->getElementsByTagName('msg')->item(0)->nodeValue;
+                    $returnMessage = $msg.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
+                } else {
+                    $returnMessage = $responseBody.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
+                }
+            }
+            $this->error(2, $returnMessage);
+            return false;
+        }
+        return true;
+    }
 }
 
 ?>

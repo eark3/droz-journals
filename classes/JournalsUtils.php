@@ -30,20 +30,20 @@ class JournalsUtils {
         return $short;
     }
     
-    public static function pages($paper) {
+    public static function pages($paper, $explode = false) {
         $pages = $paper->pages;
         $tokens = explode('-', $pages);
         if (count($tokens) === 2 && $tokens[0] === $tokens[1]) {
             $pages = $tokens[0];
         }
-        return $pages;
+        return !$explode ? $pages : [$tokens[0], count($tokens) > 1 ? $tokens[1] : $tokens[0]];
     }
     
     public static function name($author, $reverse = false) {
-        $middle = !empty($author->middle) ? $author->middle.' ' : '';
+        $middle = !empty($author->middle ?? $author['middle']) ? ($author->middle ?? $author['middle']).' ' : '';
         return $reverse 
-            ? $middle.$author->last.', '.$author->first
-            : $author->first.' '.$middle.$author->last;
+            ? $middle.($author->last ?? $author['last']).', '.($author->first ?? $author['first'])
+            : ($author->first ?? $author['first']).' '.$middle.($author->last ?? $author['last']);
     }
     
     public static function status($issue, $paper) {
@@ -145,6 +145,48 @@ class JournalsUtils {
                 return '/'.$context;
             }
         }
+    }
+    
+    public static function settings($type, $object, $locales) {
+        if (!is_array($locales)) {
+            if (is_string($locales)) {
+                $locales = [$locales];
+            } else {
+                $locales = [];
+            }
+        }
+        if (!in_array(DEFAULT_LANG, $locales)) {
+            $locales[] = DEFAULT_LANG;
+        }
+        $settings = [];
+        if (isset($object) && $object !== false) {
+            $criteria = ['object' => $object->id, 'order' => ['asc' => 'name']];
+            foreach ($locales as $_locale) {
+                $criteria['locale'] = $_locale;
+                $entities = (new SettingEntity($type))->retrieveAll($criteria);
+                foreach ($entities as $entity) {
+                    if (!isset($settings[$entity->name])) {
+                        $value = $entity->value;
+                        switch ($entity->content) {
+                            case 'object': {
+                                $value = unserialize(base64_decode($value));
+                                break;
+                            }
+                            case 'bool': {
+                                $value = (boolean) $value;
+                                break;
+                            }
+                            case 'int': {
+                                $value = (int) $value;
+                                break;
+                            }
+                        }
+                        $settings[$entity->name] = $value;
+                    }
+                }
+            }
+        }
+        return $settings;
     }
     
 }

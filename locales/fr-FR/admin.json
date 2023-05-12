@@ -26,6 +26,8 @@
 		"forms": {
 			"journal": {
 				"name": "Nom de la revue",
+				"printIssn": "ISSN version imprimée",
+				"onlineIssn": "ISSN version en ligne",
 				"rootDescription": "Description en page principale",
 				"description": "Description en page d'accueil de la revue",
 				"homepageImage": "Vignette en page d'acceuil de la revue",

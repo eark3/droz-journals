@@ -32,7 +32,6 @@
 		"subscription": "Abonnement",
 		"login": "Se connecter",
 		"login/lostPassword": "Demander un mot de passe"
-		
 	},
 	"published": "Publié",
 	"access": {
@@ -49,7 +48,8 @@
 			"format": "Formats de citations",
 			"download": "Télécharger la référence bibliographique"
 		},
-		"issue": "Numéro"
+		"issue": "Numéro",
+		"abstract": "Résumé"
 	},
 	"download": {
 		"info": "Informations",

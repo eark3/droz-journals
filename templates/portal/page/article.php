@@ -32,9 +32,24 @@
 		</section>
 		<div class="col-md-8">
 			<section class="article-main">
+<?php if (!empty($paper['authors'])) { ?>
 				<div class="authors">
-					<strong><?php echo !empty($paper['authors']) ? $paper['names'] : ''; ?></strong>
+<?php   foreach ($paper['authors'] as $author) { ?>
+					<strong><?php echo JournalsUtils::name($author); ?></strong>
+<?php     if (isset($author['settings']['affiliation'])) { ?>
+					<div class="article-author-affilitation"><?php echo $author['settings']['affiliation']; ?></div>
+<?php     } ?>
+<?php   } ?>
 				</div>
+<?php }?>
+<?php if (isset($paper['settings']['abstract'])) { ?>
+				<div class="article-summary" id="summary">
+					<h2><?php echo $locale->article->abstract; ?></h2>
+					<div class="article-abstract">
+						<?php echo $paper['settings']['abstract']; ?>
+					</div>
+				</div>
+<?php } ?>
 			</section>
 			<div class="item citation">
 				<div class="panel panel-default citation_formats">

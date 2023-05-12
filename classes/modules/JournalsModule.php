@@ -14,6 +14,31 @@ trait JournalsModule {
         }
     }
     
+    public function models($models) {
+        $_page = $models['page'] ?? null;
+        foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
+            $models['journals'][] = $this->_journal($journal);
+        }
+        if (isset($this->controler->journal)) {
+            $models['aside'] = Zord::value('portal', ['aside', 'layout', $this->context]) ?? Zord::value('portal', ['aside', 'layout', 'default']);
+            $models['journal'] = $this->_journal($this->controler->journal);
+        }
+        if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {
+            $models['ariadne'] = [
+                'home'   => '/'.$this->context,
+                'active' => $this->locale->pages->$_page
+            ];
+        }
+        return $models;
+    }
+    
+    protected function message($type, $content) {
+        if ($type === 'error') {
+            $type = 'danger';
+        }
+        return parent::message($type, $content);
+    }
+    
     protected function properties($type, $object) {
         foreach (Zord::value('orm', [ucfirst($type).'Entity','fields']) as $field) {
             $result[$field] = $object->$field;
@@ -114,8 +139,10 @@ trait JournalsModule {
         foreach ($authors as $author) {
             $_author = $this->properties('author', $author);
             $_author = Zord::array_merge($_author, [
-                'name'     => JournalsUtils::name($author),
-                'reverse'  => JournalsUtils::name($author, true)
+                'first'   => $author->first,
+                'last'    => $author->larst,
+                'name'    => JournalsUtils::name($author),
+                'reverse' => JournalsUtils::name($author, true)
             ]);
             $result['authors'][] = $_author;
         }
@@ -136,67 +163,15 @@ trait JournalsModule {
         return $result;
     }
     
-    protected function message($type, $content) {
-        if ($type === 'error') {
-            $type = 'danger';
-        }
-        return parent::message($type, $content);
-    }
-    
     protected function _settings($type, $object, $name = null) {
         $locales = [];
-        foreach ([$this->lang, $this->controler->journal->locale ?? 'none', DEFAULT_LANG] as $_locale) {
-            if ($_locale !== 'none' && !in_array($_locale, $locales)) {
+        foreach ([$this->lang ?? null, $this->journal->locale ?? null] as $_locale) {
+            if (isset($_locale) && !in_array($_locale, $locales)) {
                 $locales[] = $_locale;
             }
         }
-        $settings = [];
-        if (isset($object) && $object !== false) {
-            $criteria = ['object' => $object->id, 'order' => ['asc' => 'name']];
-            foreach ($locales as $_locale) {
-                $criteria['locale'] = $_locale;
-                $entities = (new SettingEntity($type))->retrieveAll($criteria);
-                foreach ($entities as $entity) {
-                    if (!isset($settings[$entity->name])) {
-                        $value = $entity->value;
-                        switch ($entity->content) {
-                            case 'object': {
-                                $value = unserialize(base64_decode($value));
-                                break;
-                            }
-                            case 'bool': {
-                                $value = (boolean) $value;
-                                break;
-                            }
-                            case 'int': {
-                                $value = (int) $value;
-                                break;
-                            }
-                        }
-                        $settings[$entity->name] = $value;
-                    }
-                }
-            }
-        }
+        $settings = JournalsUtils::settings($type, $object, $locales);
         return isset($name) ? ($settings[$name] ?? null) : $settings;
-    }
-    
-    public function models($models) {
-        $_page = $models['page'] ?? null;
-        foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
-            $models['journals'][] = $this->_journal($journal);
-        }
-        if (isset($this->controler->journal)) {
-            $models['aside'] = Zord::value('portal', ['aside', 'layout', $this->context]) ?? Zord::value('portal', ['aside', 'layout', 'default']);
-            $models['journal'] = $this->_journal($this->controler->journal);
-        }
-        if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {
-            $models['ariadne'] = [
-                'home'   => '/'.$this->context,
-                'active' => $this->locale->pages->$_page
-            ];
-        }
-        return $models;
     }
     
 }
