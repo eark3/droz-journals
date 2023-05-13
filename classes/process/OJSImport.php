@@ -157,11 +157,13 @@ class OJSImport extends ProcessExecutor {
                             echo "$_short.$type : Unable to get file $path\n";
                         }
                     }
+                    $views = Zord::value('stats', $publication->submission_id) ?? 0;
                     $papers[] = [
                         'pages'    => $pages,
                         'status'   => $status,
                         'section'  => $section,
                         'place'    => $place,
+                        'views'    => $views,
                         'authors'  => $authors,
                         'galleys'  => $galleys,
                         'settings' => $settings
@@ -189,21 +191,21 @@ class OJSImport extends ProcessExecutor {
                 'settings' => $this->getSettings('journal', $journal)
             ];
         }
-        /*
-        (new JournalEntity())->delete();
+        //(new JournalEntity())->delete();
         Zord::resetFolder($folder);
         foreach ($journals as $journal) {
-            $_journal = JournalsUtils::create(new JournalEntity(), $journal);
+            /*
+             $_journal = JournalsUtils::create(new JournalEntity(), $journal);
             foreach ($journal['sections'] ?? [] as $section) {
                 $section["journal"] = $_journal->id;
                 JournalsUtils::create(new SectionEntity(), $section);
             }
+            */
             foreach ($journal['issues'] ?? [] as $issue) {
                 $short = JournalsUtils::short($journal['context'], $issue['volume'], $issue['number'] ?? null);
                 file_put_contents($folder.$short.'.json', Zord::json_encode($issue));
             }
         }
-        */
     }
     
     protected function addSettings() {

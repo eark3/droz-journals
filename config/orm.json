@@ -55,7 +55,8 @@
 			"section",
 			"place",
 			"pages",
-			"status"
+			"status",
+			"views"
 		],
 		"key": "id"
 	},

@@ -127,24 +127,42 @@ class JournalsUtils {
         return $object;
     }
     
-    public static function url($context, $issue, $paper, $type) {
+    public static function url($context, $issue, $paper = null, $type = 'meta') {
         $ean    = ($issue->ean    ?? ($issue['ean'] ?? null));
         $volume = ($issue->volume ?? $issue['volume']);
         $number = ($issue->number ?? $issue['number']);
-        $pages  = ($paper->pages  ?? $paper['pages']);
+        $pages  = ($paper->pages  ?? ($paper['pages'] ?? null));
         $short  = JournalsUtils::short($context, $volume, $number, $pages);
         switch ($type) {
-            case 'shop': {
-                return SHOP_BASE_URL.'/'.$ean.'/'.$short;
+            case 'meta': {
+                if ($paper) {
+                    return '/'.$context.'/article/view/'.$short;
+                } else {
+                    return '/'.$context.'/issue/view/'.$short;
+                }
             }
             case 'html': 
             case 'pdf': {
                 return '/'.$context.'/article/view/'.$short.'/'.$type;
             }
+            case 'shop': {
+                return SHOP_BASE_URL.'/'.$ean.'/'.$short;
+            }
             default: {
                 return '/'.$context;
             }
         }
+    }
+    
+    public static function serial($issue) {
+        $serial = 'Vol. '.$issue->volume;
+        if ($issue->number) {
+            $serial .= ' n° '.$issue->number;
+        }
+        if ($issue->year) {
+            $serial .= ' ('.$issue->year.')';
+        }
+        return $serial;
     }
     
     public static function settings($type, $object, $locales) {

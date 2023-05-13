@@ -209,7 +209,12 @@ class JournalsImport extends Import {
         }
         $result = true;
         list($source,$target) = $this->folders($ean);
-        foreach ($this->issue['papers'] ?? [] as $paper) {
+        foreach ($this->issue['papers'] ?? [] as $index => $paper) {
+            if (empty($paper['pages'])) {
+                $this->error(3, $this->locale->messages->check->error->missing->pages.' ('.$index.')');
+                $result &= false;
+                continue;
+            }
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $section = $paper['section'] ?? null;
             if ($section) {
@@ -317,6 +322,10 @@ class JournalsImport extends Import {
                 }
                 $models['articles'][] = $article;
             }
+        }
+        if (empty($models['articles'])) {
+            $this->info(2, $this->locale->messages->crossref->info->file->empty);
+            return true;
         }
         $this->info(2, $filename);
         file_put_contents($filename, (new View('/xml/crossref', Zord::array_map_recursive(function($item) {return htmlentities(str_replace('&nbsp;', ' ', strip_tags($item)), ENT_XML1, 'UTF-8');}, $models)))->render());

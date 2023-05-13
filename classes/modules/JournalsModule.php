@@ -90,13 +90,7 @@ trait JournalsModule {
             $result = $this->properties('issue', $issue);
             $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
-            $serial = 'Vol. '.$issue->volume;
-            if ($issue->number) {
-                $serial .= ' n° '.$issue->number;
-            }
-            if ($issue->year) {
-                $serial .= ' ('.$issue->year.')';
-            }
+            $serial = JournalsUtils::serial($issue);
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
             $link = '/'.$context.'/issue/view/'.$short;
             $_sections = [];
@@ -140,7 +134,7 @@ trait JournalsModule {
             $_author = $this->properties('author', $author);
             $_author = Zord::array_merge($_author, [
                 'first'   => $author->first,
-                'last'    => $author->larst,
+                'last'    => $author->last,
                 'name'    => JournalsUtils::name($author),
                 'reverse' => JournalsUtils::name($author, true)
             ]);

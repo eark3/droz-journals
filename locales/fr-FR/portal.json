@@ -49,7 +49,8 @@
 			"download": "Télécharger la référence bibliographique"
 		},
 		"issue": "Numéro",
-		"abstract": "Résumé"
+		"abstract": "Résumé",
+		"others": "Articles les plus lus de cet auteur"
 	},
 	"download": {
 		"info": "Informations",

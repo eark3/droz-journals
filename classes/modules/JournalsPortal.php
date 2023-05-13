@@ -112,12 +112,45 @@ class JournalsPortal extends Portal {
                     } else {
                         $page = 'article';
                         $ariadne['active'] = $_section['title'];
+                        $others = [];
+                        foreach ($_paper['authors'] as $author) {
+                            foreach ((new AuthorEntity())->retrieveAll([
+                                'first' => $author['first'],
+                                'last'  => $author['last'],
+                            ]) as $_author) {
+                                if ($_author->paper !== $paper->id && !isset($others[$_author->paper])) {
+                                    $__paper = (new PaperEntity())->retrieveOne($_author->paper);
+                                    $__issue = (new IssueEntity())->retrieveOne($__paper->issue);
+                                    $__journal = (new JournalEntity())->retrieveOne($__issue->journal);
+                                    $other = [
+                                        'paper' => [
+                                            'title' => $this->_settings('paper', $__paper, 'title'),
+                                            'url'   => JournalsUtils::url($__journal->context, $__issue, $__paper),
+                                            'views' => $__paper->views
+                                        ],
+                                        'issue' => [
+                                            'title' => $this->_settings('journal', $__journal, 'name').': '.JournalsUtils::serial($__issue).': '.$this->_settings('issue', $__issue, 'title'),
+                                            'url'   => JournalsUtils::url($__journal->context, $__issue)
+                                        ]
+                                    ];
+                                    foreach ((new AuthorEntity())->retrieveAll(['paper' => $__paper->id]) as $__author) {
+                                        $other['authors'][] = JournalsUtils::name($__author);
+                                    }
+                                    $others[$_author->paper] = $other;
+                                }
+                            }
+                        }
                     }
+                    usort($others, function($first, $second) {
+                        return $second['paper']['views'] <=> $first['paper']['views'];
+                    });
+                    $others = array_slice($others, 0, MAX_MOST_READ);
                     $models = [
-                        'paper' => $_paper,
-                        'issue' => $_issue,
+                        'paper'   => $_paper,
+                        'issue'   => $_issue,
                         'display' => $display,
-                        'title' => $_paper['settings']['title'].' | '.$_issue['serial']
+                        'title'   => $_paper['settings']['title'].' | '.$_issue['serial'],
+                        'others'  => $others ?? null
                     ];
                     break;
                 }

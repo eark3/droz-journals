@@ -14,8 +14,12 @@
       <journal_metadata>
         <full_title><?php echo $journal['title']; ?></full_title>
         <abbrev_title><?php echo $journal['abbrev']; ?></abbrev_title>
+<?php if (!empty($journal['issn']['online'])) { ?>
         <issn media_type="electronic"><?php echo $journal['issn']['online']; ?></issn>
+<?php } ?>
+<?php if (!empty($journal['issn']['print'])) { ?>
         <issn media_type="print"><?php echo $journal['issn']['print']; ?></issn>
+<?php } ?>
       </journal_metadata>
       <journal_issue>
         <publication_date media_type="online">
@@ -34,14 +38,16 @@
         <titles>
           <title><?php echo $article['title']; ?></title>
         </titles>
+<?php if (!empty($article['authors'])) { ?>
         <contributors>
-<?php foreach ($article['authors'] as $index => $author) { ?>
+<?php   foreach ($article['authors'] as $index => $author) { ?>
           <person_name contributor_role="author" sequence="first">
             <given_name><?php echo $author['first']; ?></given_name>
             <surname><?php echo $author['last']; ?></surname>
           </person_name>
-<?php } ?>
+<?php   } ?>
         </contributors>
+<?php } ?>
 <?php if (isset($article['abstract'])) { ?>
         <jats:abstract xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1">
           <jats:p><?php echo $article['abstract']; ?></jats:p>

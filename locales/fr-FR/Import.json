@@ -9,7 +9,8 @@
 				"missing": {
 					"file": "Il manque le fichier ${file}",
 					"ean": "Le numéro EAN doit être renseigné",
-					"section": "La section ${section} n'est pas définie"
+					"section": "La section ${section} n'est pas définie",
+					"pages": "Numéros de pages non renseignés"
 				},
 				"without": {
 					"section": "L'article ${paper} n'a pas de section définie"
@@ -40,7 +41,8 @@
 			},
 			"info": {
 				"file": {
-					"sending": "Envoi du fichier"
+					"sending": "Envoi du fichier",
+					"empty": "Pas de DOI pour ce numéro"
 				}
 			}
 		}

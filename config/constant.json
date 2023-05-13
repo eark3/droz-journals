@@ -10,5 +10,6 @@
 	"TUNABLE_OBJECT_TYPES": ["journal","issue","section","paper","author"],
 	"CROSSREF_DEPOSITOR_NAME": "Ivan Jaffrin",
 	"CROSSREF_DEPOSITOR_EMAIL": "ivan.jaffrin@droz.org",
-	"CROSSREF_REGISTRANT": "Librairie Droz"
+	"CROSSREF_REGISTRANT": "Librairie Droz",
+	"MAX_MOST_READ": 3
 }

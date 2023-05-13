@@ -35,7 +35,7 @@
 <?php if (!empty($paper['authors'])) { ?>
 				<div class="authors">
 <?php   foreach ($paper['authors'] as $author) { ?>
-					<strong><?php echo JournalsUtils::name($author); ?></strong>
+					<strong><?php echo $author['name']; ?></strong>
 <?php     if (isset($author['settings']['affiliation'])) { ?>
 					<div class="article-author-affilitation"><?php echo $author['settings']['affiliation']; ?></div>
 <?php     } ?>
@@ -103,6 +103,24 @@
 							</a>
 						</div>
 					</div>
+<?php if (!empty($others)) { ?>
+					<div class="panel panel-default articlesBySameAuthorList">
+						<div class="panel-heading"><?php echo $locale->article->others; ?></div>
+						<div id="articlesBySameAuthorList" class="panel-body">
+							<ul>
+<?php   foreach ($others as $other) { ?>
+								<li>
+<?php     if (!empty($other['authors'])) { ?>
+									<?php echo implode(', ', $other['authors']); ?>,
+<?php     } ?>
+									<a href="<?php echo $other['paper']['url']; ?>"><i><?php echo $other['paper']['title']; ?></i></a>,
+									<a href="<?php echo $other['issue']['url']; ?>"><?php echo $other['issue']['title']; ?></a>
+								</li>
+<?php   } ?>
+							</ul>
+						</div>
+					</div>
+<?php } ?>
 				</section>
 			</div>
 		</div>
