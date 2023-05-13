@@ -140,11 +140,11 @@ class JournalsPortal extends Portal {
                                 }
                             }
                         }
+                        usort($others, function($first, $second) {
+                            return $second['paper']['views'] <=> $first['paper']['views'];
+                        });
+                        $others = array_slice($others, 0, MAX_MOST_READ);
                     }
-                    usort($others, function($first, $second) {
-                        return $second['paper']['views'] <=> $first['paper']['views'];
-                    });
-                    $others = array_slice($others, 0, MAX_MOST_READ);
                     $models = [
                         'paper'   => $_paper,
                         'issue'   => $_issue,
@@ -155,6 +155,9 @@ class JournalsPortal extends Portal {
                     break;
                 }
                 case 'download': {
+                    if (in_array($display, ['html','pdf'])) {
+                        (new PaperEntity())->update($paper->id, ['views' => $paper->views + 1]);
+                    }
                     switch ($display) {
                         case 'html': {
                             $view = 'download';
