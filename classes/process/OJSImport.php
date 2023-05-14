@@ -156,7 +156,13 @@ class OJSImport extends ProcessExecutor {
                             }
                         }
                     }
-                    $entities = (new OJSFileEntity())->retrieveAll(['submission_id' => $publication->submission_id,'file_stage' => 10,'file_type' => ['in' => ['application/pdf','text/html']]]);
+                    $entities = (new OJSFileEntity())->retrieveAll([
+                        'submission_id' => $publication->submission_id,
+                        'file_stage'    => 10,
+                        'file_type'     => ['in' => ['application/pdf','text/html']],
+                        'assoc_type'    => '__NOT_NULL__',
+                        'assoc_id'      => '__NOT_NULL__'
+                    ]);
                     foreach ($entities as $entity) {
                         $type = $entity->file_type === 'application/pdf' ? 'pdf' : 'html';
                         $date = date_format(date_create($entity->date_modified), 'Ymd');
@@ -354,7 +360,9 @@ class OJSImport extends ProcessExecutor {
     }
     
     public function execute($parameters = []) {
-        $this->importData();
+        if ($this->import('metadata') || $this->import('files')) {
+            $this->importData();
+        }
         if ($this->import('journals')) {
             $this->addSettings();
         }
