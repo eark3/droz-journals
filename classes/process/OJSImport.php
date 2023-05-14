@@ -1,6 +1,19 @@
 <?php
 
 class OJSImport extends ProcessExecutor {
+        
+    public function parameters($string) {
+        if ($string === 'all') {
+            $string = 'metadata,journals,issues,files';
+        }
+        $parameters = ['imports' => explode(',', $string)];
+        $this->setParameters($parameters);
+        return $parameters;
+    }
+    
+    private function import($data) {
+        return in_array($data, $this->parameters['imports'] ?? []);
+    }
     
     private function locale($locale) {
         return !empty($locale) ? str_replace('_', '-', $locale) : 'fr-FR';
@@ -42,6 +55,19 @@ class OJSImport extends ProcessExecutor {
     
     protected function importData() {
         $folder = Zord::liveFolder('import');
+        if ($this->import('journals')) {
+            (new JournalEntity())->delete();
+        }
+        if ($this->import('metadata')) {
+            foreach (glob($folder.'*.json') as $metadata) {
+                unlink($metadata);
+            }
+        }
+        if ($this->import('files')) {
+            foreach (glob($folder.'*', GLOB_ONLYDIR) as $_folder) {
+                Zord::deleteRecursive($_folder);
+            }
+        }
         $ojs = new Tunnel('ojs');
         $journals = [];
         $names = [];
@@ -146,10 +172,10 @@ class OJSImport extends ProcessExecutor {
                         ]);
                         $file = $folder.$short.DS.$_short.'.'.$type;
                         $_folder = dirname($file);
-                        if (!file_exists($_folder)) {
+                        if ($this->import('files') && !file_exists($_folder)) {
                             mkdir($_folder, 0755, true);
                         }
-                        if (true /*!$ojs->recv($path, $file)*/) {
+                        if (!$this->import('files') || $ojs->recv($path, $file)) {
                             if (!in_array($type, $galleys)) {
                                 $galleys[] = $type;
                             }
@@ -191,19 +217,19 @@ class OJSImport extends ProcessExecutor {
                 'settings' => $this->getSettings('journal', $journal)
             ];
         }
-        //(new JournalEntity())->delete();
-        Zord::resetFolder($folder);
         foreach ($journals as $journal) {
-            /*
-             $_journal = JournalsUtils::create(new JournalEntity(), $journal);
-            foreach ($journal['sections'] ?? [] as $section) {
-                $section["journal"] = $_journal->id;
-                JournalsUtils::create(new SectionEntity(), $section);
+            if ($this->import('journals')) {
+                $_journal = JournalsUtils::create(new JournalEntity(), $journal);
+                foreach ($journal['sections'] ?? [] as $section) {
+                    $section["journal"] = $_journal->id;
+                    JournalsUtils::create(new SectionEntity(), $section);
+                }
             }
-            */
-            foreach ($journal['issues'] ?? [] as $issue) {
-                $short = JournalsUtils::short($journal['context'], $issue['volume'], $issue['number'] ?? null);
-                file_put_contents($folder.$short.'.json', Zord::json_encode($issue));
+            if ($this->import('metadata')) {
+                foreach ($journal['issues'] ?? [] as $issue) {
+                    $short = JournalsUtils::short($journal['context'], $issue['volume'], $issue['number'] ?? null);
+                    file_put_contents($folder.$short.'.json', Zord::json_encode($issue));
+                }
             }
         }
     }
@@ -326,9 +352,15 @@ class OJSImport extends ProcessExecutor {
     
     public function execute($parameters = []) {
         $this->importData();
-        //Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
-        //$this->addSettings();
-        //$this->importUsers();
+        if ($this->import('journals')) {
+            $this->addSettings();
+        }
+        if ($this->import('issues')) {
+            Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
+        }
+        if ($this->import('users')) {
+            $this->importUsers();
+        }
     }
     
 }
