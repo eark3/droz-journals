@@ -113,7 +113,7 @@ class JournalsPortal extends Portal {
                         $page = 'article';
                         $ariadne['active'] = $_section['title'];
                         $others = [];
-                        foreach ($_paper['authors'] as $author) {
+                        foreach ($_paper['authors'] ?? [] as $author) {
                             foreach ((new AuthorEntity())->retrieveAll([
                                 'first' => $author['first'],
                                 'last'  => $author['last'],
