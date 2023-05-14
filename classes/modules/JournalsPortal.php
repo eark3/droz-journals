@@ -275,7 +275,7 @@ class JournalsPortal extends Portal {
             'id'              => $short,
             'title'           => $_paper['title'],
             'volume'          => $issue->volume,
-            'container-title' => $_journal['name'],
+            'container-title' => strip_tags($_journal['name']),
             'page'            => JournalsUtils::pages($paper),
             'accessed'        => ["date-parts" => [[date('Y', $now), date('m', $now), date('d', $now)]]],
             'issued'          => ["date-parts" => [[date('Y', $issued), date('m', $issued), date('d', $issued)]]]
