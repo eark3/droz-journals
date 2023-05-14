@@ -184,6 +184,9 @@ class OJSImport extends ProcessExecutor {
                         }
                     }
                     $views = Zord::value('stats', $publication->submission_id) ?? 0;
+                    if (empty($pages)) {
+                        $this->warn(0, "Pages non renseignées pour ".$publication->submission_id.' ('.$journal->path.')');
+                    }
                     $papers[] = [
                         'pages'    => $pages,
                         'status'   => $status,
