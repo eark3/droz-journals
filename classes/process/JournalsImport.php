@@ -9,6 +9,7 @@ class JournalsImport extends Import {
     protected $journal  = null;
     protected $issue    = null;
     protected $empty    = false;
+    protected $new      = false;
     protected $cache    = null;
     
     private function journal($issue) {
@@ -259,6 +260,11 @@ class JournalsImport extends Import {
             }
         }
         $this->empty = !file_exists($this->folder.$ean);
+        $this->new = ((new IssueEntity())->retrieveOne([
+            'journal' => $this->journal->id,
+            'volume'  => $this->issue['volume'],
+            'number'  => $this->issue['number'] ?? null
+        ]) === false);
         return $result;
     }
     
@@ -356,6 +362,13 @@ class JournalsImport extends Import {
             }
             $this->error(2, $returnMessage);
             return false;
+        }
+        return true;
+    }
+    
+    protected function notify($ean) {
+        if ($this->new) {
+            
         }
         return true;
     }

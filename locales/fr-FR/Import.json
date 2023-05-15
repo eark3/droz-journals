@@ -1,7 +1,8 @@
 {
 	"steps": {
 		"check": "Vérification des données",
-		"crossref": "Enregistrement des DOI"
+		"crossref": "Enregistrement des DOI",
+		"notify": "Notification des aboonés"
 	},
 	"messages": {
 		"check": {
