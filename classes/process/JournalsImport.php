@@ -374,7 +374,7 @@ class JournalsImport extends Import {
     }
     
     protected function notify($ean) {
-        if (true) {
+        if ($this->new) {
             $batch = [];
             $recipients = [];
             $index = 1;
