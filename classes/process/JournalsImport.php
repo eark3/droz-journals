@@ -7,7 +7,9 @@ class JournalsImport extends Import {
     
     protected $journals = [];
     protected $journal  = null;
+    protected $settings = null;
     protected $issue    = null;
+    protected $short    = null;
     protected $empty    = false;
     protected $new      = false;
     protected $cache    = null;
@@ -67,8 +69,11 @@ class JournalsImport extends Import {
     protected function resetRef($ean) {
         parent::resetRef($ean);
         $this->journal = null;
+        $this->settings = null;
         $this->issue = null;
+        $this->short = null;
         $this->empty = false;
+        $this->new   = false;
     }
     
     protected function metadata($ean) {
@@ -208,6 +213,8 @@ class JournalsImport extends Import {
             $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
             return false;
         }
+        $this->short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'] ?? null);
+        $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         $result = true;
         list($source,$target) = $this->folders($ean);
         foreach ($this->issue['papers'] ?? [] as $index => $paper) {
@@ -367,8 +374,42 @@ class JournalsImport extends Import {
     }
     
     protected function notify($ean) {
-        if ($this->new) {
-            
+        if (true) {
+            $batch = [];
+            $recipients = [];
+            $index = 1;
+            foreach ((new UserHasRoleEntity())->retrieveAll([
+                'role'    => 'reader',
+                'context' => $this->journal->context
+            ]) as $role) {
+                if ($index > MAX_MAIL_RECIPIENTS) {
+                    $batch[] = $recipients;
+                    $recipients = [];
+                    $index = 1;
+                }
+                $user = (new UserEntity())->retrieveOne($role->user);
+                if ($user !== false) {
+                    $recipients['bcc'][$user->email] = $user->name;
+                    $index++;
+                }
+            }
+            $batch[] = $recipients;
+            $models = [
+                'context' => $this->journal->context
+            ];
+            $mail = [
+                'category' => 'issue'.DS.$this->short,
+                'template' => '/mail/issue/publication',
+                'subject'  => Zord::getLocaleValue('title', Zord::value('context', 'root'), $this->journal->locale).' - '.$this->settings['name'],
+                'models'   => $models
+            ];
+            foreach ($batch as $recipients) {
+                $mail['recipients'] = $recipients;
+                $this->sendMail($mail);
+            }
+            $this->info(2, $this->locale->messages->notify->info->mail->sent);
+        } else {
+            $this->info(2, $this->locale->messages->notify->info->mail->useless);
         }
         return true;
     }

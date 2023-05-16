@@ -2,7 +2,7 @@
 	"steps": {
 		"check": "Vérification des données",
 		"crossref": "Enregistrement des DOI",
-		"notify": "Notification des aboonés"
+		"notify": "Notification des abonnés"
 	},
 	"messages": {
 		"check": {
@@ -44,6 +44,14 @@
 				"file": {
 					"sending": "Envoi du fichier",
 					"empty": "Pas de DOI pour ce numéro"
+				}
+			}
+		},
+		"notify": {
+			"info": {
+				"mail": {
+					"useless": "Aucune notification nécessaire",
+					"sent": "Les messages de notifications ont été envoyés"
 				}
 			}
 		}
