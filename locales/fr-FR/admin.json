@@ -40,7 +40,12 @@
 				"supportName": "Nom du contact secondaire",
 				"supportEmail": "Adresse couriel du contact secondaire",
 				"bannerLink": "Lien vers un site externe",
-				"bannerImage": "Image du lien vers le site externe"
+				"bannerImage": "Image du lien vers le site externe",
+				"about": "A propos de la revue",
+				"editorialTeam": "Comité éditorial",
+				"readerInformation": "Informations pour les lecteurs",
+				"authorInformation": "Informations pour les auteurs",
+				"librarianInformation": "Informations pour les bibliothécaires"
 			},
 			"issue": {
 				"title": "Titre du numéro",

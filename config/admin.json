@@ -96,6 +96,31 @@
 				"bannerImage": {
 					"template": "image",
 					"src": "${journal.bannerImage}"
+				},
+				"about": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"editorialTeam": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"readerInformation": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"authorInformation": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"librarianInformation": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
 				}
 			},
 			"issue": {

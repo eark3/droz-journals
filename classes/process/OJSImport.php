@@ -22,8 +22,14 @@ class OJSImport extends ProcessExecutor {
     private function getSettings($type, $object) {
         $settings = [];
         $field = $type.'_id';
+        $replacements = [
+            'site/images/ojsadmin'              => 'journals/images',
+            'https://revues-dev.droz.org'       => '',
+            'https://revues.droz.org/index.php' => '',
+            '/subscription'                     => '/page/subscription'
+        ];
         foreach ((new OJSSettingEntity($type))->retrieveAll([$field => $object->$field]) as $entity) {
-            $value = str_replace(['site/images/ojsadmin','https://revues-dev.droz.org','https://revues.droz.org/index.php'], ['journals/images','',''], $entity->setting_value);
+            $value = str_replace(array_keys($replacements), array_values($replacements), $entity->setting_value);
             if ($entity->setting_type === 'object') {
                 $value = base64_encode(Zord::sanitize($value));
             }
