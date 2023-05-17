@@ -63,15 +63,12 @@ html, body {
 }
 
 .header_view{
-	padding-top:22px !important;
 	padding-left:20px !important;
 }
 
 @media (max-width: 767px) {
   .header_view{
-    padding-top: 3px !important;
     min-height : 38px !important;
-    padding-bottom:3px !important;
   }
 
 }

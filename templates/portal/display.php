@@ -13,9 +13,9 @@
 		<link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
 		<link rel="stylesheet" type="text/css" media="screen" href="/journals/css/fonts.css"/>
 		<link rel="stylesheet" type="text/css" media="screen" href="/journals/css/display.css"/>
-		<link rel="stylesheet" type="text/css" media="screen" href="/journals/css/<?php echo $context?>/bootstrapTheme.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/build/css/<?php echo $context?>/bootstrap3.css"/>
 		<link rel="stylesheet" type="text/css" media="screen" href="/journals/css/common.css"/>
-		<link rel="stylesheet" type="text/css" media="screen" href="/journals/css/<?php echo $context?>/layout.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/build/css/<?php echo $context?>/<?php echo strtolower($context); ?>.css"/>
 		<script src="/js/jquery.js" type="text/javascript"></script>
 	</head>
 	<body class="pkp_page_article pkp_op_view">
