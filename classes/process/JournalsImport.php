@@ -1,7 +1,7 @@
 <?php
 
-use \GuzzleHttp\Client;
-use \GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class JournalsImport extends Import {
     

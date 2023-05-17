@@ -1,0 +1,81 @@
+/**
+ * @file plugins/themes/droz/styles/index.less
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @brief Layout styles which implement the boxed layout
+ *
+ */
+
+@font-face {
+    font-family: 'SabonLTStd-Roman';
+    src: url('/fonts/SabonLTStd-Roman.eot');
+    src: url('/fonts/SabonLTStd-Roman.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/SabonLTStd-Roman.woff') format('woff'),
+         url('/fonts/SabonLTStd-Roman.ttf') format('truetype'),
+         url('/fonts/SabonLTStd-Roman.svg#Sri-TSCRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// A grey background on large screens
+
+html{
+  background: #fff;
+}
+
+body {
+	background: @bg-shade;
+	font-family: @font-base;
+	color: @text-dark;
+  margin-top:140px;
+}
+
+.SabonLTStd-Roman{
+  font-family: @font-heading;
+  font-size:28px;
+}
+.drozLightGrey{
+	color: @text-light;
+	letter-spacing: .1em
+}
+.drozDarkGrey{
+	color: @text-dark;
+	letter-spacing: .03em}
+
+h1,h2,h3,h4,h5,h6{
+	font-family: @font-heading;
+}
+
+// A white background for the boxed content area
+.pkp_structure_page {
+	margin: 0 auto;
+	background: @bg;
+}
+
+.pkp_structure_footer_wrapper {
+	background: @bg-light-shade;
+}
+
+// Removes the left and right borders around the main content panel
+.pkp_structure_main:before,
+.pkp_structure_main:after {
+	display: none;
+}
+
+.pkp_structure_content {
+	padding-top: 0;
+}
+
+.pkp_structure_sidebar {}
+
+// Center the content panel when no sidebar is present
+// @todo This was added to the default theme after OJS 3.0.2 was released.
+// The styles can be removed for future versions.
+.pkp_structure_main:first-child:last-child {}
+
+.page-header{
+  padding:0 !important;
+}

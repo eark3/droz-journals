@@ -1,0 +1,77 @@
+/**
+ * @file styles/objects/galley_link.less
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @brief Styles applying to a galley link button
+ * @link templates/frontend/objects/galley_link.tpl
+ */
+.obj_galley_link {
+	&:extend(.cmp_manuscript_button all);
+
+	&.restricted {
+		border-color: @bg-shade;
+		background: @bg-shade;
+		color: @text-light;
+
+		&:before {
+			color: @text-light;
+		}
+
+		&:hover,
+		&:focus {
+			background: @text-light;
+		}
+	}
+}
+.galley-link,.galley-link-buy,.galley-link-buy-droz{
+  width: 100%;
+  margin-top:20px;
+}
+
+.galley-link:last-child,.galley-link-buy:last-child,.galley-link-buy-droz:last-child{
+  width: 100%;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+
+.galley-link-buy {
+
+		border-color: @text-light;
+    background: @text-light;
+    color:@bg-shade;
+}
+.galley-link-buy:hover {
+
+		border-color: @link-color;
+    background: @link-color;
+    color:@text-bg-base
+}
+.galley-link-buy-droz {
+
+		border-color: #32455D;
+    background: #32455D;
+    color:@bg-shade;
+}
+.galley-link-buy-droz > .glyphicon {
+
+    color:#FF6633;
+
+}
+.galley-link-buy-droz:hover > .glyphicon {
+
+    color:#32455D;
+
+}
+.galley-link-buy-droz:hover {
+
+		border-color: @text-light;
+    background: @text-light;
+}
+.html-galley-btn-arrow{
+  width:8px;
+  height:8px;
+}

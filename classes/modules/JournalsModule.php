@@ -6,9 +6,10 @@ trait JournalsModule {
     
     public function configure() {
         $this->cache = Cache::instance();
-        $this->addStyle('/journals/css/'.$this->context.'/bootstrapTheme.css');
+        $theme =strtolower($this->context);
+        $this->addStyle($this->checkCSS('bootstrap3', $theme));
         $this->addStyle('/journals/css/common.css');
-        $this->addStyle('/journals/css/'.$this->context.'/layout.css');
+        $this->addStyle($this->checkCSS($theme, 'index'));
         if ($this->context !== 'root') {
             $this->addScript('/journals/js/journal.js');
         }
@@ -30,6 +31,18 @@ trait JournalsModule {
             ];
         }
         return $models;
+    }
+    
+    protected function checkCSS($name, $root) {
+        $sourceFolder = Zord::getComponentPath('web'.DS.'themes'.DS).$name;
+        $source = $sourceFolder.DS.'styles'.DS.$root.'.less';
+        $target = Zord::liveFolder('build'.DS.'css'.DS.$this->context).$name.'.css';
+        if (Zord::needsUpdate($target, Zord::listRecursive($sourceFolder))) {
+            $parser = new Less_Parser();
+            $parser->parseFile($source, $this->baseURL);
+            file_put_contents($target, $parser->getCss());
+        }
+        return '/build/css/'.$this->context.'/'.$name.'.css';
     }
     
     protected function message($type, $content) {

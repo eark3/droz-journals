@@ -1,0 +1,47 @@
+/**
+ * @file styles/bootstrap-surcharge.less
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @brief surcharge bootstrap stylesheet
+ */
+
+#main-navigation > li > a:hover,
+.navbar-nav > li > a:hover,
+.navbar-nav > li > a:focus {
+   color: @text-bg-base;
+   background-color: @link-color;
+ }
+
+ a:link{
+   color: @link-color;
+ }
+ a:visited{
+   color: @link-color;
+ }
+ .btn{
+   background: @bg-revue;
+   border:none;
+ }
+ .btn:hover{
+   background: @link-color;
+ }
+input{
+  background: @bg-revue !important;
+  border: 1px solid @link-color !important;
+}
+.dropdown-toggle:hover{
+  background-color: @link-color !important;
+}
+.dropdown-toggle{
+  background-color: @bg-revue !important;
+}
+.dropdown-menu {
+  background-color: @bg-revue !important;
+}
+
+nav > #nav-menuul > #main-navigation > li > ul > li > a {
+  background-color: @bg-revue !important;
+}
