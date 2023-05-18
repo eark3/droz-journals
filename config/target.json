@@ -55,6 +55,13 @@
 			"parameters": {
 				"ean": "FILTER_SANITIZE_STRING"
 			}
+		},
+		"issues": {
+			"response": "DATA",
+			"shortcut": "issues",
+			"parameters": {
+				"for": "FILTER_SANITIZE_STRING"
+			}
 		}
 	},
 	"Admin": {

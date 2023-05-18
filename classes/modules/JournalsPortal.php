@@ -444,6 +444,21 @@ class JournalsPortal extends Portal {
         return $papers;
     }
     
+    public function issues() {
+        $for = $this->params['for'] ?? 'shop';
+        $list = [];
+        foreach ((new IssueEntity())->retrieveAll() as $issue) {
+            switch ($for) {
+                case 'shop': {
+                    if (!empty($issue->ean)) {
+                        $list[] = $issue->ean;
+                    }
+                    break;
+                }
+            }
+        }
+        return $list;
+    }
 }
 
 ?>
