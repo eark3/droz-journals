@@ -396,11 +396,17 @@ class JournalsPortal extends Portal {
     
     public function papers() {
         $ean = $this->params['ean'];
-        if (empty($ean) || preg_match('/^97[89][0-9]{10}$/', $ean) !== 1) {
+        if (empty($ean)) {
+            return $this->error(406);
+        }
+        $issue = (new IssueEntity())->retrieveOne($ean);
+        if ($issue === false) {
+            return $this->error(404);
+        }
+        if (empty($issue->ean)) {
             return $this->error(406);
         }
         $papers = [];
-        $issue = (new IssueEntity())->retrieveOne($ean);
         if ($issue !== false) {
             $journal = (new JournalEntity())->retrieveOne($issue->journal);
             foreach ((new PaperEntity())->retrieveAll(['issue' => $issue->id, 'status' => 'subscription']) as $paper) {
