@@ -42,6 +42,7 @@ class JournalsPortal extends Portal {
                     } else {
                         $issue = $this->params['issue'] ?? null;
                         if ($issue) {
+                            $issue = Zord::value('mapping', ['issues',$issue]) ?? $issue;
                             $issue = (new IssueEntity())->retrieveOne($issue);
                         }
                     }
@@ -73,7 +74,7 @@ class JournalsPortal extends Portal {
             if (!isset($paper)) {
                 return $this->error(404);
             }
-            $paper = Zord::value('mapping', $paper) ?? $paper;
+            $paper = Zord::value('mapping', ['papers',$paper]) ?? $paper;
             $paper = (new PaperEntity())->retrieveOne($paper);
             if ($paper === false) {
                 return $this->error(404);

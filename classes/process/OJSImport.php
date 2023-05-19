@@ -77,6 +77,7 @@ class OJSImport extends ProcessExecutor {
         $ojs = new Tunnel('ojs');
         $journals = [];
         $names = [];
+        $mapping = Zord::getConfig('mapping');
         foreach ((new OJSJournalEntity())->retrieveAll() as $journal) {
             $sections = [];
             $issues   = [];
@@ -101,14 +102,15 @@ class OJSImport extends ProcessExecutor {
                     echo 'Missing section name for '.$journal->path.'_'.$section->seq.' ('.$section->section_id.')'."\n";
                 }
             }
-            $mapping = Zord::getConfig('mapping');
             foreach ((new OJSIssueEntity())->retrieveAll(['journal_id' => $journal->journal_id]) as $issue) {
                 $short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null);
+                $mapping['issues'][$issue->issue_id] = $short;
                 $ean = null;
                 $papers = [];
                 foreach ((new OJSPublicationEntity())->retrieveAll(['issue_id' => $issue->issue_id]) as $publication) {
                     $paper = (new OJSPaperEntity())->retrieveOne($publication->submission_id);
                     $_short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null, $paper->pages);
+                    $mapping['papers'][$publication->submission_id] = $_short;
                     $status = $publication->access_status ? 'free' : 'subscription';
                     $pages = str_replace('/', '-', JournalsUtils::pages($paper));
                     $section = $names[$paper->section_id];
@@ -117,7 +119,7 @@ class OJSImport extends ProcessExecutor {
                     $doi = $settings['pub-id::doi'][$this->locale($journal->primary_locale)]['value'] ?? '';
                     if (!empty($doi) && substr($doi, 0, strlen(DROZ_DOI_PREFIX)) === DROZ_DOI_PREFIX) {
                         $suffix = substr($doi, strlen(DROZ_DOI_PREFIX));
-                        $mapping[$suffix] = $_short;
+                        $mapping['papers'][$suffix] = $_short;
                     }
                     foreach ($settings['title'] ?? [] as $locale => $item) {
                         if ($item['value'] === "PDF du dossier") {
@@ -222,7 +224,6 @@ class OJSImport extends ProcessExecutor {
                     'settings'  => $this->getSettings('issue', $issue)
                 ];
             }
-            Zord::saveConfig('mapping', $mapping);
             $journals[] = [
                 'context'  => $journal->path,
                 'locale'   => $journal->primary_locale,
@@ -247,6 +248,7 @@ class OJSImport extends ProcessExecutor {
                 }
             }
         }
+        Zord::saveConfig('mapping', $mapping);
     }
     
     protected function addSettings() {
