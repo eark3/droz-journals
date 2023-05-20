@@ -39,7 +39,9 @@
 					<ul class="dropdown-menu">
 <?php foreach (Zord::value('portal', ['menu','header']) as $_type => $_pages) { ?>
 <?php   foreach ($_pages as $_page) { ?>
+<?php     if ($_type !== 'info' || !empty($journal['settings'][$_page])) { ?>
 						<li><a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a></li>
+<?php     }?>
 <?php   } ?>
 <?php } ?>
 					</ul>	
