@@ -50,7 +50,7 @@ class JournalsPortal extends Portal {
                         $this->controler->issue = $issue;
                         $page = 'issue';
                         $issue = $this->_issue($issue);
-                        $ariadne['active'] = $issue['serial'].' : '.$issue['settings']['title'];
+                        $ariadne['active'] = $issue['serial'].(isset($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : '');
                         $models = ['issue' => $issue];
                     } else {
                         return $this->error(404);
@@ -99,7 +99,7 @@ class JournalsPortal extends Portal {
             $ariadne = [
                 'home' => '/'.$this->context,
                 'archive' => '/'.$this->context.'/issue/archive',
-                'issue' => [$_issue['serial'].' : '.$_issue['settings']['title'], '/'.$this->context.'/issue/view/'.$_issue['short']]
+                'issue' => [$_issue['serial'].' : '.(isset($_issue['settings']['title']) ? ' : '.$_issue['settings']['title'] : ''), '/'.$this->context.'/issue/view/'.$_issue['short']]
             ];
             if (in_array($display, ['html','pdf']) && !JournalsUtils::readable($this->user, $this->controler->journal, $issue, $paper)) {
                 return $this->page('login', ['message' => 'warning='.$this->locale->warning->restricted]);

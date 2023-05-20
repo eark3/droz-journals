@@ -2,7 +2,7 @@
 					<div class="heading row">
 						<div class="col-md-12">
 							<p style="margin-top: 5px !important; margin-bottom: 15px !important;" class="page-header">
-								<?php echo $issue['serial']; ?> : <?php echo $issue['settings']['title']; ?>
+								<?php echo $issue['serial']; ?><?php echo !empty($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : ''; ?>
 							</p>
 						</div>
 					</div>
