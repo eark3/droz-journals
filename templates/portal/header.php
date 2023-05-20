@@ -32,8 +32,8 @@
 		</div>
 		<nav id="nav-menu" class="navbar-collapse collapse" aria-label="Site de navigation">
 			<ul id="main-navigation" class="nav navbar-nav">
-				<li><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->issue->last; ?></a></li>
-				<li><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->issue->previous; ?></a></li>
+				<li><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->$context->issue->last ?? $locale->issue->last; ?></a></li>
+				<li><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->$context->issue->previous ?? $locale->issue->previous; ?></a></li>
 				<li class="dropdown">
 					<a href="<?php echo $baseURL; ?>/info/about" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $locale->about; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">

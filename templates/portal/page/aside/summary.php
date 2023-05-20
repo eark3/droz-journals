@@ -1,5 +1,5 @@
 		<div class="description pkp_block block_toc2">
-			<span class="title"><?php echo $locale->aside->summary->title; ?></span>
+			<span class="title"><?php echo $locale->$context->aside->summary->title ?? $locale->aside->summary->title; ?></span>
 			<div class="content">
 <?php foreach ($issue['sections'] ?? [] as $section) { ?>
 				<ul>

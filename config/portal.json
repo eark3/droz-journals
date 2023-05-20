@@ -49,7 +49,8 @@
 			"pages": [
 				"readerInformation",
 				"authorInformation",
-				"librarianInformation"
+				"librarianInformation",
+				"archives"
 			]
 		}
 	}
