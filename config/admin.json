@@ -90,6 +90,9 @@
 				"supportName": {
 					"template": "text"
 				},
+				"supportEmail": {
+					"template": "text"
+				},
 				"bannerLink": {
 					"template": "text"
 				},
