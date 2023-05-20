@@ -6,7 +6,9 @@
 		<div class="contact primary">
 			<h1 style="margin-top: 20px;"><?php echo $locale->contact->main; ?></h1>
 			<div class="name"><?php echo $journal['settings']['contactName']; ?></div>
+<?php if (isset($journal['settings']['contactAffiliation'])) { ?>
 			<div class="affiliation"><?php echo $journal['settings']['contactAffiliation']; ?></div>
+<?php } ?>
 			<div class="email">
 				<a href="mailto:<?php echo $journal['settings']['contactEmail']; ?>"><?php echo $journal['settings']['contactEmail']; ?></a>
 			</div>
