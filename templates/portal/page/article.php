@@ -99,7 +99,7 @@
 						<div class="panel-heading"><?php echo $locale->$context->article->issue ?? $locale->article->issue; ?></div>
 						<div class="panel-body">
 							<a class="title" href="<?php echo $baseURL; ?>/issue/view/<?php echo $issue['short']; ?>">
-								<?php echo $issue['serial']?><?php echo isset($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : ''; ?></a>
+								<?php echo $issue['serial']?><?php echo !empty($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : ''; ?></a>
 						</div>
 					</div>
 <?php if (!empty($others)) { ?>
