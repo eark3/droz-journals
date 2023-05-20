@@ -7,7 +7,7 @@
 			<div class="col-md-4">
 <?php foreach (Zord::value('portal', ['menu','footer']) as $_type => $_pages) { ?>
 <?php   foreach ($_pages as $_page) { ?>
-<?php     if ($_type !== 'info' || isset($journal['settings'][$_page])) { ?>
+<?php     if ($_type !== 'info' || !empty($journal['settings'][$_page])) { ?>
 				<p>
 					<a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->$context->pages->$_page ?? $locale->pages->$_page; ?></a>
 				</p>

@@ -107,6 +107,16 @@
 					"multiline": true,
 					"class": "html"
 				},
+				"policy": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
+				"license": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
 				"readerInformation": {
 					"template": "text",
 					"multiline": true,
