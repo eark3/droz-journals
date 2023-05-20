@@ -13,6 +13,7 @@
 				<a href="mailto:<?php echo $journal['settings']['contactEmail']; ?>"><?php echo $journal['settings']['contactEmail']; ?></a>
 			</div>
 		</div>
+<?php if (!empty($journal['settings']['supportName']) && !empty($journal['settings']['supportEmail'])) { ?>
 		<div class="contact support">
 			<h1 style="margin-top: 20px;"><?php echo $locale->contact->support; ?></h1>
 			<div class="name"><?php echo $journal['settings']['supportName']; ?></div>
@@ -20,5 +21,6 @@
 				<a href="mailto:<?php echo $journal['settings']['supportEmail']; ?>"><?php echo $journal['settings']['supportEmail']; ?></a>
 			</div>
 		</div>
+<?php } ?>
 	</div>
 </div>
