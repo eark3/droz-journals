@@ -119,6 +119,9 @@
 			"journal": "Voir la collection",
 			"current": "Dernier colloque"
 		},
+		"pages": {
+			"about": "À propos de la collection"
+		},
 		"issue": {
 			"last": "Dernier colloque",
 			"previous" : "Colloques précédents",

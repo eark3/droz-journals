@@ -16,22 +16,22 @@
 		"header": {
 			"info": [
 				"about",
-				"editorialTeam"
-			],
-			"page": [
-				"contact",
+				"editorialTeam",
 				"policy",
 				"license"
+			],
+			"page": [
+				"contact"
 			]
 		},
 		"footer": {
 			"info": [
 				"about",
-				"editorialTeam"
+				"editorialTeam",
+				"license"
 			],
 			"page": [
-				"contact",
-				"license"
+				"contact"
 			]
 		}
 	},
