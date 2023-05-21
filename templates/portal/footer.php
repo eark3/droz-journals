@@ -9,7 +9,7 @@
 <?php   foreach ($_pages as $_page) { ?>
 <?php     if ($_type !== 'info' || !empty($journal['settings'][$_page])) { ?>
 				<p>
-					<a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->$context->pages->$_page ?? $locale->pages->$_page; ?></a>
+					<a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a>
 				</p>
 <?php     }?>
 <?php   } ?>

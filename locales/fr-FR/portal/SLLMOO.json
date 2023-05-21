@@ -1,0 +1,29 @@
+{
+	"root": {
+		"journal": "Voir la collection",
+		"current": "Dernier colloque"
+	},
+	"pages": {
+		"about": "À propos de la collection",
+		"archives": "Liste des publications antérieures"
+	},
+	"issue": {
+		"last": "Dernier colloque",
+		"previous" : "Colloques précédents",
+		"archive": "Voir tous les colloques",
+		"summary": "Sommaire <br />de ce colloque"
+	},
+	"article": {
+		"issue": "Colloque"
+	},
+	"aside": {
+		"summary": {
+			"title": "Sommaire de ce colloque"
+		},
+		"infos": {
+			"pages": {
+				"archives": "Liste des publications antérieures"
+			}
+		}
+	}
+}

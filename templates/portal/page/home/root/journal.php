@@ -13,9 +13,9 @@
 							</div>
 							<ul class="nav nav-pills">
 								<li class="view">
-									<a href="/<?php echo $journal['context']; ?>"><?php echo $locale->{$journal['context']}->root->journal ?? $locale->root->journal; ?></a></li>
+									<a href="/<?php echo $journal['context']; ?>"><?php echo Zord::getLocale('portal'.DS.$journal['context'], $lang)->root->journal ?? $locale->root->journal; ?></a></li>
 								<li class="current">
-									<a href="/<?php echo $journal['context']; ?>/issue/current"><?php echo $locale->{$journal['context']}->root->current ?? $locale->root->current; ?></a></li>
+									<a href="/<?php echo $journal['context']; ?>/issue/current"><?php echo Zord::getLocale('portal'.DS.$journal['context'], $lang)->root->current ?? $locale->root->current; ?></a></li>
 							</ul>
 						</div>
 					</li>

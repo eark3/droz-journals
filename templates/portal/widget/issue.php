@@ -23,7 +23,7 @@
 								<div class="content">
 									<div class="left">
 										<h2>
-											<?php echo $locale->$context->issue->summary ?? $locale->issue->summary; ?>
+											<?php echo $locale->issue->summary; ?>
 										</h2>
 									</div>
 									<div class="right">

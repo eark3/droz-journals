@@ -304,7 +304,7 @@ class JournalsPortal extends Portal {
         if (empty($content)) {
             return $this->error(404, 'missing content');
         }
-        $title = $this->locale->{$this->context}->pages->$content ?? ($this->locale->pages->$content ?? null);
+        $title = $this->locale->pages->$content ?? null;
         $settings = $this->_settings('journal', $this->controler->journal);
         if (!isset($settings[$content])) {
             return $this->error(404, 'no setting');

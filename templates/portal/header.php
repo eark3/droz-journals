@@ -32,15 +32,15 @@
 		</div>
 		<nav id="nav-menu" class="navbar-collapse collapse" aria-label="Site de navigation">
 			<ul id="main-navigation" class="nav navbar-nav">
-				<li><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->$context->issue->last ?? $locale->issue->last; ?></a></li>
-				<li><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->$context->issue->previous ?? $locale->issue->previous; ?></a></li>
+				<li><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->issue->last; ?></a></li>
+				<li><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->issue->previous; ?></a></li>
 				<li class="dropdown">
 					<a href="<?php echo $baseURL; ?>/info/about" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $locale->about; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
 <?php foreach (Zord::value('portal', ['menu','header']) as $_type => $_pages) { ?>
 <?php   foreach ($_pages as $_page) { ?>
 <?php     if ($_type !== 'info' || !empty($journal['settings'][$_page])) { ?>
-						<li><a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->$context->pages->$_page ?? $locale->pages->$_page; ?></a></li>
+						<li><a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a></li>
 <?php     }?>
 <?php   } ?>
 <?php } ?>

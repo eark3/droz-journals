@@ -17,7 +17,7 @@
 				<h1 class="current_issue_heading"><?php echo $locale->issue->last; ?></h1>
 <?php $this->render('/portal/widget/issue'); ?>
 				<div style="padding-top: 20px; clear: both;"></div>
-				<a href="/<?php echo $context; ?>/issue/archive" class="btn btn-primary read-more"><?php echo $locale->$context->issue->archive ?? $locale->issue->archive; ?><span class="glyphicon glyphicon-chevron-right"></span></a>
+				<a href="/<?php echo $context; ?>/issue/archive" class="btn btn-primary read-more"><?php echo $locale->issue->archive; ?><span class="glyphicon glyphicon-chevron-right"></span></a>
 			</section>
 			<section class="additional_content">
 				<?php echo $journal['settings']['additionalHomeContent'] ?? ''; ?>

@@ -31,8 +31,7 @@
 		"license": "Mentions légales",
 		"subscription": "Abonnement",
 		"login": "Se connecter",
-		"login/lostPassword": "Demander un mot de passe",
-		"archives": "Liste des publications antérieures de la SLLMOO"
+		"login/lostPassword": "Demander un mot de passe"
 	},
 	"published": "Publié",
 	"access": {
@@ -71,8 +70,7 @@
 			"pages": {
 				"readerInformation": "Pour les lecteurs",
 				"authorInformation": "Pour les auteurs",
-				"librarianInformation": "Pour les bibliothécaires",
-				"archives": "Liste des publications antérieures de la SLLMOO"
+				"librarianInformation": "Pour les bibliothécaires"
 			}
 		},
 		"search": {
@@ -112,29 +110,6 @@
 			"from": "De",
 			"to": "Jusqu'à",
 			"authors": "Auteurs"
-		}
-	},
-	"SLLMOO": {
-		"root": {
-			"journal": "Voir la collection",
-			"current": "Dernier colloque"
-		},
-		"pages": {
-			"about": "À propos de la collection"
-		},
-		"issue": {
-			"last": "Dernier colloque",
-			"previous" : "Colloques précédents",
-			"archive": "Voir tous les colloques",
-			"summary": "Sommaire <br />de ce colloque"
-		},
-		"article": {
-			"issue": "Colloque"
-		},
-		"aside": {
-			"summary": {
-				"title":"Sommaire de ce colloque"
-			}
 		}
 	}
 }
