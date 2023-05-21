@@ -13,6 +13,7 @@ jQuery(document).ready(function() {
 		var index = href.indexOf('#');
 		if (href !== '#' && index >= 0) {
 			e.preventDefault();
+			e.stopPropagation();
 			href = href.substring(index);
 			var position = jQuery(href).offset().top;
 			jQuery("body, html").animate({

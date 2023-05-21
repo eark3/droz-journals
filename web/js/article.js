@@ -27,11 +27,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			element.classList.add('selected');
 		}
 		element.addEventListener("click", function(event) {
-			setCSLParams({
-				'lang':  LANG,
-				'style': element.dataset.style
-			});
-			updateCitation();
+			switch (element.dataset.action) {
+				case 'display': {
+					setCSLParams({
+						'lang':  LANG,
+						'style': element.dataset.style
+					});
+					updateCitation();
+					break;
+				}
+				case 'download': {
+					invokeZord({
+						module: 'Portal',
+						action: 'quote',
+						output: 'download',
+						style : element.dataset.style,
+						paper : cslContainer.dataset.paper
+					});
+					break;
+				}
+			}
 		});
 	});
 	

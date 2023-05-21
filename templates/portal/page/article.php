@@ -70,7 +70,7 @@
 									<div id="cslCitationFormats" class="citation_formats_list" aria-hidden="true">
 										<ul class="citation_formats_styles">
 <?php foreach (Zord::value('quote', 'format') as $style => $label) { ?>
-											<li data-style="<?php echo $style; ?>">
+											<li data-style="<?php echo $style; ?>" data-action="display">
 												<span aria-controls="citationOutput">
 													<?php echo $label; ?>
 												</span>
@@ -80,11 +80,10 @@
 										<h2 class="label"><?php echo $locale->article->quote->download; ?></h2>
 										<ul class="citation_formats_styles">
 <?php foreach (Zord::value('quote', 'download') as $style => $_style) { ?>
-											<li>
-												<a href="<?php echo $baseURL; ?>/quote/download/<?php echo $style; ?>/<?php echo $paper['short']; ?>">
-													<span class="fa fa-download"></span>
+											<li data-style="<?php echo $style; ?>" data-action="download">
+												<span class="fa fa-download">
 													<?php echo $_style['label']; ?>
-												</a>
+												</span>
 											</li>
 <?php } ?>
 										</ul>
