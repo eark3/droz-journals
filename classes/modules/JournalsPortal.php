@@ -382,7 +382,7 @@ class JournalsPortal extends Portal {
             ]);
             if ($found > 0) {
                 foreach ($documents as $document) {
-                    if (isset($document['short_s'])) {
+                    if (isset($results[$document['short_s']])) {
                         $found--;
                         continue;
                     }
