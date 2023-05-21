@@ -133,6 +133,10 @@ trait JournalsModule {
         return $result;
     }
     
+    protected function _section($section) {
+        
+    }
+    
     protected function _paper($paper, $issue, $journal = null) {
         $context = $journal->context ?? $this->context;
         $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);

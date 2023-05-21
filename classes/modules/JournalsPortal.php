@@ -237,11 +237,21 @@ class JournalsPortal extends Portal {
                 break;
             }
             case 'download': {
-                $view = new View('/portal/quote/'.$style, [], $this->controler);
+                $short = JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages);
+                $_journal = $this->_journal($this->controler->journal);
+                $_issue = $this->_issue($issue, $this->controler->journal);
+                $_section = $this->_settings('section', $section, 'title');
+                $_paper = $this->_paper($paper, $issue, $this->controler->journal);
+                $view = new View('/portal/quote/'.$style, [
+                    'journal' => $_journal,
+                    'issue'   => $_issue,
+                    'section' => $_section,
+                    'paper'   => $_paper
+                ], $this->controler);
                 $view->setMark(false);
                 $content = $view->render();
                 return isset($content) ? $this->download(
-                    JournalsUtils::short($this->context, $issue->volume, $issue->number, $paper->pages).'.'.Zord::value('quote', ['download',$style,'extension']),
+                    $short.'.'.Zord::value('quote', ['download',$style,'extension']),
                     null,
                     $content
                 ) : $this->error(501);

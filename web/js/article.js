@@ -35,6 +35,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		});
 	});
 	
+	setCSLParams({
+		'lang':  LANG,
+		'style': 'acm-sig-proceedings'
+	});
 	updateCitation();
 
 });
