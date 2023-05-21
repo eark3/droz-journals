@@ -382,11 +382,15 @@ class JournalsPortal extends Portal {
             ]);
             if ($found > 0) {
                 foreach ($documents as $document) {
+                    if (isset($document['short_s'])) {
+                        $found--;
+                        continue;
+                    }
                     $paper = (new PaperEntity())->retrieveOne($document['short_s']);
                     if ($paper !== false) {
                         $issue = (new IssueEntity())->retrieveOne($paper->issue);
                         if ($issue !== false) {
-                            $results[] = [
+                            $results[$document['short_s']] = [
                                 'paper' => $this->_paper($paper, $issue),
                                 'issue' => $issue
                             ];
