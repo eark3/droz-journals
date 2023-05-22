@@ -34,8 +34,6 @@
 			<h1 style="margin-bottom: 20px;"><?php echo $locale->search->results->title; ?></h1>
 		</div>
 <?php $this->render('/portal/widget/alert'); ?>
-<?php if (!empty($models['papers'])) { ?>
-<?php   $this->render('results'); ?>
-<?php }?>
+<?php $this->render('results'); ?>
 	</form>
 </div>

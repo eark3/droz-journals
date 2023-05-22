@@ -1,3 +1,4 @@
+<?php if (!empty($models['papers'])) { ?>
 		<div id="results">
 <?php foreach ($models['papers'] ?? [] as $paper) { ?>
 <?php   $this->render('/portal/widget/paper', $paper); ?>
@@ -15,3 +16,4 @@
 			</div>
 <?php } ?>
 		</div>
+<?php }?>
