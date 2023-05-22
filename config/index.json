@@ -1,9 +1,9 @@
 {
 	"key": "short",
 	"fields": {
-		"date": "string",
 		"short": "string",
-		"type": "string",
+		"date": "string",
+		"galleys": "string",
 		"journal": "string",
 		"authors": "string",
 		"content": "content"

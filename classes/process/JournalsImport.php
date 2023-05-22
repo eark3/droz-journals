@@ -169,18 +169,29 @@ class JournalsImport extends Import {
         $journal  = (new JournalEntity())->retrieveOne($issue->journal);
         $papers   = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
         $context  = $journal->context;
-        $date     = $issue->date;
+        $date     = $issue->published;
         foreach ($papers as $paper) {
+            $title = JournalsUtils::settings('paper', $paper, 'fr-FR')['title'];
+            if ($title === 'Dossier complet') {
+                continue;
+            }
             $authors = [];
             foreach ((new AuthorEntity())->retrieveAll(['paper' => $paper->id]) as $author) {
                 $authors[] = Zord::collapse(JournalsUtils::name($author), false);
             }
             $authors = implode(' ', $authors);
-            $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
+            $galleys = [];
+            foreach ((new GalleyEntity())->retrieveAll(['paper' => $paper->id]) as $galley) {
+                if (in_array($galley->type, ['html','pdf'])) {
+                    $galleys[] = $galley->type;
+                }
+            }
+            $galleys = implode(' ', $galleys);
             foreach (['html','pdf'] as $type) {
-                $name = $paper->pages.'_'.$type;
+                $name = $paper->pages;
                 $file = JournalsUtils::path($journal->context, $issue->volume, $issue->number, $paper->pages, $type);
                 if (file_exists($file)) {
+                    $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
                     $this->info(2, basename($file));
                     if ($type === 'pdf') {
                         Zord::execute('exec', PDFTOTEXT_COMMAND, ['file' => $file]);
@@ -188,14 +199,15 @@ class JournalsImport extends Import {
                     }
                     $content = Store::align(file_get_contents($file), $type, true);
                     $contents[] = [
-                        'name'    => $name,
                         'short'   => $short,
-                        'type'    => $type,
+                        'name'    => $name,
+                        'galleys' => $galleys,
                         'date'    => $date,
                         'journal' => $context,
                         'authors' => $authors,
                         'content' => $content
                     ];
+                    continue;
                 }
             }
         }
