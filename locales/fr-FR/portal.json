@@ -103,7 +103,8 @@
 		"submit": "Rechercher",
 		"results": {
 			"title": "Résultats de recherche",
-			"none": "Aucun résultat"
+			"none": "Aucun résultat",
+			"pagination": "${from} - ${to} de ${total} éléments"
 		},
 		"filters": {
 			"enhanced": "Filtres avancés",

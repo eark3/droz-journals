@@ -60,5 +60,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			}
 		});
 	});
+	
+	var dressSearchResults = function() {
+		results = document.getElementById('results');
+		[].forEach.call(document.querySelectorAll('.cmp_pagination span'), function(span) {
+			span.addEventListener('click', function(event) {
+				invokeZord({
+					module:  'Portal',
+					action:  'search',
+					search:  span.dataset.search,
+					start:   span.dataset.start,
+					success: function(response) {
+						if (results) {
+							results.innerHTML = response;
+							dressSearchResults();
+						}
+					}
+				});
+			});
+		})
+		if (results) {
+			var position = jQuery('#results').offset().top;
+			jQuery("body, html").animate({
+				scrollTop: position - 90
+			});
+		}
+	};
+	
+	dressSearchResults();
 
 });

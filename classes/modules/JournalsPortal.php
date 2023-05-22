@@ -348,11 +348,18 @@ class JournalsPortal extends Portal {
     }
     
     public function search() {
+        $search  = $this->params['search']  ?? uniqid();
+        if ($_SESSION['search'][$search] ?? false) {
+            foreach ($_SESSION['search'][$search] as $key => $value) {
+                $this->params[$key] = $value;
+            }
+        }
         $query   = $this->params['query']   ?? null;
         $authors = $this->params['authors'] ?? null;
         $from    = $this->params['from']    ?? null;
         $to      = $this->params['to']      ?? null;
         $start   = $this->params['start']   ?? 0;
+        $rows    = $this->params['rows']    ?? SEARCH_PAGE_DEFAULT_SIZE;
         $results = [];
         $models  = ['filters' => [
             'query'   => $query,
@@ -378,7 +385,8 @@ class JournalsPortal extends Portal {
             list($found, $documents) = Store::search([
                 'query'   => $query,
                 'filters' => $filters,
-                'start'   => $start
+                'start'   => $start,
+                'rows'    => $rows
             ]);
             if ($found > 0) {
                 foreach ($documents as $document) {
@@ -400,9 +408,21 @@ class JournalsPortal extends Portal {
             }
         }
         if (count($results) > 0) {
+            $models['start']  = $start;
+            $models['rows']   = $rows;
             $models['found']  = $found;
             $models['count']  = count($results);
             $models['papers'] = $results;
+            $models['search'] = $search;
+            if ($_SESSION['search'][$search] ?? false) {
+                $results = new View('/portal/page/search/results', $models, $this->controler, $this->locale);
+                $this->response = 'DATA';
+                return $results->render();
+            } else {
+                foreach (['query','authors','from','to','rows'] as $key) {
+                    $_SESSION['search'][$search][$key] = $this->params[$key] ?? null;
+                }
+            }
         } else {
             $models['message'] = $this->message('info', $this->locale->search->results->none);
         }
