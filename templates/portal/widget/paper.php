@@ -6,7 +6,7 @@
 <?php } ?>
 										</div>
 										<div class="col-xs-9">
-<?php if ($issue) { ?>
+<?php if (!empty($issue)) { ?>
 											<p class="media-heading">
 												<a href="<?php echo $baseURL; ?>/issue/view/<?php echo $issue['short']; ?>">
 													<?php echo $issue['serial'].(!empty($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : ''); ?><br />

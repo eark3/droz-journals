@@ -5,7 +5,7 @@
 	<form method="post" id="search-form" class="search-form" action="<?php echo $baseURL; ?>/search" role="search">
 		<div class="form-group">
 			<div class="input-group">
-				<input type="text" id="query" name="query" value="<?php echo $filters['query'] ?? ''; ?>" class="query form-control" placeholder="Rechercher">
+				<input type="text" id="query" name="query" value="<?php echo str_replace('"', '&quot;', $filters['query'] ?? ''); ?>" class="query form-control" placeholder="Rechercher">
 				<span class="input-group-btn">
 					<input type="submit" value="<?php echo $locale->search->submit; ?>" class="btn btn-default">
 				</span>
