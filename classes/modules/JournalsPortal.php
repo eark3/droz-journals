@@ -394,10 +394,15 @@ class JournalsPortal extends Portal {
                     if ($paper !== false) {
                         $issue = (new IssueEntity())->retrieveOne($paper->issue);
                         if ($issue !== false) {
-                            $results[] = [
-                                'paper' => $this->_paper($paper, $issue),
-                                'issue' => $issue
-                            ];
+                            $journal = (new JournalEntity())->retrieveOne($issue->journal);
+                            if ($issue !== false) {
+                                $results[] = [
+                                    'paper' => $this->_paper($paper, $issue),
+                                    'issue' => $this->_issue($issue, $journal)
+                                ];
+                            } else {
+                                $found--;
+                            }
                         } else {
                             $found--;
                         }

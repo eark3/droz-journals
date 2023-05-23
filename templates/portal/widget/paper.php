@@ -6,6 +6,13 @@
 <?php } ?>
 										</div>
 										<div class="col-xs-9">
+<?php if ($issue) { ?>
+											<p class="media-heading">
+												<a href="<?php echo $baseURL; ?>/issue/view/<?php echo $issue['short']; ?>">
+													<?php echo $issue['serial'].(!empty($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : ''); ?><br />
+												</a>
+											</p>
+<?php } ?>
 											<p class="media-heading">
 												<a href="<?php echo $baseURL; ?>/article/view/<?php echo $paper['short']; ?>">
 													<?php echo $paper['settings']['title']; ?><br />
