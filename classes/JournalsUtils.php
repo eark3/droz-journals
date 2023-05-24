@@ -146,7 +146,7 @@ class JournalsUtils {
                 return '/'.$context.'/article/view/'.$short.'/'.$type;
             }
             case 'shop': {
-                return SHOP_BASE_URL.'/'.$ean.'/'.$short;
+                return SHOP_BASE_URL.'/product/'.$ean.'/'.$short;
             }
             default: {
                 return '/'.$context;

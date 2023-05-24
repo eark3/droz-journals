@@ -12,7 +12,7 @@
 						</div>
 						<div style="margin-top:;" class="issue-details col-md-8">
 							<div class="description">
-								<?php echo $issue['settings']['description']; ?>
+								<?php echo str_replace('https://www.droz.org', SHOP_BASE_URL, $issue['settings']['description']); ?>
 								<?php echo $locale->published; ?>: <?php echo $issue['published']; ?>
 							</div>
 						</div>
