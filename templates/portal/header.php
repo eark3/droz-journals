@@ -45,7 +45,7 @@
 <?php   } ?>
 <?php } ?>
 					</ul>	
-				<li><a href="<?php echo $baseURL; ?>/page/subscription"><?php echo $locale->pages->subscription; ?></a></li>
+				<li><a href="<?php echo $baseURL; ?>/info/subscription"><?php echo $locale->pages->subscription; ?></a></li>
 			</ul>
 <?php $this->render('/portal/widget/user'); ?>
 		</nav>
