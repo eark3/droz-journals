@@ -79,11 +79,12 @@ trait JournalsModule {
     
     protected function _journal($journal) {
         $key = $this->_key('journal', ['context' => $journal->context]);
-        if ($this->cache->hasItem('journal', $key)) {
-            $result = $this->cache->getItem('journal', $key);
+        $type = $this->lang.DS.'journal';
+        if ($this->cache->hasItem($type, $key)) {
+            $result = $this->cache->getItem($type, $key);
         } else {
             $result = $this->properties('journal', $journal);
-            $this->cache->setItem('journal', $key, $result);
+            $this->cache->setItem($type, $key, $result);
         }
         $issues = (new IssueEntity())->retrieveAll(['journal' => $journal->id, 'order' => ['desc' => 'published']]);
         $_issues = [];
@@ -97,8 +98,9 @@ trait JournalsModule {
     protected function _issue($issue, $journal = null) {
         $context = $journal->context ?? $this->context;
         $key = $this->_key('issue', ['issue' => $issue, 'context' => $context]);
-        if ($this->cache->hasItem('issue', $key)) {
-            $result = $this->cache->getItem('issue', $key);
+        $type = $this->lang.DS.'issue';
+        if ($this->cache->hasItem($type, $key)) {
+            $result = $this->cache->getItem($type, $key);
         } else {
             $result = $this->properties('issue', $issue);
             $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librarie Droz';
@@ -119,7 +121,7 @@ trait JournalsModule {
                 'copyright' => $copyright,
                 'sections'  => $_sections
             ]);
-            $this->cache->setItem('issue', $key, $result);
+            $this->cache->setItem($type, $key, $result);
         }
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
         foreach ($papers as $paper) {
@@ -133,16 +135,13 @@ trait JournalsModule {
         return $result;
     }
     
-    protected function _section($section) {
-        
-    }
-    
     protected function _paper($paper, $issue, $journal = null) {
         $context = $journal->context ?? $this->context;
         $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);
         $key = $this->_key('paper', ['paper' => $paper, 'context' => $context, 'issue' => $issue]);
-        if ($this->cache->hasItem('paper', $key)) {
-            return $this->cache->getItem('paper', $key);
+        $type = $this->lang.DS.'paper';
+        if ($this->cache->hasItem($type, $key)) {
+            return $this->cache->getItem($type, $key);
         }
         $result = $this->properties('paper', $paper);
         $result['short'] = $short;
@@ -170,7 +169,7 @@ trait JournalsModule {
                 }
             }
         }
-        $this->cache->setItem('paper', $key, $result);
+        $this->cache->setItem($type, $key, $result);
         return $result;
     }
     
