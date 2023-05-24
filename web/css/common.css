@@ -117,6 +117,12 @@
 .pkp_structure_content.home aside .block_banner {
 	display: none;
 }
+
 .cmp_pagination span {
 	cursor: pointer;
+}
+
+.cmp_pagination span.current {
+	font-weight: 1000;
+	border: 1px solid black;
 }
