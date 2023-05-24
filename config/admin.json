@@ -120,6 +120,11 @@
 					"multiline": true,
 					"class": "html"
 				},
+				"subscription": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
 				"readerInformation": {
 					"template": "text",
 					"multiline": true,
