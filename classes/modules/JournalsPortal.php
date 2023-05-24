@@ -22,14 +22,33 @@ class JournalsPortal extends Portal {
             $ariadne = ['home' => '/'.$this->context];
             switch ($page) {
                 case 'archive': {
+                    $start = $this->params['start'] ?? 0;
+                    $rows  = $this->params['rows']  ?? SEARCH_PAGE_DEFAULT_SIZE;
                     $ariadne['active'] = 'archive';
-                    $entities = (new IssueEntity())->retrieveAll(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
+                    $criteria = [
+                        'journal' => $this->controler->journal->id,
+                        'order' => ['desc' => 'published']
+                    ];
+                    $entities = (new IssueEntity())->retrieveAll($criteria);
+                    $found = count($entities);
+                    $criteria['offset'] = $start;
+                    $criteria['limit']  = $rows;
+                    $entities = (new IssueEntity())->retrieveAll($criteria);
                     $issues = [];
                     foreach ($entities as $issue) {
                         $issues[] = $this->_issue($issue);
                     }
-                    if (!empty($issues)) {
-                        $models = ['issues' => $issues];
+                    $models = [
+                        'issues' => $issues,
+                        'start'  => $start,
+                        'rows'   => $rows,
+                        'found'  => $found,
+                        'count'  => count($issues)
+                    ];
+                    if ($this->params['xhr'] ?? false) {
+                        $results = new View('/portal/page/archive', $models, $this->controler, $this->locale);
+                        $this->response = 'DATA';
+                        return $results->render();
                     }
                     break;
                 }

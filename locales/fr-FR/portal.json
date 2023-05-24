@@ -103,8 +103,7 @@
 		"submit": "Rechercher",
 		"results": {
 			"title": "Résultats de recherche",
-			"none": "Aucun résultat",
-			"pagination": "${from} - ${to} de ${total} éléments"
+			"none": "Aucun résultat"
 		},
 		"filters": {
 			"enhanced": "Filtres avancés",
@@ -112,5 +111,6 @@
 			"to": "Jusqu'à",
 			"authors": "Auteurs"
 		}
-	}
+	},
+	"pagination": "${from} - ${to} de ${total} éléments"
 }

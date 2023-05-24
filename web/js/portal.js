@@ -61,32 +61,38 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		});
 	});
 	
-	var dressSearchResults = function() {
-		results = document.getElementById('results');
-		[].forEach.call(document.querySelectorAll('.cmp_pagination span'), function(span) {
-			span.addEventListener('click', function(event) {
-				invokeZord({
-					module:  'Portal',
-					action:  'search',
-					search:  span.dataset.search,
-					start:   span.dataset.start,
-					success: function(response) {
-						if (results) {
-							results.innerHTML = response;
-							dressSearchResults();
-						}
+	var pagination = function(id, parameters, top) {
+		list = document.getElementById(id);
+		if (list) {
+			parameters['success'] = function(response) {
+				list = document.getElementById(id);
+				list.outerHTML = response;
+				pagination(id, parameters, top);
+			};
+			[].forEach.call(document.querySelectorAll('#' + id + ' .cmp_pagination span'), function(span) {
+				span.addEventListener('click', function() {
+					for (var key in span.dataset) {
+						parameters[key] = span.dataset[key];
 					}
+					invokeZord(parameters);
 				});
 			});
-		})
-		if (results) {
-			var position = jQuery('#results').offset().top;
+			var position = jQuery('#' + id).offset().top;
 			jQuery("body, html").animate({
-				scrollTop: position - 90
+				scrollTop: top ? 0 : position - 90
 			});
 		}
 	};
 	
-	dressSearchResults();
+	pagination('issues', {
+		module: 'Portal',
+		action: 'issue',
+		page  : 'archive'
+	}, true);
 
+	pagination('results', {
+		module: 'Portal',
+		action: 'search'
+	}, false);
+	
 });
