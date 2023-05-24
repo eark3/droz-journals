@@ -400,7 +400,7 @@ class JournalsPortal extends Portal {
             $filters['authors'] = '*'.Zord::collapse($authors, false).'*';
         }
         $found = 0;
-        if (!empty($query)) {
+        if (!empty($query) || !empty($authors)) {
             list($found, $documents) = Store::search([
                 'query'   => $query,
                 'filters' => $filters,

@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		});
 	});
 	
+	/*
 	[].forEach.call(document.querySelectorAll('form.search-form'), function(form) {
 		form.addEventListener("submit", function(event) {
 			var query = form.querySelector('input[type="text"].query');
@@ -60,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			}
 		});
 	});
+	*/
 	
 	var pagination = function(id, parameters, top) {
 		list = document.getElementById(id);
