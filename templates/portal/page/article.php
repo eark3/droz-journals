@@ -2,8 +2,8 @@
 	<header>
 		<h1 class="page-header">
 			<?php echo $paper['settings']['title']; ?>
-<?php if (!empty($paper['subtitle'])) { ?>
-			<p style="margin-top:4px;" class="small"><?php echo $paper['subtitle']; ?></p>
+<?php if (!empty($paper['settings']['subtitle'])) { ?>
+			<p style="margin-top:4px;" class="small"><?php echo $paper['settings']['subtitle']; ?></p>
 <?php } ?>
 		</h1>
 	</header>
