@@ -1,0 +1,15 @@
+{
+	"messages": {
+		"auth_failed": "Invalid username or password. Please try again.",
+		"mail_sent": "A confirmation request has been sent to you by email"
+	},
+	"mail": {
+		"reset_password": {
+			"receive": "Your new password",
+			"new": "Your new password is : ${password}",
+			"sent": "You will receive your new password by email",
+			"click_here": "Click <span class=\"here\">here</span> to receive a new password for account ",
+			"copy_paste": "Copy/paste the link below into your browser to receive a new password"
+		}
+	}
+}

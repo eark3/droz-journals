@@ -2,5 +2,118 @@
 	"language": "Language",
 	"lang": {
 		"de-DE": "German (DE)"
-	}
+	},
+	"root": {
+		"journal": "View journal",
+		"current": "Current issue"
+	},
+	"ariadne": {
+		"aria": "You are here:",
+		"home": "Home",
+		"archive": "Archives",
+		"readerInformation": "Information for readers",
+		"authorInformation": "Information for authors",
+		"librarianInformation": "Information for librarians"
+	},
+	"issue": {
+		"last": "Latest issue",
+		"previous" : "Previous issues",
+		"archive": "View all issues",
+		"summary": "Summary <br />of the issue"
+	},
+	"about": "About",
+	"admin": "Administration",
+	"pages": {
+		"about": "About the journal",
+		"editorialTeam": "Editorial team",
+		"contact": "Contact",
+		"policy": "Access policy",
+		"license": "Legal notice",
+		"subscription": "Subscription",
+		"login": "Login",
+		"login/lostPassword": "Forgot your password?"
+	},
+	"published": "Published",
+	"access": {
+		"subscription": "Access under subscription"
+	},
+	"galleys": {
+		"html": "HTML",
+		"pdf": "PDF",
+		"shop": "PDF on purchase"
+	},
+	"article": {
+		"quote": {
+			"how": "How to Cite",
+			"format": "More Citation Formats",
+			"download": "Download Citation"
+		},
+		"issue": "Issue",
+		"abstract": "Abstract",
+		"others": "Most read articles by the same author(s) "
+	},
+	"download": {
+		"info": "Informations",
+		"toc": "Table of content",
+		"notes": "Notes",
+		"biblio": "Bibliography",
+		"topic": "Topic",
+		"free": "Free access",
+		"subscription": "Access by subscription"
+	},
+	"aside": {
+		"summary": {
+			"title":"Summary of the issue"
+		},
+		"infos": {
+			"title":"Informations",
+			"pages": {
+				"readerInformation": "For readers",
+				"authorInformation": "For authors",
+				"librarianInformation": "For Librarians"
+			}
+		},
+		"search": {
+			"title":"Search",
+			"contains": "Search articles for",
+			"authors": "By Author",
+			"submit": "Search"
+		},
+		"shop": {
+			"online": "Online bookshop"
+		}
+	},
+	"contact": {
+		"main": "Principal Contact",
+		"support": "Support Contact"
+	},
+	"login": {
+		"signIn": "Login",
+		"signOut": "Logout",
+		"username": "Username",
+		"password": "Password",
+		"forgot": "Forgot your password?",
+		"remember": "Keep me logged in",
+		"email": " Registered user's email",
+		"reset": "Reset password",
+		"lost": "Enter your account email address below and an email will be sent with instructions on how to reset your password."
+	},
+	"warning": {
+		"restricted": "Access reserved for subscribers"
+	},
+	"search": {
+		"title": "Search",
+		"submit": "Search",
+		"results": {
+			"title": "Search Results",
+			"none": "No results"
+		},
+		"filters": {
+			"enhanced": "Advanced filters",
+			"from": "Published After",
+			"to": "Published Before",
+			"authors": "By Authors"
+		}
+	},
+	"pagination": "${from} - ${to} of ${total} items"
 }

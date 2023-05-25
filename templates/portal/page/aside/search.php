@@ -5,12 +5,10 @@
 					<li>
 						<form method="post" id="search-form" class="search-form" action="<?php echo $baseURL; ?>/search" role="search">
 							<p>
-								<label for="query"><?php echo $locale->aside->search->contains; ?></label>
-								<input type="text" id="query" name="query" value="" class="query input-sm form-control" placeholder="Rechercher">
+								<input type="text" id="query" name="query" value="<?php echo str_replace('"', '&quot;', $filters['query'] ?? ''); ?>" class="query input-sm form-control" placeholder="<?php echo $locale->aside->search->contains; ?>">
 							</p>
 							<p>
-								<label for="authors"><?php echo $locale->aside->search->authors; ?></label>
-								<input type="text" name="authors" value="" class="query input-sm form-control" placeholder="Auteurs">
+								<input type="text" name="authors" value="<?php echo $filters['authors'] ?? ''; ?>" class="query input-sm form-control" placeholder="<?php echo $locale->aside->search->authors; ?>">
 							</p>
 							<p>
 								<input type="submit" value="<?php echo $locale->aside->search->submit; ?>" class="btn btn-sm btn-default"/>

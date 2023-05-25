@@ -4,5 +4,118 @@
 		"fr-FR": "Französich (FR)",
 		"en-US": "Englisch (US)",
 		"de-DE": "Deutsch (DE)"
-	}
+	},
+	"root": {
+		"journal": "Zur Zeitschrift",
+		"current": "Aktuelle Ausgabe"
+	},
+	"ariadne": {
+		"aria": "Sie sind hier:",
+		"home": "Home",
+		"archive": "Archiv",
+		"readerInformation": "Informationen für Leser/innen",
+		"authorInformation": "Informationen für Autor/innen",
+		"librarianInformation": "Informationen für Bibliothekar/innen"
+	},
+	"issue": {
+		"last": "Aktuelle Ausgabe",
+		"previous" : "Archiv",
+		"archive": "Alle Ausgaben anzeigen",
+		"summary": "Inhalt <br />dieser Ausgabe"
+	},
+	"about": "Über uns",
+	"admin": "Administration",
+	"pages": {
+		"about": "Über die Zeitschrift",
+		"editorialTeam": "Redaktionsausschuss",
+		"contact": "Kontact",
+		"policy": "Zugangsrichtlinien",
+		"license": "Impressum",
+		"subscription": "Abonnement",
+		"login": "Einloggen",
+		"login/lostPassword": "Fordern Sie ein Passwort an"
+	},
+	"published": "Veröffentlicht",
+	"access": {
+		"subscription": "Zugriff im Abonnement"
+	},
+	"galleys": {
+		"html": "HTML",
+		"pdf": "PDF",
+		"shop": "PDF beim Kauf"
+	},
+	"article": {
+		"quote": {
+			"how": "Zitationsvorschlag",
+			"format": "Zitationsformate",
+			"download": "Bibliografische Angaben herunterladen"
+		},
+		"issue": "Ausgabe",
+		"abstract": "Zusammenfassung",
+		"others": " Am häufigsten gelesenen Artikel dieser/dieses Autor/in"
+	},
+	"download": {
+		"info": "Informationen",
+		"toc": "Inhalt",
+		"notes": "Anmerkungen",
+		"biblio": "Literaturverzeichnis",
+		"topic": "Rubrik",
+		"free": "Kostenloser Zugriff",
+		"subscription": "Zugang per Abonnement"
+	},
+	"aside": {
+		"summary": {
+			"title":"Inhalt dieser Ausgabe"
+		},
+		"infos": {
+			"title":"Informationen",
+			"pages": {
+				"readerInformation": "Für Leser/innen",
+				"authorInformation": "Für Autor/innen",
+				"librarianInformation": "Für Bibliothekar/innen"
+			}
+		},
+		"search": {
+			"title":"Suchen",
+			"contains": "Suchen",
+			"authors": "Nach Autor/in",
+			"submit": "Suchen"
+		},
+		"shop": {
+			"online": "Online-Buchhandlung"
+		}
+	},
+	"contact": {
+		"main": "Hauptkontakt",
+		"support": "Kontakt bei technischen Fragen"
+	},
+	"login": {
+		"signIn": "Einloggen",
+		"signOut": "Ausloggen",
+		"username": " Benutzer/innen-Name",
+		"password": "Passwort",
+		"forgot": "Passwort vergessen?",
+		"remember": "Eingeloggt bleiben",
+		"email": " E-Mail-Adresse der registrierten Benutzerin/des registrierten Benutzers",
+		"reset": "Passwort zurücksetzen",
+		"lost": "Aus Sicherheitsgründen schickt das System den registrierten Benutzer/innen ein neues Passwort statt des aktuellen Passworts per E-Mail.<br /><br />Tragen Sie zur Wiederherstellung des Passwortes unten Ihre E-Mail-Adresse ein. Eine Bestätigung geht an diese E-Mail-Adresse."
+	},
+	"warning": {
+		"restricted": "Der Zugang ist Abonnenten vorbehalten"
+	},
+	"search": {
+		"title": "Suchen",
+		"submit": "Suchen",
+		"results": {
+			"title": "Ergebnis der Suche",
+			"none": "Kein Ergebnis"
+		},
+		"filters": {
+			"enhanced": "Erweiterte Filter",
+			"from": "von",
+			"to": "bis",
+			"authors": "Nach Autor/in"
+		}
+	},
+	"pagination": "${from} - ${to} von ${total} Treffern"
 }

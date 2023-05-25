@@ -1,0 +1,15 @@
+{
+	"messages": {
+		"auth_failed": "Nom d'usager ou mot de passe non valide. Veuillez essayer de nouveau.",
+		"mail_sent": "Une demande de confirmation vous a été envoyée par courriel"
+	},
+	"mail": {
+		"reset_password": {
+			"receive": "Votre nouveau mot de passe",
+			"new": "Votre nouveau mot de passe est : ${password}",
+			"sent": "Vous allez recevoir votre nouveau mot de passe par courriel",
+			"click_here": "Cliquer <span class=\"here\">ici</span> pour recevoir un nouveau mot de passe du compte ",
+			"copy_paste": "Copier/coller le lien ci-dessous dans votre navigateur pour recevoir un nouveau mot de passe"
+		}
+	}
+}
