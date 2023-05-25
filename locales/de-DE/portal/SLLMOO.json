@@ -1,0 +1,29 @@
+{
+	"root": {
+		"journal": "Zur Sammlung",
+		"current": "Letztes Kolloquium"
+	},
+	"pages": {
+		"about": "Über die Sammlung",
+		"archives": "Liste früherer Veröffentlichungen"
+	},
+	"issue": {
+		"last": "Letztes Kolloquium",
+		"previous" : "Frühere Kolloquien",
+		"archive": "Alle Kolloquien ansehen",
+		"summary": "Zusammenfassung <br/>des Kolloquiums"
+	},
+	"article": {
+		"issue": "Kolloquium"
+	},
+	"aside": {
+		"summary": {
+			"title": "Zusammenfassung des Kolloquiums"
+		},
+		"infos": {
+			"pages": {
+				"archives": "Liste früherer Veröffentlichungen"
+			}
+		}
+	}
+}

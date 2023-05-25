@@ -1,0 +1,29 @@
+{
+	"root": {
+		"journal": "View series",
+		"current": "Last seminar"
+	},
+	"pages": {
+		"about": "About series",
+		"archives": "List of previous publications"
+	},
+	"issue": {
+		"last": "Last seminar",
+		"previous" : "Previous seminars",
+		"archive": "View all seminars",
+		"summary": "Summary <br />of the seminar"
+	},
+	"article": {
+		"issue": "Seminar"
+	},
+	"aside": {
+		"summary": {
+			"title": "Summary of the seminar"
+		},
+		"infos": {
+			"pages": {
+				"archives": "List of previous publications"
+			}
+		}
+	}
+}
