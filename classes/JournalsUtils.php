@@ -58,9 +58,9 @@ class JournalsUtils {
         return self::reader($user, $journal) || self::status($issue, $paper) === 'free';
     }
     
-    public static function path($journal, $volume, $number, $pages, $type) {
+    public static function path($journal, $volume, $number, $pages, $type, $resource = null) {
         $short = JournalsUtils::short($journal, $volume, $number, $pages);
-        return STORE_FOLDER.'journals'.DS.$journal.DS.$volume.(isset($number) ? '.'.$number : '').DS.$short.'.'.$type;
+        return STORE_FOLDER.'journals'.DS.$journal.DS.$volume.(isset($number) ? '.'.$number : '').DS.$short.(isset($resource) ? DS.$type.DS.$resource : '.'.$type);
     }
     
     public static function create($entity, $data) {

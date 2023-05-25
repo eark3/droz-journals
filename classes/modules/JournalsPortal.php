@@ -89,6 +89,7 @@ class JournalsPortal extends Portal {
             $page = $this->params['page'] ?? null;
             $paper = $this->params['paper'] ?? null;
             $display = $this->params['display'] ?? null;
+            $resource = $this->params['resource'] ?? null;
             $models = false;
             if (!isset($paper)) {
                 return $this->error(404);
@@ -108,7 +109,7 @@ class JournalsPortal extends Portal {
             }
             $this->controler->issue = $issue;
             $this->controler->paper = $paper;
-            $path = JournalsUtils::path($this->context, $issue->volume, $issue->number, $paper->pages, $display);
+            $path = JournalsUtils::path($this->context, $issue->volume, $issue->number, $paper->pages, $display, $resource);
             if (isset($display) && (!file_exists($path) || !is_file($path))) {
                 return $this->error(404);
             }
@@ -175,7 +176,7 @@ class JournalsPortal extends Portal {
                     break;
                 }
                 case 'download': {
-                    if (in_array($display, ['html','pdf'])) {
+                    if (in_array($display, ['html','pdf','images','css'])) {
                         (new PaperEntity())->update($paper->id, ['views' => $paper->views + 1]);
                     }
                     switch ($display) {
@@ -190,7 +191,9 @@ class JournalsPortal extends Portal {
                             ];
                             break;
                         }
-                        case 'pdf': {
+                        case 'pdf':
+                        case 'css':
+                        case 'images':{
                             return $this->send($path);
                         }
                         default: {

@@ -166,13 +166,13 @@ class OJSImport extends ProcessExecutor {
                     }
                     $entities = (new OJSFileEntity())->retrieveAll([
                         'submission_id' => $publication->submission_id,
-                        'file_stage'    => 10,
-                        'file_type'     => ['in' => ['application/pdf','text/html']],
+                        'file_stage'    => ['in' => [10,17]],
+                        'file_type'     => ['in' => ['application/pdf','text/html','image/png','text/css']],
                         'assoc_type'    => '__NOT_NULL__',
                         'assoc_id'      => '__NOT_NULL__'
                     ]);
                     foreach ($entities as $entity) {
-                        $type = $entity->file_type === 'application/pdf' ? 'pdf' : 'html';
+                        $type = explode('/', $entity->file_type)[1];
                         $date = date_format(date_create($entity->date_modified), 'Ymd');
                         $path = OJS::path([
                             'journal'  => $journal->journal_id,
@@ -184,7 +184,7 @@ class OJSImport extends ProcessExecutor {
                             'date'     => $date,
                             'type'     => $type
                         ]);
-                        $file = $folder.$short.DS.$_short.'.'.$type;
+                        $file = $folder.$short.DS.$_short.(in_array($type, ['html','pdf']) ? '.'.$type : DS.$type.DS.$entity->original_file_name);
                         $_folder = dirname($file);
                         if ($this->import('files') && !file_exists($_folder)) {
                             mkdir($_folder, 0755, true);

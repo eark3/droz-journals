@@ -12,7 +12,8 @@
 			"parameters": {
 				"page": "FILTER_SANITIZE_STRING",
 				"paper": "FILTER_SANITIZE_STRING",
-				"display": "FILTER_SANITIZE_STRING"
+				"display": "FILTER_SANITIZE_STRING",
+				"resource": "FILTER_SANITIZE_STRING"
 			}
 		},
 		"reference": {
