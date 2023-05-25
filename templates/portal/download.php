@@ -29,7 +29,7 @@
 				<br />
 				<?php echo $locale->download->$status; ?>
 				<br />
-				<a style="color:#606060" href="<?php echo $baseURL; ?>/info/license"><?php echo $issue['copyright']; ?></a>
+				<a style="color:#606060" href="<?php echo $baseURL; ?>/info/license" target="_top"><?php echo $issue['copyright']; ?></a>
 				<br />
 			</div>
 		</div>
