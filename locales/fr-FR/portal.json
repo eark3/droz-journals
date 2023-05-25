@@ -78,6 +78,9 @@
 			"contains": "Rechercher des articles contenant",
 			"authors": "Auteurs",
 			"submit": "Rechercher"
+		},
+		"shop": {
+			"online": "Boutique en ligne"
 		}
 	},
 	"contact": {
