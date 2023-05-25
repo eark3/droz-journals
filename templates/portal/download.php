@@ -2,7 +2,7 @@
 <script src="/js/jquery.js" type="text/javascript"></script>
 <script src="/journals/js/jquery.toc.js" type="text/javascript"></script>
 <script src="/journals/js/display.js" type="text/javascript"></script>
-<div class="sidebar CFS">
+<div class="sidebar <?php echo $context; ?>">
 	<ul class="tabs">
 		<li class="tab-link current" data-tab="tab-0" style="margin-right:-4px"><?php echo $locale->download->info; ?></li>
 		<li class="tab-link" data-tab="tab-1" style="display:inline-block"><?php echo $locale->download->toc; ?></li>
