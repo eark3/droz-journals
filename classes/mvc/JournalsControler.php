@@ -6,6 +6,14 @@ class JournalsControler extends Controler {
     public $issue = null;
     public $paper = null;
     
+    public function setLang() {
+        parent::setLang();
+        $langs = Zord::value('portal', 'lang');
+        if (!in_array($this->lang, Zord::value('portal', 'lang'))) {
+            $this->lang = $langs[0];
+        }
+    }
+    
     public function handle($target, $replay = false) {
         if (!empty($target['context']) && $target['context'] !== 'root') {
             $journal = (new JournalEntity())->retrieveOne(['context' => $target['context']]);
