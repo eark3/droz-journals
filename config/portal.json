@@ -1,7 +1,9 @@
 {
-	"lang": [
-		"de-DE"
-	],
+	"lang": {
+		"__RESET__" : [
+			"fr-FR"
+		]
+	},
 	"user": {
 		"profile": [
 			"institution"
