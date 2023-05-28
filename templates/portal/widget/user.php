@@ -32,7 +32,7 @@
 					<a href="/" class="dropdown-toggle" data-toggle="dropdown"><?php echo $locale->language; ?>&nbsp;<b class="caret"></b></a>
 	 				<ul class="dropdown-menu dropdown-menu-right">
 <?php   foreach (Zord::value('portal', 'lang') as $_lang) { ?>
-						<li><a href="<?php echo $baseURL; ?>/Portal/last?lang=<?php echo $_lang; ?>"><?php echo Zord::getLocale('portal', $lang)->lang->$_lang; ?></a></li>
+						<li><a href="<?php echo $pathURL; ?>?lang=<?php echo $_lang; ?>"><?php echo Zord::getLocale('portal', $lang)->lang->$_lang; ?></a></li>
 <?php   } ?>
 					</ul>
 				</li>
