@@ -3,7 +3,7 @@
 		<div class="row" id="overNavbar">
 			<div class="col-xs-6 col-sm-8">
 				<a href="/" class=""> 
-					<span class="SabonLTStd-Roman">
+					<span class="drozLogoName">
 						<span class="drozLightGrey">LIBRAIRIE</span><span class="drozDarkGrey">DROZ</span>
 					</span>
 				</a>

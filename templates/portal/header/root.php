@@ -5,7 +5,7 @@
     			<div id="drozLogoWrapper">
     				<a href="/">
     					<img id="drozLogoImg" src="/journals/img/logo-droz-grey-77x80.png" alt="Logo de l'en-tête de la page">
-    					<div id="drozLogoLetter" class="SabonLTStd-Roman">
+    					<div id="drozLogoLetter" class="drozLogoName">
     						<span class="drozLightGrey">LIBRAIRIE</span><span class="drozDarkGrey">DROZ</span>
     					</div>
     				</a>
