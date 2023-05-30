@@ -61,6 +61,7 @@
 			"paper": {
 				"title": "Titre de l'article",
 				"subtitle": "Sous-titre de l'article",
+				"abstract": "Résumé de l'article",
 				"pub-id::doi": "DOI de l'article"
 			},
 			"author": {
