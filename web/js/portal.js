@@ -1,3 +1,10 @@
+var scrollToAnchor = function(hash, top) {
+	var position = jQuery(hash).offset().top;
+	jQuery("body, html").animate({
+		scrollTop: top ? 0 : position - 90
+	});
+}
+
 $(window).scroll(function() {
     if ($(this).scrollTop() > 80) {
         $('#overNavbar').hide();
@@ -14,11 +21,7 @@ jQuery(document).ready(function() {
 		if (href !== '#' && index >= 0) {
 			e.preventDefault();
 			e.stopPropagation();
-			href = href.substring(index);
-			var position = jQuery(href).offset().top;
-			jQuery("body, html").animate({
-				scrollTop: position - 90
-			});
+			scrollToAnchor(href.substring(index));
 		}
 	});
 });
@@ -79,10 +82,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					invokeZord(parameters);
 				});
 			});
-			var position = jQuery('#' + id).offset().top;
-			jQuery("body, html").animate({
-				scrollTop: top ? 0 : position - 90
-			});
+			scrollToAnchor('#' + id, true);
 		}
 	};
 	
@@ -96,5 +96,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		module: 'Portal',
 		action: 'search'
 	}, false);
+	
+	if (window.location.hash) {
+		scrollToAnchor(window.location.hash);
+	}
 	
 });

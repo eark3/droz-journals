@@ -21,7 +21,8 @@
 			"issue": "des numéros",
 			"section": "des sections",
 			"paper": "des articles",
-			"author": "des auteurs"
+			"author": "des auteurs",
+			"view": "Voir l'objet sélectionné"
 		},
 		"forms": {
 			"journal": {

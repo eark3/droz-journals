@@ -127,18 +127,20 @@ class JournalsUtils {
         return $object;
     }
     
-    public static function url($context, $issue, $paper = null, $type = 'meta') {
-        $ean    = ($issue->ean    ?? ($issue['ean'] ?? null));
-        $volume = ($issue->volume ?? $issue['volume']);
-        $number = ($issue->number ?? $issue['number']);
-        $pages  = ($paper->pages  ?? ($paper['pages'] ?? null));
-        $short  = JournalsUtils::short($context, $volume, $number, $pages);
+    public static function url($context, $issue = null, $paper = null, $type = 'meta') {
+        $ean    = ($issue->ean    ?? ($issue['ean']    ?? null));
+        $volume = ($issue->volume ?? ($issue['volume'] ?? null));
+        $number = ($issue->number ?? ($issue['number'] ?? null));
+        $pages  = ($paper->pages  ?? ($paper['pages']  ?? null));
+        $short  = $issue ? JournalsUtils::short($context, $volume, $number, $pages) : null;
         switch ($type) {
             case 'meta': {
-                if ($paper) {
+                if ($short && $pages) {
                     return '/'.$context.'/article/view/'.$short;
+                } else if ($short) {
+                    return '/'.$context.'/issue/view/'.$short.(is_string($paper) ? '#'.$paper : '');
                 } else {
-                    return '/'.$context.'/issue/view/'.$short;
+                    return '/'.$context;
                 }
             }
             case 'html': 
@@ -147,9 +149,6 @@ class JournalsUtils {
             }
             case 'shop': {
                 return SHOP_BASE_URL.'/product/'.$ean.'/'.$short;
-            }
-            default: {
-                return '/'.$context;
             }
         }
     }

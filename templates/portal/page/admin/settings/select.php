@@ -6,6 +6,7 @@
 <?php   }?>
 </select>
 <?php   if ($current === $type && isset($next)) { ?>
+<a href="<?php echo $url; ?>" target="_blank"><?php echo $locale->settings->select->view; ?></a>
 <button id="next" data-type="<?php echo $next; ?>"><?php echo Zord::resolve($locale->settings->select->list, ['type' => $next], $locale); ?></button>
 <?php   }?>
 <?php } ?>
