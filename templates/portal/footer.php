@@ -8,7 +8,7 @@
 				<br/>
 <?php } ?>
 <?php if (isset($journal['settings']['printIssn'])) { ?>
-				<?php echo $locale->footer->issn->print; ?><?php echo ?><?php echo $journal['settings']['printIssn']; ?>
+				<?php echo $locale->footer->issn->print; ?><?php echo $journal['settings']['printIssn']; ?>
 <?php } ?>
 			</div>
 			<div class="col-md-4">
