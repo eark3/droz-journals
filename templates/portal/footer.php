@@ -4,11 +4,11 @@
 			<div class="col-md-4">
 				<?php echo $journal['settings']['pageFooter']; ?>
 <?php if (isset($journal['settings']['onlineIssn'])) { ?>
-				<?php echo $locale->footer->issn->online; ?><?php echo $journal['settings']['onlineIssn']; ?>
+				<?php echo $locale->footer->issn->online; ?> : <?php echo $journal['settings']['onlineIssn']; ?>
 				<br/>
 <?php } ?>
 <?php if (isset($journal['settings']['printIssn'])) { ?>
-				<?php echo $locale->footer->issn->print; ?><?php echo $journal['settings']['printIssn']; ?>
+				<?php echo $locale->footer->issn->print; ?> : <?php echo $journal['settings']['printIssn']; ?>
 <?php } ?>
 			</div>
 			<div class="col-md-4">

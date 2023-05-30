@@ -1,22 +1,23 @@
-var displayUI = function(type, id) {
+var displayUI = function(type, id, lang) {
 	var parameters = {
 		module  : 'Admin',
 		action  : 'settings',
 		type    : type,
 		id      : id,
+		_lang   : lang,
 		return  : 'ui',
 		success : function(result) {
 			$('#select').html(result.select);
 			[].forEach.call(['journal','issue','section','paper','author'], function(type) {
 				$('#select #' + type).bind({
 					change: function() {
-						displayUI(this.name, this.value);
+						displayUI(this.name, this.value, LANG);
 					}
 				});
 			});
 			$('#select #next').bind({
 				click: function() {
-					displayUI(this.dataset.type, 'first');
+					displayUI(this.dataset.type, 'first', LANG);
 				}
 			});
 			$('#form').html(result.form);
@@ -54,6 +55,11 @@ var displayUI = function(type, id) {
 					});
 				}
 			});
+			$('#form span.lang').bind({
+				click: function() {
+					displayUI(this.dataset.type, this.dataset.id, this.dataset.lang);
+				}
+			});
 		},
 		failure: function(error) {
 			if (error.code === '404') {
@@ -71,5 +77,5 @@ var displayUI = function(type, id) {
 };
 
 $(document).ready(function() {
-	displayUI('journal', 'first');
+	displayUI('journal', 'first', LANG);
 });

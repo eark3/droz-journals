@@ -4,7 +4,7 @@ class JournalsAdmin extends Admin {
         
     use JournalsModule;
     
-    protected function __settings($type, $criteria) {
+    protected function __settings($type, $criteria, $lang) {
         $object   = false;
         $choices  = [];
         $settings = [];
@@ -24,7 +24,7 @@ class JournalsAdmin extends Admin {
                 break;
             }
             case 'issue': {
-                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal'] ?? null);
                 if ($criteria !== 'first') {
                     $object = (new IssueEntity())->retrieveOne($criteria);
                 }
@@ -32,8 +32,8 @@ class JournalsAdmin extends Admin {
                 break;
             }
             case 'section': {
-                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal'] ?? null);
+                $issue   = (new IssueEntity())->retrieveOne($this->params['issue'] ?? null);
                 if ($criteria !== 'first') {
                     $object = (new SectionEntity())->retrieveOne($criteria);
                 }
@@ -41,9 +41,9 @@ class JournalsAdmin extends Admin {
                 break;
             }
             case 'paper': {
-                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
-                $section = (new SectionEntity())->retrieveOne($this->params['section']);
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal'] ?? null);
+                $issue   = (new IssueEntity())->retrieveOne($this->params['issue'] ?? null);
+                $section = (new SectionEntity())->retrieveOne($this->params['section'] ?? null);
                 if ($criteria !== 'first') {
                     $object = (new PaperEntity())->retrieveOne($criteria);
                 }
@@ -51,10 +51,10 @@ class JournalsAdmin extends Admin {
                 break;
             }
             case 'author': {
-                $journal = (new JournalEntity())->retrieveOne($this->params['journal']);
-                $issue   = (new IssueEntity())->retrieveOne($this->params['issue']);
-                $section = (new SectionEntity())->retrieveOne($this->params['section']);
-                $paper   = (new PaperEntity())->retrieveOne($this->params['paper']);
+                $journal = (new JournalEntity())->retrieveOne($this->params['journal'] ?? null);
+                $issue   = (new IssueEntity())->retrieveOne($this->params['issue'] ?? null);
+                $section = (new SectionEntity())->retrieveOne($this->params['section'] ?? null);
+                $paper   = (new PaperEntity())->retrieveOne($this->params['paper'] ?? null);
                 if ($criteria !== 'first') {
                     $object = (new AuthorEntity())->retrieveOne($criteria);
                 }
@@ -159,22 +159,30 @@ class JournalsAdmin extends Admin {
         }
         $class = ucfirst($type).'Entity';
         if ($criteria === 'first') {
-            $object = (new $class())->retrieveFirst($_criteria[$type]);
+            if ($type !== 'section') {
+                $object = (new $class())->retrieveFirst($_criteria[$type]);
+            } else {
+                $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
+                foreach ($papers as $_paper) {
+                    $sections[] = $_paper->section;
+                }
+                $object = (new $class())->retrieveFirst(['id' => ['in' => $sections], 'order' => ['asc' => 'place']]);
+            }
         }
-        $settings['journal'] = $this->_settings('journal', $journal !== false ? $journal : $object);
+        $settings['journal'] = JournalsUtils::settings('journal', $journal !== false ? $journal : $object, $lang);
         if ($journal !== false) {
-            $settings['issue'] = $this->_settings('issue', $issue !== false ? $issue : $object);
+            $settings['issue'] = JournalsUtils::settings('issue', $issue !== false ? $issue : $object, $lang);
         }
         if ($journal !== false && $issue !== false) {
-            $settings['section'] = $this->_settings('section', $section !== false ? $section : $object);
+            $settings['section'] = JournalsUtils::settings('section', $section !== false ? $section : $object, $lang);
         }
         if ($issue !== false && $section !== false) {
-            $settings['paper'] = $this->_settings('paper', $paper !== false ? $paper : $object);
+            $settings['paper'] = JournalsUtils::settings('paper', $paper !== false ? $paper : $object, $lang);
         }
         if ($paper !== false) {
-            $settings['author'] = $this->_settings('author', $author !== false ? $author : $object);
+            $settings['author'] = JournalsUtils::settings('author', $author !== false ? $author : $object, $lang);
         }
-        return [$object, $choices, $next, $settings];
+        return [$object, $settings, $choices, $next];
     }
     
     protected function adjusted($type, $name, $value, $settings) {
@@ -218,19 +226,25 @@ class JournalsAdmin extends Admin {
     }
     
     public function settings() {
+        $_lang = $this->params['_lang'] ?? $this->lang;
         $type = $this->params['type'] ?? 'journal';
         $criteria = $this->params['id'] ?? 'first';
+        $name = $this->params['name'] ?? null;
+        if (isset($name) && isset(Zord::getLocale('portal')->lang->$name)) {
+            $_lang = $name;
+            $name = null;
+        }
         $return = $this->params['return'] ?? 'data';
         if (!in_array($return, ['data','ui']) || !in_array($type, TUNABLE_OBJECT_TYPES)) {
             return $this->error(400);
         }
-        list($object, $choices, $next, $settings) = $this->__settings($type, $criteria);
+        list($object, $settings, $choices, $next) = $this->__settings($type, $criteria, $_lang);
         if ($object === false) {
             return $this->error(404, $criteria === 'first' ? Zord::resolve($this->locale->settings->empty, ['type' => $type], $this->locale) : $this->locale->settings->unknown->$type);
         }
         switch ($return) {
             case 'data': {
-                $update = $this->params['update'] ?? null;
+                $update = $this->params['update'] ?? [];
                 $update = array_merge($update, $_FILES);
                 if (!empty($update)) {
                     foreach ($update as $name => $value) {
@@ -240,7 +254,7 @@ class JournalsAdmin extends Admin {
                             $key = [
                                 'object' => $object->id,
                                 'name'   => $name,
-                                'locale' => $this->lang
+                                'locale' => $_lang
                             ];
                             $set = [
                                 'value'   => $value,
@@ -255,26 +269,29 @@ class JournalsAdmin extends Admin {
                             switch ($type) {
                                 case 'journal': {
                                     $key = $this->_key($type, ['context' => $object->context]);
-                                    if ($this->cache->hasItem($type, $key)) {
-                                        $this->cache->deleteItem($type, $key);
+                                    $_type = $_lang.DS.$type;
+                                    if ($this->cache->hasItem($_type, $key)) {
+                                        $this->cache->deleteItem($_type, $key);
                                     }
                                     break;
                                 }
                                 case 'issue': {
                                     $journal = (new JournalEntity())->retrieveOne($object->journal);
                                     $key = $this->_key($type, ['context' => $journal->context, 'issue' => $object]);
-                                    if ($this->cache->hasItem($type, $key)) {
-                                        $this->cache->deleteItem($type, $key);
+                                    $_type = $_lang.DS.$type;
+                                    if ($this->cache->hasItem($_type, $key)) {
+                                        $this->cache->deleteItem($_type, $key);
                                     }
                                     break;
                                 }
                                 case 'section': {
                                     $journal = (new JournalEntity())->retrieveOne($object->journal);
+                                    $_type = $_lang.DS.'issue';
                                     foreach ((new PaperEntity())->retrieveAll(['section' => $object->id]) as $paper) {
                                         $issue = (new IssueEntity())->retrieveOne($paper->issue);
                                         $key = $this->_key('issue', ['context' => $journal->context, 'issue' => $issue]);
-                                        if ($this->cache->hasItem('issue', $key)) {
-                                            $this->cache->deleteItem('issue', $key);
+                                        if ($this->cache->hasItem($_type, $key)) {
+                                            $this->cache->deleteItem($_type, $key);
                                         }
                                     }
                                     break;
@@ -283,8 +300,9 @@ class JournalsAdmin extends Admin {
                                     $journal = (new JournalEntity())->retrieveOne($object->journal);
                                     $issue   = (new IssueEntity())->retrieveOne($object->issue);
                                     $key = $this->_key($type, ['context' => $journal->context, 'issue' => $issue, 'paper' => $object]);
-                                    if ($this->cache->hasItem($type, $key)) {
-                                        $this->cache->deleteItem($type, $key);
+                                    $_type = $_lang.DS.$type;
+                                    if ($this->cache->hasItem($_type, $key)) {
+                                        $this->cache->deleteItem($_type, $key);
                                     }
                                     break;
                                 }
@@ -293,8 +311,9 @@ class JournalsAdmin extends Admin {
                                     $journal = (new JournalEntity())->retrieveOne($paper->journal);
                                     $issue   = (new IssueEntity())->retrieveOne($paper->issue);
                                     $key = $this->_key('paper', ['context' => $journal->context, 'issue' => $issue, 'paper' => $paper]);
-                                    if ($this->cache->hasItem('paper', $key)) {
-                                        $this->cache->deleteItem('paper', $key);
+                                    $_type = $_lang.DS.'paper';
+                                    if ($this->cache->hasItem($_type, $key)) {
+                                        $this->cache->deleteItem($_type, $key);
                                     }
                                     break;
                                 }
@@ -303,8 +322,7 @@ class JournalsAdmin extends Admin {
                     }
                     return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? ['message' => $this->locale->settings->updated] : $this->redirect($this->baseURL.'/admin'); 
                 } else {
-                    $name = $this->params['name'] ?? null;
-                    return $this->_settings($type, $object, $name);
+                    return $this->_settings($type, $object, $name, $_lang);
                 }
             }
             case 'ui': {
@@ -326,7 +344,7 @@ class JournalsAdmin extends Admin {
                 }
                 $form = new View(
                     '/portal/page/admin/settings/form',
-                    ['hidden' => $hidden, 'type' => $type, 'id' => $object->id, 'settings' => $settings],
+                    ['hidden' => $hidden, 'type' => $type, 'id' => $object->id, '_lang' => $_lang, 'settings' => $settings],
                     $this->controler, 'admin'
                 );
                 return ['select' => $select->render(), 'form' => $form->render()];

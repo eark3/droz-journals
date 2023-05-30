@@ -17,6 +17,7 @@ trait JournalsModule {
     
     public function models($models) {
         $_page = $models['page'] ?? null;
+        $models['langs'] = Zord::value('portal', 'lang');
         foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
             $models['journals'][] = $this->_journal($journal);
         }
@@ -173,9 +174,9 @@ trait JournalsModule {
         return $result;
     }
     
-    protected function _settings($type, $object, $name = null) {
+    protected function _settings($type, $object, $name = null, $lang = null) {
         $locales = [];
-        foreach ([$this->lang ?? null, $this->journal->locale ?? null] as $_locale) {
+        foreach ([$lang, $this->lang ?? null, $this->journal->locale ?? null] as $_locale) {
             if (isset($_locale) && !in_array($_locale, $locales)) {
                 $locales[] = $_locale;
             }

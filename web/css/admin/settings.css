@@ -11,12 +11,25 @@
 	width: 75%;
 }
 
+#locale {
+	width: 100%;
+	display: flex;
+	margin-bottom: 10px;
+}
+
+#locale span.lang {
+	cursor: pointer;
+	flex: auto;
+	text-align: center;
+	border: 1px solid darkgray;
+}
+
 #select, #form {
 	display: inline;
 	text-align: left;
 }
 
-#form form {
+#form form, #locale {
 	padding-left: 20px;
 }
 
