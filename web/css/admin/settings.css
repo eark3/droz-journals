@@ -24,6 +24,9 @@
 	border: 1px solid darkgray;
 }
 
+#locale span.lang + span.lang {
+	border-left: none;
+}
 
 #locale span.lang.selected {
 	color: white;
