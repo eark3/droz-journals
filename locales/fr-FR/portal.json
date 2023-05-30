@@ -115,5 +115,11 @@
 			"authors": "Auteurs"
 		}
 	},
+	"footer": {
+		"issn": {
+			"print": "ISSN",
+			"online": "ISSN numérique"
+		}
+	},
 	"pagination": "${from} - ${to} de ${total} éléments"
 }

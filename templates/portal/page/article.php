@@ -26,7 +26,7 @@
 <?php } ?>
 			<div class="panel panel-default copyright">
 				<div class="panel-body">
-					<a href="<?php echo $baseURL; ?>/licence" class="copyright"><?php echo $issue['copyright']; ?></a>
+					<a href="<?php echo $baseURL; ?>/info/license" class="copyright"><?php echo $issue['copyright']; ?></a>
 				</div>
 			</div>
 		</section>

@@ -168,6 +168,11 @@
 				"subtitle": {
 					"template": "text"
 				},
+				"abstract": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				},
 				"pub-id::doi": {
 					"template": "text"
 				}
