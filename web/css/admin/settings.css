@@ -24,6 +24,12 @@
 	border: 1px solid darkgray;
 }
 
+
+#locale span.lang.selected {
+	color: white;
+	background: darkgray;
+}
+
 #select, #form {
 	display: inline;
 	text-align: left;

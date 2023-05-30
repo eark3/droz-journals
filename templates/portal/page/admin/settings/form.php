@@ -1,6 +1,6 @@
 <div id="locale">
 <?php foreach (Zord::getLocale('portal')->lang as $key => $label) { ?>
-	<span class="lang" data-type="<?php echo $type; ?>" data-id="<?php echo $id; ?>" data-lang="<?php echo $key; ?>"><?php echo $label; ?></span>
+	<span class="lang<?php echo $key === $_lang ? ' selected' : ''; ?>" data-type="<?php echo $type; ?>" data-id="<?php echo $id; ?>" data-lang="<?php echo $key; ?>"><?php echo $label; ?></span>
 <?php } ?>
 </div>
 <form method="POST" action="<?php echo $baseURL; ?>" enctype="multipart/form-data">
