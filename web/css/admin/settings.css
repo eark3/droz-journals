@@ -7,6 +7,10 @@
 	width: 25%;
 }
 
+.select {
+	display: flex;
+}
+
 #form {
 	width: 75%;
 }
@@ -43,7 +47,6 @@
 }
 
 #select select,
-#select #next,
 #form textarea,
 #form input {
 	display: block;
@@ -55,13 +58,28 @@
 	margin: 30px auto 0 auto;
 }
 
-#select #next {
-	margin-top: 10px;
-}
-
 #select label:not(:first-of-type),
 #form label:not(:first-of-type) {
 	margin-top: 20px;
+}
+
+#select button[aria-label] {
+	position: relative;
+}
+
+#select button[aria-label]:hover::after {
+	content: attr(aria-label);
+	position: absolute;
+	top: -2.4em;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 100;
+	white-space: nowrap;
+	padding: 5px 14px;
+	background: black;
+	color: white;
+	border-radius: 4px;
+	font-size: 1.2rem;
 }
 
 #form .trumbowyg-box {

@@ -6,6 +6,11 @@ var bindUI = function() {
 			}
 		});
 	});
+	$('#select button.up').bind({
+		click: function() {
+			displayUI(this.previousElementSibling.name, this.previousElementSibling.value, LANG);
+		}
+	});
 	$('#select #next').bind({
 		click: function() {
 			displayUI(this.dataset.type, 'first', LANG);

@@ -22,7 +22,8 @@
 			"section": "des sections",
 			"paper": "des articles",
 			"author": "des auteurs",
-			"view": "Voir l'objet sélectionné"
+			"view": "Voir l'objet sélectionné",
+			"edit": "Editer l'objet sélectionné"
 		},
 		"forms": {
 			"journal": {
