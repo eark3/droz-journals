@@ -22,7 +22,10 @@
 <?php   } ?>
 <?php   if ($user->hasRole('admin', $context)) { ?>
 							<a href="<?php echo $baseURL; ?>/admin"><?php echo $locale->admin; ?></a>
-<?php   }?>
+<?php     if (isset($edit)) { ?>
+							<a href="<?php echo $baseURL; ?>/admin<?php echo Zord::substitute(Zord::value('portal', 'edit'), $edit); ?>" target="_blank"><?php echo $locale->edit; ?> <?php echo $edit['short']; ?></a>
+<?php     } ?>
+<?php   } ?>
 						</li>
 					</ul>
 <?php } ?>

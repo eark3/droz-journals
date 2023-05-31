@@ -1,3 +1,57 @@
+var bindUI = function() {
+	[].forEach.call(['journal','issue','section','paper','author'], function(type) {
+		$('#select #' + type).bind({
+			change: function() {
+				displayUI(this.name, this.value, LANG);
+			}
+		});
+	});
+	$('#select #next').bind({
+		click: function() {
+			displayUI(this.dataset.type, 'first', LANG);
+		}
+	});
+	$("#form .fancybox").fancybox();
+	$('#form textarea.html').trumbowyg({
+		autogrow : true,
+		lang     : LANG.substr(0, 2)
+	});
+	$('#form input.image').change(function() {
+		const file = this.files[0];
+		const preview = this.id;
+		if (file) {
+			let reader = new FileReader();
+			reader.onload = function (event) {
+				$('#form .preview.' + preview + ' img').attr("src", event.target.result);
+			};
+			reader.readAsDataURL(file);
+		}
+	});
+	$('#form form').bind({
+		submit: function(event) {
+			event.preventDefault();
+			invokeZord({
+				form: this,
+				upload: true,
+				uploading: function() {
+					$dialog.wait();
+				},
+				uploaded: function() {
+					$dialog.hide();
+				},
+				success: function(result) {
+					alert(result.message);
+				}
+			});
+		}
+	});
+	$('#form span.lang').bind({
+		click: function() {
+			displayUI(this.dataset.type, this.dataset.id, this.dataset.lang);
+		}
+	});
+};
+
 var displayUI = function(type, id, lang) {
 	var parameters = {
 		module  : 'Admin',
@@ -8,58 +62,8 @@ var displayUI = function(type, id, lang) {
 		return  : 'ui',
 		success : function(result) {
 			$('#select').html(result.select);
-			[].forEach.call(['journal','issue','section','paper','author'], function(type) {
-				$('#select #' + type).bind({
-					change: function() {
-						displayUI(this.name, this.value, LANG);
-					}
-				});
-			});
-			$('#select #next').bind({
-				click: function() {
-					displayUI(this.dataset.type, 'first', LANG);
-				}
-			});
 			$('#form').html(result.form);
-			$("#form .fancybox").fancybox();
-			$('#form textarea.html').trumbowyg({
-				autogrow : true,
-				lang     : LANG.substr(0, 2)
-			});
-			$('#form input.image').change(function() {
-				const file = this.files[0];
-				const preview = this.id;
-				if (file) {
-					let reader = new FileReader();
-					reader.onload = function (event) {
-						$('#form .preview.' + preview + ' img').attr("src", event.target.result);
-					};
-					reader.readAsDataURL(file);
-				}
-			});
-			$('#form form').bind({
-				submit: function(event) {
-					event.preventDefault();
-					invokeZord({
-						form: this,
-						upload: true,
-						uploading: function() {
-							$dialog.wait();
-						},
-						uploaded: function() {
-							$dialog.hide();
-						},
-						success: function(result) {
-							alert(result.message);
-						}
-					});
-				}
-			});
-			$('#form span.lang').bind({
-				click: function() {
-					displayUI(this.dataset.type, this.dataset.id, this.dataset.lang);
-				}
-			});
+			bindUI();
 		},
 		failure: function(error) {
 			if (error.code === '404') {
@@ -77,5 +81,9 @@ var displayUI = function(type, id, lang) {
 };
 
 $(document).ready(function() {
-	displayUI('journal', 'first', LANG);
+	if ($('#select').children().length === 0 || $('#form').children().length === 0) {
+		displayUI('journal', 'first', LANG);
+	} else {
+		bindUI();
+	}
 });

@@ -9,7 +9,14 @@ class JournalsPortal extends Portal {
             $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
             if ($issue) {
                 $this->controler->issue = $issue;
-                return $this->page('home', ['issue' => $this->_issue($issue)]);
+                return $this->page('home', [
+                    'issue' => $this->_issue($issue),
+                    'edit'  => [
+                        'type'  => 'journal',
+                        'id'    => $this->controler->journal->id,
+                        'short' => JournalsUtils::short($this->controler->journal->context)
+                    ]
+                ]);
             }
         }
         return parent::home();
@@ -70,7 +77,18 @@ class JournalsPortal extends Portal {
                         $page = 'issue';
                         $issue = $this->_issue($issue);
                         $ariadne['active'] = $issue['serial'].(!empty($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : '');
-                        $models = ['issue' => $issue];
+                        $models = [
+                            'issue' => $issue,
+                            'edit'  => [
+                                'type'  => 'issue',
+                                'id'    => $this->controler->issue->id,
+                                'short' => JournalsUtils::short(
+                                    $this->controler->journal->context,
+                                    $this->controler->issue->volume,
+                                    $this->controler->issue->number
+                                )
+                            ]
+                        ];
                     } else {
                         return $this->error(404);
                     }
@@ -171,7 +189,17 @@ class JournalsPortal extends Portal {
                         'issue'   => $_issue,
                         'display' => $display,
                         'title'   => $_paper['settings']['title'].' | '.$_issue['serial'],
-                        'others'  => $others ?? null
+                        'others'  => $others ?? null,
+                        'edit'  => [
+                            'type'  => 'paper',
+                            'id'    => $this->controler->paper->id,
+                            'short' => JournalsUtils::short(
+                                $this->controler->journal->context,
+                                $this->controler->issue->volume,
+                                $this->controler->issue->number,
+                                $this->controler->paper->pages
+                            )
+                        ]
                     ];
                     break;
                 }

@@ -2,7 +2,10 @@
 
 class JournalsUtils {
     
-    public static function short($context, $volume, $number, $pages = null, $align = false) {
+    public static function short($context, $volume = null, $number = null, $pages = null, $align = false) {
+        if (!isset($volume)) {
+            return $context;
+        }
         if ($align) {
             $volume = Zord::str_pad($volume, 3, '0', STR_PAD_LEFT);
         }

@@ -23,6 +23,7 @@
 	},
 	"about": "About",
 	"admin": "Administration",
+	"edit": "Edit",
 	"pages": {
 		"about": "About the journal",
 		"editorialTeam": "Editorial team",

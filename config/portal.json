@@ -54,5 +54,6 @@
 				"librarianInformation"
 			]
 		}
-	}
+	},
+	"edit": "?tab=settings&type=${type}&id=${id}&return=models"
 }
