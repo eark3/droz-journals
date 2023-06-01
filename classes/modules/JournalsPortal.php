@@ -6,7 +6,7 @@ class JournalsPortal extends Portal {
     
     public function home() {
         if (isset($this->controler->journal)) {
-            $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
+            $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => [['desc' => 'volume'],['desc' => 'number']]]);
             if ($issue) {
                 $this->controler->issue = $issue;
                 return $this->page('home', [
@@ -34,7 +34,7 @@ class JournalsPortal extends Portal {
                     $ariadne['active'] = 'archive';
                     $criteria = [
                         'journal' => $this->controler->journal->id,
-                        'order' => ['desc' => 'published']
+                        'order' => [['desc' => 'volume'],['desc' => 'number']]
                     ];
                     $entities = (new IssueEntity())->retrieveAll($criteria);
                     $found = count($entities);
@@ -64,7 +64,7 @@ class JournalsPortal extends Portal {
                     $ariadne['archive'] = '/'.$this->context.'/issue/archive';
                     $issue = false;
                     if ($page === 'current') {
-                        $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => ['desc' => 'published']]);
+                        $issue = (new IssueEntity())->retrieveFirst(['journal' => $this->controler->journal->id, 'order' => [['desc' => 'volume'],['desc' => 'number']]]);
                     } else {
                         $issue = $this->params['issue'] ?? null;
                         if ($issue) {

@@ -2,6 +2,9 @@
 
 class OJSImport extends ProcessExecutor {
         
+    protected $issues = null;
+    protected $reset  = false;
+    
     public function parameters($string) {
         if ($string === 'all') {
             $string = 'metadata,journals,issues,files';
@@ -64,14 +67,32 @@ class OJSImport extends ProcessExecutor {
         if ($this->import('journals')) {
             (new JournalEntity())->delete();
         }
+        $files  = [];
+        $folders = [];
+        if (empty($this->issues)) {
+            $files   = glob($folder.'*.json');
+            $folders = glob($folder, GLOB_ONLYDIR);
+        } else {
+            foreach ($this->issues as $context => $numbers) {
+                foreach ($numbers as $number) {
+                    $key = $context.'_'.$number;
+                    $files[]   = $key.'.json';
+                    $folders[] = $key;
+                }
+            }
+        }
         if ($this->import('metadata')) {
-            foreach (glob($folder.'*.json') as $metadata) {
-                unlink($metadata);
+            foreach ($files as $metadata) {
+                if (file_exists($metadata) && is_file($metadata)) {
+                    unlink($metadata);
+                }
             }
         }
         if ($this->import('files')) {
-            foreach (glob($folder.'*', GLOB_ONLYDIR) as $_folder) {
-                Zord::deleteRecursive($_folder);
+            foreach ($folders as $_folder) {
+                if (file_exists($_folder) && is_dir($_folder)) {
+                    Zord::deleteRecursive($_folder);
+                }
             }
         }
         $ojs = new Tunnel('ojs');
@@ -79,6 +100,9 @@ class OJSImport extends ProcessExecutor {
         $names = [];
         $mapping = Zord::getConfig('mapping');
         foreach ((new OJSJournalEntity())->retrieveAll() as $journal) {
+            if (!empty($this->issues) && !in_array($journal->path, array_keys($this->issues))) {
+                continue;
+            }
             $sections = [];
             $issues   = [];
             foreach ((new OJSSectionEntity())->retrieveAll(['journal_id' => $journal->journal_id]) as $section) {
@@ -88,6 +112,11 @@ class OJSImport extends ProcessExecutor {
                     $name = $settings['abbrev'][$this->locale($locale)]['value'] ?? false;
                     if ($name !== false) {
                         break;
+                    }
+                }
+                foreach ($settings as $_name => $locales) {
+                    if (empty($locales['fr-FR'])) {
+                        $settings[$_name]['fr-FR'] = $locales['fr-CA'];
                     }
                 }
                 if ($name !== false && !empty($name)) {
@@ -104,6 +133,9 @@ class OJSImport extends ProcessExecutor {
             }
             foreach ((new OJSIssueEntity())->retrieveAll(['journal_id' => $journal->journal_id]) as $issue) {
                 $short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null);
+                if (!in_array(substr($short, strlen($journal->path.'_')), $this->issues[$journal->path])) {
+                    continue;
+                }
                 $mapping['issues'][$issue->issue_id] = $short;
                 $ean = null;
                 $papers = [];
@@ -368,6 +400,10 @@ class OJSImport extends ProcessExecutor {
     }
     
     public function execute($parameters = []) {
+        if (!empty($parameters['issues']) && is_array($parameters['issues']) && Zord::is_associative($parameters['issues'])) {
+            $this->issues = $parameters['issues'];
+        }
+        $this->setParameters($parameters);
         if ($this->import('metadata') || $this->import('files')) {
             $this->importData();
         }
@@ -375,7 +411,16 @@ class OJSImport extends ProcessExecutor {
             $this->addSettings();
         }
         if ($this->import('issues')) {
-            Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true]);
+            $refs = null;
+            if (!empty($this->issues)) {
+                $refs = [];
+                foreach ($this->issues as $context => $numbers) {
+                    foreach ($numbers as $number) {
+                        $refs[] = $context.'_'.$number;
+                    }
+                }
+            }
+            Zord::getInstance('Import')->execute(['lang' => 'fr-FR', 'continue' => true, 'refs' => $refs]);
         }
         if ($this->import('users')) {
             $this->importUsers();

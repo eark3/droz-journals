@@ -13,9 +13,10 @@ class JournalsAdmin extends Admin {
             }
             $filename = $_FILES[$name]['name'];
             $folder = STORE_FOLDER.'public'.DS.'journals'.DS.'images';
+            $context = $settings['journal']['acronym'];
             switch ($name) {
                 case 'homepageImage': {
-                    $filename = $settings['journal']['acronym'].DS.$filename;
+                    $filename = $context.DS.$filename;
                     list($width, $height) = getimagesize($source);
                     $value = [
                         'name'         => $filename,
@@ -27,8 +28,14 @@ class JournalsAdmin extends Admin {
                     ];
                     break;
                 }
+                case 'coverImage': {
+                    $value = $filename;
+                    $filename = $context.DS.$filename;
+                    break;
+                }
                 case 'bannerImage': {
                     $value = $filename;
+                    break;
                 }
             }
             $target = $folder.DS.$filename;
