@@ -181,6 +181,10 @@ class JournalsUtils {
         $settings = [];
         if (isset($object) && $object !== false) {
             $criteria = ['object' => $object->id, 'order' => ['asc' => 'name']];
+            $settings['type'] = $type;
+            foreach ($object->as_array() as $key => $value) {
+                $settings[$key] = $value;
+            }
             foreach ($locales as $_locale) {
                 $criteria['locale'] = $_locale;
                 $entities = (new SettingEntity($type))->retrieveAll($criteria);

@@ -175,6 +175,13 @@
 				},
 				"pub-id::doi": {
 					"template": "text"
+				},
+				"status": {
+					"template": "choices",
+					"amongst": [
+						"free",
+						"subscription"
+					]
 				}
 			},
 			"author": {

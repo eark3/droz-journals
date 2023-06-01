@@ -48,7 +48,7 @@
 
 #select select,
 #form textarea,
-#form input {
+#form input[type='text'] {
 	display: block;
 	width: 100%;
 }
@@ -61,6 +61,10 @@
 #select label:not(:first-of-type),
 #form label:not(:first-of-type) {
 	margin-top: 20px;
+}
+
+#form label[for^="status_"] {
+	margin-top: revert;
 }
 
 #select button[aria-label] {

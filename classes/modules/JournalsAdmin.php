@@ -319,7 +319,12 @@ class JournalsAdmin extends Admin {
                 $update = $this->params['update'] ?? [];
                 $update = array_merge($update, $_FILES);
                 if (!empty($update)) {
+                    $fields = array_keys($object->as_array());
+                    $_update = [];
                     foreach ($update as $name => $value) {
+                        if (in_array($name, $fields)) {
+                            $_update[$name] = $value;
+                        }
                         $adjusted = $this->adjusted($type, $name, $value, $settings);
                         if ($adjusted) {
                             list($value, $content) = $adjusted;
@@ -384,6 +389,9 @@ class JournalsAdmin extends Admin {
                                 }
                             }
                         }
+                    }
+                    if (!empty($_update)) {
+                        (new $class())->update($object->id, $_update);
                     }
                     return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? ['message' => $this->locale->settings->updated] : $this->redirect($this->baseURL.'/admin'); 
                 } else {
