@@ -2,6 +2,7 @@
 
 class OJSImport extends ProcessExecutor {
         
+    protected $users  = null;
     protected $issues = null;
     protected $reset  = false;
     
@@ -319,11 +320,17 @@ class OJSImport extends ProcessExecutor {
     }
     
     protected function importUsers() {
-        (new UserEntity())->delete();
-        (new UserHasRoleEntity())->delete();
-        (new UserHasProfileEntity())->delete();
-        (new UserHasIPV4Entity())->delete();
+        if (empty($this->users)) {
+            (new UserEntity())->delete();
+            (new UserHasRoleEntity())->delete();
+            (new UserHasProfileEntity())->delete();
+            (new UserHasIPV4Entity())->delete();
+        }
         foreach ((new OJSUserEntity())->retrieve() as $user) {
+            if (!in_array($user->username, $this->users)) {
+                continue;
+            }
+            $this->info(0, $user->username);
             $first = trim($user->first_name ?? '');
             $middle = trim($user->middle_name ?? '');
             $last = trim($user->last_name ?? '');
@@ -402,6 +409,9 @@ class OJSImport extends ProcessExecutor {
     public function execute($parameters = []) {
         if (!empty($parameters['issues']) && is_array($parameters['issues']) && Zord::is_associative($parameters['issues'])) {
             $this->issues = $parameters['issues'];
+        }
+        if (!empty($parameters['users']) && is_array($parameters['users']) && !Zord::is_associative($parameters['users'])) {
+            $this->users = $parameters['users'];
         }
         $this->setParameters($parameters);
         if ($this->import('metadata') || $this->import('files')) {
