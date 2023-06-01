@@ -213,6 +213,75 @@ class JournalsUtils {
         return $settings;
     }
     
+    public static function export($issue) {
+        $content = [
+            'volume'    => $issue->volume,
+            'number'    => $issue->number,
+            'year'      => $issue->year,
+            'ean'       => $issue->ean,
+            'published' => $issue->published,
+            'modified'  => $issue->modified,
+            'open'      => $issue->open
+        ];
+        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
+        foreach ($papers as $paper) {
+            $section = (new SectionEntity())->retrieveOne($paper->section);
+            $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
+            $_authors = [];
+            foreach ($authors as $author) {
+                $settings = (new SettingEntity('author'))->retrieveAll(['object' => $author->id]);
+                $_settings = [];
+                foreach ($settings as $setting) {
+                    $_settings[$setting->name][$setting->locale] = [
+                        'content' => $setting->content,
+                        'value'   => $setting->value
+                    ];
+                }
+                $_author = [
+                    'first'    => $author->first,
+                    'middle'   => $author->middle,
+                    'last'     => $author->last,
+                    'email'    => $author->email,
+                    'place'    => $author->place,
+                    'settings' => $_settings
+                ];
+                $_authors[] = $_author;
+            }
+            $galleys = (new GalleyEntity())->retrieveAll(['paper' => $paper->id]);
+            $_galleys = [];
+            foreach ($galleys as $galley) {
+                $_galleys[] = $galley->type;
+            }
+            $settings = (new SettingEntity('paper'))->retrieveAll(['object' => $paper->id]);
+            $_settings = [];
+            foreach ($settings as $setting) {
+                $_settings[$setting->name][$setting->locale] = [
+                    'content' => $setting->content,
+                    'value'   => $setting->value
+                ];
+            }
+            $_paper = [
+                'pages'    => $paper->pages,
+                'status'   => $paper->status,
+                'section'  => $section->name,
+                'place'    => $paper->place,
+                'views'    => $paper->views,
+                'authors'  => $_authors,
+                'galleys'  => $_galleys,
+                'settings' => $_settings
+            ];
+            $content['papers'][] = $_paper;
+        }
+        $settings = (new SettingEntity('issue'))->retrieveAll(['object' => $issue->id]);
+        foreach ($settings as $setting) {
+            $content['settings'][$setting->name][$setting->locale] = [
+                'content' => $setting->content,
+                'value'   => $setting->value
+            ];
+        }
+        return $content;
+    }
+    
 }
 
 ?>

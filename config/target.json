@@ -85,6 +85,13 @@
 				"name": "FILTER_SANITIZE_STRING",
 				"_lang": "FILTER_SANITIZE_STRING"
 			}
+		},
+		"export": {
+			"shortcut": "export",
+			"response": "DOWNLOAD",
+			"parameters": {
+				"issue": "FILTER_SANITIZE_STRING"
+			}
 		}
 	}
 }

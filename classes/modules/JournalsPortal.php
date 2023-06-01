@@ -77,16 +77,20 @@ class JournalsPortal extends Portal {
                         $page = 'issue';
                         $issue = $this->_issue($issue);
                         $ariadne['active'] = $issue['serial'].(!empty($issue['settings']['title']) ? ' : '.$issue['settings']['title'] : '');
+                        $short = JournalsUtils::short(
+                            $this->controler->journal->context,
+                            $this->controler->issue->volume,
+                            $this->controler->issue->number
+                        );
                         $models = [
                             'issue' => $issue,
                             'edit'  => [
                                 'type'  => 'issue',
                                 'id'    => $this->controler->issue->id,
-                                'short' => JournalsUtils::short(
-                                    $this->controler->journal->context,
-                                    $this->controler->issue->volume,
-                                    $this->controler->issue->number
-                                )
+                                'short' => $short
+                            ],
+                            'export' => [
+                                'short' => $short
                             ]
                         ];
                     } else {

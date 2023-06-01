@@ -24,6 +24,7 @@
 	"about": "About",
 	"admin": "Administration",
 	"edit": "Edit",
+	"export": "Export",
 	"pages": {
 		"about": "About the journal",
 		"editorialTeam": "Editorial team",

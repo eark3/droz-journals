@@ -409,6 +409,23 @@ class JournalsAdmin extends Admin {
         }
     }
     
+    public function export() {
+        $issue = $this->params['issue'] ?? null;
+        if (empty($issue)) {
+            return $this->error(400);
+        }
+        $issue = (new IssueEntity())->retrieveOne($issue);
+        if ($issue === false) {
+            return $this->error(404);
+        }
+        $journal = (new JournalEntity())->retrieveOne($issue->journal);
+        if ($journal === false) {
+            return $this->error(404);
+        }
+        $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number);
+        return $this->download($short.'.json', 'admin', Zord::json_encode(JournalsUtils::export($issue)));
+    }
+    
     public function cache() {
         $process = $this->params['process'] ?? null;
         if (!isset($process)) {

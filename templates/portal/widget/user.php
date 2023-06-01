@@ -25,6 +25,9 @@
 <?php     if (isset($edit)) { ?>
 							<a href="<?php echo $baseURL; ?>/admin<?php echo Zord::substitute(Zord::value('portal', 'edit'), $edit); ?>" target="_blank"><?php echo $locale->edit; ?> <?php echo $edit['short']; ?></a>
 <?php     } ?>
+<?php     if (isset($export)) { ?>
+							<a href="<?php echo $baseURL; ?>/export/<?php echo $export['short']; ?>"><?php echo $locale->export; ?> <?php echo $export['short']; ?></a>
+<?php     } ?>
 <?php   } ?>
 						</li>
 					</ul>
