@@ -24,9 +24,6 @@ jQuery(document).ready(function() {
 		});
 	});
 	displayTab('info');
-	if (jQuery("#toc").children().length == 0) {
-		hideTab('toc');
-	}
 	if (jQuery(".footnotes_block").length) {
 		jQuery(".footnotes_block").clone().addClass('sidebar').appendTo( "#notes" );
 		jQuery(".footnotes_block:not(.sidebar)").remove();
@@ -43,4 +40,7 @@ jQuery(document).ready(function() {
 	}
 	/* Génération de la table des matières */
 	jQuery("#toc").toc({content: ".main", headings: "p.h1,p.h2,p.h3"});
+	if (jQuery("#toc").children().length == 0) {
+		hideTab('toc');
+	}
 });
