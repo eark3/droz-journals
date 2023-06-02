@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div id="toc" class="tab-content ">
-		<ul id="toc"></ul>
+		<ul id="tocContent"></ul>
 	</div>
 	<div id="notes" class="tab-content"></div>
 	<div id="biblio" class="tab-content"></div>

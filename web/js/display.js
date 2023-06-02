@@ -39,8 +39,8 @@ jQuery(document).ready(function() {
 		hideTab('biblio');
 	}
 	/* Génération de la table des matières */
-	jQuery("#toc").toc({content: ".main", headings: "p.h1,p.h2,p.h3"});
-	if (jQuery("#toc").children().length == 0) {
+	jQuery("#tocContent").toc({content: ".main", headings: "p.h1,p.h2,p.h3"});
+	if (jQuery("#tocContent").children().length == 0) {
 		hideTab('toc');
 	}
 });
