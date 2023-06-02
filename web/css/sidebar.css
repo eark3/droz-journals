@@ -16,7 +16,7 @@ body{
 	top:0;
 	height: 100vh;
 	padding-top: 0;
-	//background: #EDEDED;
+	background: #EDEDED;
 	padding-left: 0;
 	padding-right: 0;
 	padding-bottom: 0;
@@ -65,10 +65,11 @@ ul.tabs{
 	list-style: none;
 	position: fixed;
 	background: #CCC;
-	width: 39.2%;
+	width: 40%;
 	border-bottom:1px solid #ffffff;
 	border-top:25px solid #ffffff;
 	z-index: 1;
+	display: flex;
 }
 ul.tabs li{
 	background: none;
@@ -77,13 +78,13 @@ ul.tabs li{
 	padding: 10px 15px;
 	cursor: pointer;
 	border-right:1px solid #ffffff;
-
+	flex: auto;
 }
 
 ul.tabs li.current{
 	background: #ededed;
 	color: #222;
-	//margin-left:-4px;
+	margin-left:-4px;
 }
 
 .tab-content{
