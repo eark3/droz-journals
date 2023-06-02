@@ -6,12 +6,17 @@ jQuery(document).ready(function() {
 		var tab_id = jQuery(this).attr("data-tab");
 		jQuery("ul.tabs li").removeClass("current");
 		jQuery(".tab-content").removeClass("current");
-			jQuery(this).addClass("current");
+		jQuery(this).addClass("current");
 		jQuery("#" + tab_id).addClass("current");
 	});
-	jQuery(".tab-link[data-tab='tab-2']").css("display" ,"none");
+	if (jQuery(".footnotes_block").length) {
+		jQuery(".footnotes_block").clone().appendTo( "#tab-2" );
+	} else {
+		jQuery(".tab-link[data-tab='tab-2']").css("display" ,"none");
+	}
 	if (jQuery(".bibl_block").length) {
 		jQuery(".bibl_block").clone().appendTo( "#tab-3" );
+		jQuery("#tab-3 *[id]").removeAttr('id');
 	} else {
 		jQuery(".tab-link[data-tab='tab-3']").css("display", "none");
 	}
