@@ -16,7 +16,7 @@ jQuery(document).ready(function() {
 	});
 	jQuery("a[href^='#fn']").click(function() {
 		displayTab('notes');
-		jQuery('#notes p.fn').removeClass('highlight');
+		jQuery('#notes p[class*="fn"]').removeClass('highlight');
 		var hash = this.href.substr(this.href.indexOf('#'));
 		var position = jQuery(hash).parent().parent().addClass('highlight').position().top + jQuery(".sidebar").scrollTop() - 88;
 		jQuery(".sidebar").animate({
