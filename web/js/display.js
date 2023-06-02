@@ -1,27 +1,46 @@
+var displayTab = function(id) {
+	jQuery("ul.tabs li").removeClass("current");
+	jQuery("ul.tabs li[data-tab='" + id + "']").addClass("current");
+	jQuery(".tab-content").removeClass("current");
+	jQuery("#" + id).addClass("current");
+}
+
+var hideTab = function(id) {
+	jQuery(".tab-link[data-tab='" + id + "']").css("display", "none");
+}
+
 jQuery(document).ready(function() {
-	/* Génération de la table des matières */
-	jQuery("#toc").toc({content: ".main", headings: "p.h1,p.h2,p.h3"});
-	/* Génération des Tabs */
+	/* Gestion des onglets */
 	jQuery("ul.tabs li").click(function() {
-		var tab_id = jQuery(this).attr("data-tab");
-		jQuery("ul.tabs li").removeClass("current");
-		jQuery(".tab-content").removeClass("current");
-		jQuery(this).addClass("current");
-		jQuery("#" + tab_id).addClass("current");
+		displayTab(jQuery(this).attr("data-tab"))
 	});
-	jQuery(".tab-link[data-tab='info']").addClass('current');
+	jQuery("a[href^='#fn']").click(function() {
+		displayTab('notes');
+		jQuery('#notes p.fn').removeClass('highlight');
+		var hash = this.href.substr(this.href.indexOf('#'));
+		var position = jQuery(hash).parent().parent().addClass('highlight').position().top + jQuery(".sidebar").scrollTop() - 88;
+		jQuery(".sidebar").animate({
+			scrollTop: position
+		});
+	});
+	displayTab('info');
 	if (jQuery("#toc").children().length == 0) {
-		jQuery(".tab-link[data-tab='toc']").css("display", "none");
+		hideTab('toc');
 	}
 	if (jQuery(".footnotes_block").length) {
-		jQuery(".footnotes_block").clone().appendTo( "#notes" );
+		jQuery(".footnotes_block").clone().addClass('sidebar').appendTo( "#notes" );
+		jQuery(".footnotes_block:not(.sidebar)").remove();
+		jQuery(".footnotes_block").removeClass('sidebar');
 	} else {
-		jQuery(".tab-link[data-tab='notes']").css("display" ,"none");
+		hideTab('notes');
 	}
 	if (jQuery(".bibl_block").length) {
-		jQuery(".bibl_block").clone().appendTo( "#biblio" );
-		jQuery("#biblio *[id]").removeAttr('id');
+		jQuery(".bibl_block").clone().addClass('sidebar').appendTo( "#biblio" );
+		jQuery(".bibl_block:not(.sidebar)").remove();
+		jQuery(".bibl_block").removeClass('sidebar');
 	} else {
-		jQuery(".tab-link[data-tab='biblio']").css("display", "none");
+		hideTab('biblio');
 	}
+	/* Génération de la table des matières */
+	jQuery("#toc").toc({content: ".main", headings: "p.h1,p.h2,p.h3"});
 });

@@ -78,6 +78,7 @@ ul.tabs li{
 	cursor: pointer;
 	border-right:1px solid #ffffff;
 	flex: auto;
+	text-align: center;
 }
 
 ul.tabs li.current{
@@ -101,6 +102,20 @@ ul.tabs li.current{
 
 .tab-link {
 	display:inline-block;
+}
+
+#notes p[class*="fn"] {
+	margin-left: 0;
+	padding: 0.5em;
+}
+
+#notes p[class*="fn"].highlight {
+	margin-left: 0;
+	border: 1px solid;
+}
+
+#notes span[class*="num"] {
+	margin-left: 0;
 }
 
 /* --------------- RFHL -----------------*/
