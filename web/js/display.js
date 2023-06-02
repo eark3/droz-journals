@@ -9,18 +9,19 @@ jQuery(document).ready(function() {
 		jQuery(this).addClass("current");
 		jQuery("#" + tab_id).addClass("current");
 	});
+	jQuery(".tab-link[data-tab='info']").addClass('current');
+	if (jQuery("#toc").children().length == 0) {
+		jQuery(".tab-link[data-tab='toc']").css("display", "none");
+	}
 	if (jQuery(".footnotes_block").length) {
-		jQuery(".footnotes_block").clone().appendTo( "#tab-2" );
+		jQuery(".footnotes_block").clone().appendTo( "#notes" );
 	} else {
-		jQuery(".tab-link[data-tab='tab-2']").css("display" ,"none");
+		jQuery(".tab-link[data-tab='notes']").css("display" ,"none");
 	}
 	if (jQuery(".bibl_block").length) {
-		jQuery(".bibl_block").clone().appendTo( "#tab-3" );
-		jQuery("#tab-3 *[id]").removeAttr('id');
+		jQuery(".bibl_block").clone().appendTo( "#biblio" );
+		jQuery("#biblio *[id]").removeAttr('id');
 	} else {
-		jQuery(".tab-link[data-tab='tab-3']").css("display", "none");
-	}
-	if (jQuery("#toc").children().length == 0) {
-		jQuery(".tab-link[data-tab='tab-1']").css("display", "none");
+		jQuery(".tab-link[data-tab='biblio']").css("display", "none");
 	}
 });

@@ -4,12 +4,12 @@
 <script src="/journals/js/display.js" type="text/javascript"></script>
 <div class="sidebar <?php echo $context; ?>">
 	<ul class="tabs">
-		<li class="tab-link current" data-tab="tab-0" style="margin-right:-4px"><?php echo $locale->download->info; ?></li>
-		<li class="tab-link" data-tab="tab-1" style="display:inline-block"><?php echo $locale->download->toc; ?></li>
-		<li class="tab-link" data-tab="tab-2" style="display:inline-block"><?php echo $locale->download->notes; ?></li>
-		<li class="tab-link" data-tab="tab-3" style="display:inline-block"><?php echo $locale->download->biblio; ?></li>
+		<li class="tab-link" data-tab="info"><?php echo $locale->download->info; ?></li>
+		<li class="tab-link" data-tab="toc"><?php echo $locale->download->toc; ?></li>
+		<li class="tab-link" data-tab="notes"><?php echo $locale->download->notes; ?></li>
+		<li class="tab-link" data-tab="biblio"><?php echo $locale->download->biblio; ?></li>
 	</ul>
-	<div id="tab-0" class="tab-content current" >
+	<div id="info" class="tab-content current" >
 		<div style="font-weight:bold"><?php echo $paper['settings']['title']; ?></div>
 <?php if (isset($paper['settings']['subtitle'])) { ?>
 		<div style="font-weight:bold;font-style:italic;"><?php echo $paper['settings']['subtitle']; ?></div>
@@ -34,11 +34,11 @@
 			</div>
 		</div>
 	</div>
-	<div id="tab-1" class="tab-content ">
+	<div id="toc" class="tab-content ">
 		<ul id="toc"></ul>
 	</div>
-	<div id="tab-2" class="tab-content"></div>
-	<div id="tab-3" class="tab-content"></div>
+	<div id="notes" class="tab-content"></div>
+	<div id="biblio" class="tab-content"></div>
 </div>
 <div class="main">
 	<div class="mainContainer">

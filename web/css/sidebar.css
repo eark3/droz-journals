@@ -6,7 +6,7 @@ body{
 	max-width: 58.6%;
 	padding-right: 30px;
 	height: 100%;
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 .sidebar{
@@ -21,7 +21,7 @@ body{
 	padding-right: 0;
 	padding-bottom: 0;
 	height: 100%;
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 @media screen and (max-width:1024px){
@@ -40,15 +40,14 @@ body{
 	}
 
 	.chap-title {
-    padding-top: 0 !important;
-    text-align: left;
-}
+		padding-top: 0 !important;
+		text-align: left;
+	}
 }
 
 ul#toc{
 	list-style-type: none;
 	padding-left: 2px;
-
 }
 
 ul#toc li{
@@ -84,7 +83,6 @@ ul.tabs li{
 ul.tabs li.current{
 	background: #ededed;
 	color: #222;
-	margin-left:-4px;
 }
 
 .tab-content{
@@ -101,7 +99,9 @@ ul.tabs li.current{
 	display: inherit;
 }
 
-
+.tab-link {
+	display:inline-block;
+}
 
 /* --------------- RFHL -----------------*/
 
