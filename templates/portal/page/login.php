@@ -1,5 +1,13 @@
 <form class="pkp_form login" id="login" method="post" action="<?php echo $baseURL; ?>/login/signIn">
-	<input type="hidden" name="source" value="" />
+<?php if (!empty($success)) { ?>
+	<input type="hidden" name="success" value="<?php echo $models['success'] ?>"/>
+<?php } ?>
+<?php if (!empty($failure)) { ?>
+	<input type="hidden" name="failure" value="<?php echo $models['failure'] ?>"/>
+<?php } ?>
+<?php if (!empty($token)) { ?>
+	<input type="hidden" name="token" value="<?php echo $models['token'] ?>"/>
+<?php } ?>
 <?php $this->render('/portal/widget/alert'); ?>
 	<div class="form-group">
 		<label for="login-username"><?php echo $locale->login->username; ?></label>
