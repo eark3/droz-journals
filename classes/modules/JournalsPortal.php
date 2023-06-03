@@ -150,7 +150,7 @@ class JournalsPortal extends Portal {
                 case 'view': {
                     if (in_array($display, ['html','pdf'])) {
                         $view = 'display';
-                        $ariadne = array_slice($ariadne, 2);
+                        array_splice($ariadne, 1, 1);
                         $ariadne['active'] = [$_paper['settings']['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
                     } else {
                         $page = 'article';
