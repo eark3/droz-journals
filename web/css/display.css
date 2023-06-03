@@ -32,7 +32,7 @@ body {
 	flex: 0 0 4em;
 }
 
-.header_view > span {
+.header_view span.slash {
 	margin: auto 5px;
 }
 

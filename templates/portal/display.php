@@ -30,7 +30,9 @@
 				</span>
 			</a>
 <?php   if ($label !== 'active') { ?>
-			<span>/</span>
+			<a href="#">
+				<span class="slash">/</span>
+			</a>
 <?php   } ?>
 <?php } ?>
 		</header>
