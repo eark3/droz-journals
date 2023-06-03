@@ -112,6 +112,7 @@ ul.tabs li.current{
 #notes p[class*="fn"].highlight {
 	margin-left: 0;
 	border: 1px solid;
+	background: white;
 }
 
 #notes span[class*="num"] {
