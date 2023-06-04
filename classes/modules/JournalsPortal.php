@@ -404,7 +404,7 @@ class JournalsPortal extends Portal {
         $referer = $_SERVER['HTTP_REFERER'] ?? null;
         if (!empty($referer) && substr($referer, 0, strlen($this->baseURL)) === $this->baseURL) {
             $path = explode('/', substr($referer, strlen($this->baseURL)));
-            if (!empty($path) && empty($path[0]) && in_array($path[1], ['issue','article','info','page'])) {
+            if (!empty($path) && count($path) > 1 && empty($path[0]) && in_array($path[1], ['issue','article','info','page'])) {
                 return $this->page('login', ['success' => $referer]);
             }
         }
