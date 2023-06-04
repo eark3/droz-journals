@@ -10,11 +10,6 @@
 			"media": "screen",
 			"type": "text/css",
 			"href": "/journals/css/fonts.css"
-		},
-		"common": {
-			"media": "screen",
-			"type": "text/css",
-			"href": "/journals/css/common.css"
 		}
 	}
 }

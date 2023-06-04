@@ -122,3 +122,21 @@
 	font-weight: 1000;
 	border: 1px solid black;
 }
+
+.breadcrumb {
+	display: flex !important;
+}
+
+.breadcrumb li {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.breadcrumb li:nth-of-type(-n + 2) {
+	overflow: clip;
+}
+
+.breadcrumb > li + li::before {
+  padding: 0 0 0 5px;
+}
