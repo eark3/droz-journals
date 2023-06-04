@@ -401,6 +401,13 @@ class JournalsPortal extends Portal {
                 return $account->reset();
             }
         }
+        $referer = $_SERVER['HTTP_REFERER'] ?? null;
+        if (!empty($referer) && substr($referer, 0, strlen($this->baseURL)) === $this->baseURL) {
+            $path = explode('/', substr($referer, strlen($this->baseURL)));
+            if (!empty($path) && empty($path[0]) && in_array($path[1], ['issue','article','info','page'])) {
+                return $this->page('login', ['success' => $referer]);
+            }
+        }
         return $this->page('login');
     }
     

@@ -18,7 +18,7 @@
 <?php   if ($user->isConnected()) { ?>
 							<a href="<?php echo $baseURL; ?>/login/signOut"><?php echo $locale->login->signOut; ?></a>
 <?php   } else { ?>
-							<a href="<?php echo $baseURL; ?>/page/login"><?php echo $locale->login->signIn; ?></a>
+							<a href="<?php echo $baseURL; ?>/login"><?php echo $locale->login->signIn; ?></a>
 <?php   } ?>
 <?php   if ($user->hasRole('admin', $context)) { ?>
 							<a href="<?php echo $baseURL; ?>/admin"><?php echo $locale->admin; ?></a>
