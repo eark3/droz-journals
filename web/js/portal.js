@@ -15,13 +15,16 @@ $(window).scroll(function() {
 
 jQuery(document).ready(function() {
 	jQuery(".fancybox").fancybox();
-	jQuery("a[href]").click(function(e) {
+	jQuery("a[href].summary").click(function(e) {
 		var href = jQuery(this).attr("href");
 		var index = href.indexOf('#');
 		if (href !== '#' && index >= 0) {
-			e.preventDefault();
-			e.stopPropagation();
-			scrollToAnchor(href.substring(index));
+			var hash = href.substring(index);
+			if (jQuery(hash).length) {
+				e.preventDefault();
+				e.stopPropagation();
+				scrollToAnchor(hash);
+			}
 		}
 	});
 });

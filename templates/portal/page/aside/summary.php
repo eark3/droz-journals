@@ -3,7 +3,7 @@
 			<div class="content">
 <?php foreach ($issue['sections'] ?? [] as $section) { ?>
 				<ul>
-					<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $section['name']; ?>"><?php echo $section['settings']['title']; ?></a></li>
+					<li><a class="summary" href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $section['name']; ?>"><?php echo $section['settings']['title']; ?></a></li>
 				</ul>
 <?php } ?>
 			</div>
