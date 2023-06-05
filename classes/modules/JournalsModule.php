@@ -114,6 +114,11 @@ trait JournalsModule {
             foreach ($sections as $section) {
                 $_sections[$section->id] = $this->properties('section', $section);
             }
+            uasort($_sections, function($first, $second) use ($_sections) {
+                $_first  = ($first['parent']  === 0 || $first['parent'] === $second['parent']) ? $first  : $_sections[$first['parent']];
+                $_second = ($second['parent'] === 0 || $first['parent'] === $second['parent']) ? $second : $_sections[$second['parent']];
+                return $_first['place'] <=> $_second['place'];
+            });
             $result = Zord::array_merge($result, [
                 'cover'     => $cover,
                 'serial'    => $serial,

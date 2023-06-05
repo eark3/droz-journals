@@ -34,7 +34,7 @@ class JournalsAdmin extends Admin {
                     break;
                 }
                 case 'bannerImage': {
-                    $value = $filename;
+                    $value = '/public/journals/images/'.$filename;
                     break;
                 }
             }
@@ -291,7 +291,7 @@ class JournalsAdmin extends Admin {
         }
         $url = JournalsUtils::url($journal->context, $issue, $paper ? $paper : ($section->name ?? null));
         $hidden = [];
-        foreach ($choices as $name => $options) {
+        foreach ($choices as $_name => $options) {
             $value = $options[0]['value'];
             foreach ($options as $option) {
                 if ($option['selected']) {
@@ -299,7 +299,7 @@ class JournalsAdmin extends Admin {
                     break;
                 }
             }
-            $hidden[$name] = $value;
+            $hidden[$_name] = $value;
         }
         $select = [
             'choices'  => $choices,

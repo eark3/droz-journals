@@ -29,7 +29,7 @@
 									<div class="right">
 										<ul style="text-align: right; font-size: 16px">
 <?php foreach ($issue['sections'] as $section) { ?>
-											<li><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $section['name']; ?>"><?php echo $section['settings']['title']; ?></a></li>
+											<li class="<?php echo empty($section['parent']) ? 'top' : 'sub'; ?>"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#<?php echo $section['name']; ?>"><?php echo $section['settings']['title']; ?></a></li>
 <?php } ?>
 										</ul>
 									</div>

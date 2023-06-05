@@ -13,6 +13,15 @@
 	border-width: 0
 }
 
+.pkp_block.block_toc1 ul li.sub,
+.section.sub {
+	font-size: 0.9em;
+}
+
+.pkp_block > .content > ul > li.sub {
+	padding-left: 30px;
+}
+
 .pkp_block.block_toc1 .content {
 	display: flex;
 	justify-content: space-between;
