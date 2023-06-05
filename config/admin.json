@@ -98,7 +98,7 @@
 				},
 				"bannerImage": {
 					"template": "image",
-					"src": "${journal.bannerImage}"
+					"src": "/public/journals/images/${journal.bannerImage}"
 				},
 				"about": {
 					"template": "text",
