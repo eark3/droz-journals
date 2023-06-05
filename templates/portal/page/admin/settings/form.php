@@ -12,9 +12,9 @@
 <?php foreach ($hidden as $name => $value) { ?>
 	<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>"/>
 <?php } ?>
-<?php foreach (Zord::value('admin', ['settings','fields',$type]) ?? [] as $name => $config) { ?>
-<?php   if (isset($locale->settings->forms->$type->$name)) { ?>
-<label for="<?php echo $name; ?>"><?php echo $locale->settings->forms->$type->$name; ?></label>
+<?php foreach ($fields as $name => $config) { ?>
+<?php   if (isset($_locale[$type][$name])) { ?>
+<label for="<?php echo $name; ?>"><?php echo $_locale[$type][$name]; ?></label>
 <?php     echo $this->render($config['template'], ['type' => $type, 'name' => $name, 'config' => $config, 'settings' => $settings]); ?>
 <?php   } ?>
 <?php } ?>

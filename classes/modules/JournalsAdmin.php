@@ -301,6 +301,8 @@ class JournalsAdmin extends Admin {
             }
             $hidden[$_name] = $value;
         }
+        $fields = Zord::loadConfig('admin', $journal->context)['settings']['fields'][$type];
+        $_locale = Zord::loadLocale('admin', $this->lang, $journal->context)['settings']['forms'];
         $select = [
             'choices'  => $choices,
             'current'  => $type,
@@ -312,7 +314,9 @@ class JournalsAdmin extends Admin {
             'type'     => $type,
             'id'       => $object->id,
             '_lang'    => $_lang,
-            'settings' => $settings
+            'settings' => $settings,
+            'fields'   => $fields,
+            '_locale'  => $_locale
         ];
         switch ($return) {
             case 'data': {
