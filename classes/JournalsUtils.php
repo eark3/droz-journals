@@ -85,6 +85,11 @@ class JournalsUtils {
     }
     
     public static function update($entity, $object, $data) {
+        foreach ($data as $key => $value) {
+            if ($value === '__IGNORE__') {
+                unset($data[$key]);
+            }
+        }
         $object = $entity->update($object->id, $data);
         if ($object) {
             foreach ($data['settings'] ?? [] as $name => $locales) {
@@ -223,6 +228,7 @@ class JournalsUtils {
             'modified'  => $issue->modified,
             'open'      => $issue->open
         ];
+        $journal = (new JournalEntity())->retrieveOne($issue->journal);
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
         foreach ($papers as $paper) {
             $section = (new SectionEntity())->retrieveOne($paper->section);
@@ -260,10 +266,16 @@ class JournalsUtils {
                     'value'   => $setting->value
                 ];
             }
+            $setting = (new SettingEntity('section'))->retrieveOne([
+                'object' => $section->id,
+                'name'   => 'title',
+                'locale' => $journal->locale
+            ]);
+            $_section = $section->name.':'.$section->place.':'.($setting->value ?? $section->name).($section->parent > 0 ? ':'.$section->parent : '');
             $_paper = [
                 'pages'    => $paper->pages,
                 'status'   => $paper->status,
-                'section'  => $section->name,
+                'section'  => $_section,
                 'place'    => $paper->place,
                 'views'    => $paper->views,
                 'authors'  => $_authors,

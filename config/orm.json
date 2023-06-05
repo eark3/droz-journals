@@ -17,7 +17,8 @@
 		"fields": [
 			"id",
 			"context",
-			"place"
+			"place",
+			"locale"
 		],
 		"key": "id"
 	},

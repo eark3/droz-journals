@@ -103,19 +103,16 @@ class JournalsImport extends Import {
                 ]);
                 $parent = $_parent->id;
             }
-            $_section = (new SectionEntity())->retrieveOne([
-                'journal' => $this->journal->id,
-                'name'    => $name
+            $_section = JournalsUtils::import('section', [
+                'journal'  => $this->journal->id,
+                'name'     => $name,
+                'place '   => $place ?? '__IGNORE__',
+                'parent'   => $parent ?? '__IGNORE__',
+                'settings' => ($title ?? false) ? ['title' => [$this->journal->locale => [
+                    'content' => 'string',
+                    'value'   => $title
+                ]]]: null
             ]);
-            if ($_section === false) {
-                $_section = JournalsUtils::create(new SectionEntity(), [
-                    'journal'  => $this->journal->id,
-                    'name'     => $name,
-                    'parent'   => $parent,
-                    'place'    => $place,
-                    'settings' => ['title' => [$this->journal->locale => ['value' => $title]]]
-                ]);
-            }
             $paper['section'] = $_section->id;
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);

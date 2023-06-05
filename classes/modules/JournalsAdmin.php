@@ -53,7 +53,7 @@ class JournalsAdmin extends Admin {
     
     protected function prepareIndex($current, $models) {
         $models = parent::prepareIndex($current, $models);
-        if ($current === 'settings') {
+        if ($current === 'settings' && ($this->params['return'] ?? false) === 'models') {
             $models = Zord::array_merge($models, $this->settings());
         }
         return $models;
