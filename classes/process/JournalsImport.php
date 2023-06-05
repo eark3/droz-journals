@@ -91,18 +91,27 @@ class JournalsImport extends Import {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
             $name = $paper['section'];
+            $parent = 0;
             $tokens = explode(':', $name);
             if (count($tokens) === 3) {
                 list($name, $place, $title) = $tokens;
+            } else if (count($tokens) === 4) {
+                list($name, $place, $title, $parent) = $tokens;
+                $_parent = (new SectionEntity())->retrieveOne([
+                    'journal' => $this->journal->id,
+                    'name'    => $parent
+                ]);
+                $parent = $_parent->id;
             }
             $_section = (new SectionEntity())->retrieveOne([
                 'journal' => $this->journal->id,
                 'name'    => $name
             ]);
-            if ($_section === false && isset($place) && isset($title)) {
+            if ($_section === false) {
                 $_section = JournalsUtils::create(new SectionEntity(), [
                     'journal'  => $this->journal->id,
                     'name'     => $name,
+                    'parent'   => $parent,
                     'place'    => $place,
                     'settings' => ['title' => [$this->journal->locale => ['value' => $title]]]
                 ]);
@@ -239,17 +248,28 @@ class JournalsImport extends Import {
             $section = $paper['section'] ?? null;
             if ($section) {
                 $tokens = explode(':', $section);
+                $name = null;
                 if (count($tokens) === 1) {
                     $name = $section;
                 } else if (count($tokens) === 3) {
                     list($name, $place, $title) = $tokens;
+                } else if (count($tokens) > 3) {
+                    list($name, $place, $title, $parent) = $tokens;
+                    $_parent = (new SectionEntity())->retrieveOne([
+                        'journal' => $this->journal->id,
+                        'name'    => $parent
+                    ]);
+                    if ($_parent === false) {
+                        $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $parent]));
+                        $result &= false;
+                    }
                 }
                 $_section = isset($name) ? (new SectionEntity())->retrieveOne([
                     'journal' => $this->journal->id,
                     'name'    => $name
                 ]) : false;
                 if ($_section === false && (!isset($name) || !isset($place) || !isset($title))) {
-                    $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $section]));
+                    $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $name]));
                     $result &= false;
                 }
             } else {

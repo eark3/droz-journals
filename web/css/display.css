@@ -23,13 +23,13 @@ body {
 }
 
 .header_view a {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .header_view a:first-of-type {
-	flex: 0 0 4em;
+	overflow: clip;
 }
 
 .header_view span.slash {
