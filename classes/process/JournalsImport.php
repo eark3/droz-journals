@@ -85,6 +85,13 @@ class JournalsImport extends Import {
         $_issue = JournalsUtils::import('issue', $this->issue);
         $this->purge('issue', $_issue);
         if ($this->issue['reset'] ?? false) {
+            $papers = (new PaperEntity())->retrieveAll(['issue' => $_issue->id]);
+            foreach ($papers as $_paper) {
+                $this->purge('paper', $_issue, $_paper);
+                $_papers[] = $_paper->id;
+            }
+            (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
             (new PaperEntity())->delete(['issue' => $_issue->id]);
         }
         foreach ($this->issue['papers'] as $paper) {
@@ -121,11 +128,11 @@ class JournalsImport extends Import {
                 foreach (explode(',', $paper['reset']) as $reset) {
                     switch ($reset) {
                         case 'authors': {
-                            (new AuthorEntity())->delete(['paper' => $_paper->id]);
+                            (new AuthorEntity())->deleteAll(['paper' => $_paper->id]);
                             break;
                         }
                         case 'galleys': {
-                            (new GalleyEntity())->delete(['paper' => $_paper->id]);
+                            (new GalleyEntity())->deleteAll(['paper' => $_paper->id]);
                             break;
                         }
                     }
@@ -142,11 +149,19 @@ class JournalsImport extends Import {
             };
             $galleys = [];
             foreach ($paper['galleys'] as $type) {
+                $galleys[] = $type;
+            }
+            foreach (['html','pdf'] as $type) {
+                $file = $this->folder.$ean.DS.$paper['short'].'.'.$type;
+                if (!in_array($type, $galleys) && file_exists($file) && is_file($file) && is_readable($file)) {
+                    $galleys[] = $type;
+                }
+            }
+            foreach ($galleys as $type) {
                 JournalsUtils::import('galley', [
                     'type'  => $type,
                     'paper' => $_paper->id
                 ]);
-                $galleys[] = $type;
             }
             if (!empty($galleys)) {
                 $this->info(3, "galleys : ".implode(', ', $galleys));
@@ -232,6 +247,10 @@ class JournalsImport extends Import {
             return false;
         }
         $this->short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'] ?? null);
+        $issue = (new IssueEntity())->retrieveOne($this->short);
+        if ($issue === false) {
+            $this->issue['published'] = date('Y-m-d');
+        }
         $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         $result = true;
         list($source,$target) = $this->folders($ean);

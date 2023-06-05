@@ -30,7 +30,8 @@ class OJSImport extends ProcessExecutor {
             'site/images/ojsadmin'              => 'journals/images',
             'https://revues-dev.droz.org'       => '',
             'https://revues.droz.org/index.php' => '',
-            '/subscription'                     => '/info/subscription'
+            '/subscription'                     => '/info/subscription',
+            'author@mail.com'                   => ''
         ];
         foreach ((new OJSSettingEntity($type))->retrieveAll([$field => $object->$field]) as $entity) {
             $value = str_replace(array_keys($replacements), array_values($replacements), $entity->setting_value);

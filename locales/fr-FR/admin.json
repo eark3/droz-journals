@@ -55,7 +55,8 @@
 			"issue": {
 				"title": "Titre du numéro",
 				"description": "Description du numéro",
-				"coverImage": "Image de couverture"
+				"coverImage": "Image de couverture",
+				"open": "Date pour un accès libre"
 			},
 			"section": {
 				"title": "Titre de la section"

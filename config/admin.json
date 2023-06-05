@@ -154,6 +154,9 @@
 					"template": "image",
 					"src": "/public/journals/images/${journal.acronym}/${issue.coverImage}",
 					"alt": "${issue.coverImageAltText}"
+				},
+				"open": {
+					"template": "date"
 				}
 			},
 			"section": {

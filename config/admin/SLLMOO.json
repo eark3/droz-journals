@@ -1,0 +1,14 @@
+{
+	"settings": {
+		"fields": {
+			"journal": {
+				"archives": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
+				}
+			}
+		}
+	}
+}
+	
