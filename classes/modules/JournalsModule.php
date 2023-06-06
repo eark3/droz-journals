@@ -132,8 +132,17 @@ trait JournalsModule {
             $this->cache->setItem($type, $key, $result);
         }
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
+        $dossiers = [];
         foreach ($papers as $paper) {
-            $result['sections'][$paper->section]['papers'][] = $this->_paper($paper, $issue, $journal);
+            $_paper = $this->_paper($paper, $issue, $journal);
+            if ($_paper['settings']['title'] === 'Dossier complet') {
+                $dossiers[$paper->section] = $_paper;
+            } else {
+                $result['sections'][$paper->section]['papers'][] = $_paper;
+            }
+        }
+        foreach ($dossiers as $_section => $_paper) {
+            $result['sections'][$_section]['papers'][] = $_paper;
         }
         return $result;
     }
