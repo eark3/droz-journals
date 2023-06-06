@@ -10,6 +10,10 @@ trait JournalsModule {
         $this->addStyle($this->checkCSS('bootstrap3', $theme));
         $this->addStyle('/journals/css/common.css');
         $this->addStyle($this->checkCSS($theme, 'index'));
+        $extra = '/build/css/'.$this->context.'/extra.css';
+        if (file_exists(Zord::liveFolder(substr(dirname($extra), 1)).basename($extra))) {
+            $this->addStyle($extra);
+        }
         if ($this->context !== 'root') {
             $this->addScript('/journals/js/journal.js');
         }
@@ -110,15 +114,13 @@ trait JournalsModule {
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
             $link = '/'.$context.'/issue/view/'.$short;
             $_sections = [];
-            $sections = (new SectionEntity())->retrieveAll(['journal' => $issue->journal, 'order' => ['asc' => 'place']]);
-            foreach ($sections as $section) {
-                $_sections[$section->id] = $this->properties('section', $section);
+            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
+            foreach ($papers as $paper) {
+                if (!isset($_sections[$paper->section])) {
+                    $section = (new SectionEntity())->retrieveOne($paper->section);
+                    $_sections[$paper->section] = $this->properties('section', $section);
+                }
             }
-            uasort($_sections, function($first, $second) use ($_sections) {
-                $_first  = ($first['parent']  === 0 || $first['parent'] === $second['parent']) ? $first  : $_sections[$first['parent']];
-                $_second = ($second['parent'] === 0 || $first['parent'] === $second['parent']) ? $second : $_sections[$second['parent']];
-                return $_first['place'] <=> $_second['place'];
-            });
             $result = Zord::array_merge($result, [
                 'cover'     => $cover,
                 'serial'    => $serial,
@@ -129,14 +131,9 @@ trait JournalsModule {
             ]);
             $this->cache->setItem($type, $key, $result);
         }
-        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'id']]]);
+        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
         foreach ($papers as $paper) {
             $result['sections'][$paper->section]['papers'][] = $this->_paper($paper, $issue, $journal);
-        }
-        foreach ($result['sections'] as $id => $section) {
-            if (empty($section['papers'])) {
-                unset($result['sections'][$id]);
-            }
         }
         return $result;
     }

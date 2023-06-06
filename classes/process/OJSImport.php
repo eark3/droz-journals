@@ -126,7 +126,6 @@ class OJSImport extends ProcessExecutor {
                     $sections[] = [
                         'name'     => $name,
                         'ojs'      => $section->section_id,
-                        'place'    => $section->seq,
                         'settings' => $settings,
                     ];
                 } else {
@@ -146,9 +145,12 @@ class OJSImport extends ProcessExecutor {
                     $_short = JournalsUtils::short($journal->path, $issue->volume, $issue->number ?? null, $paper->pages);
                     $mapping['papers'][$publication->submission_id] = $_short;
                     $status = $publication->access_status ? 'free' : 'subscription';
-                    $pages = str_replace('/', '-', JournalsUtils::pages($paper));
+                    $pages = str_replace(['_','/'], ['-','-'], JournalsUtils::pages($paper));
                     $section = $names[$paper->section_id];
-                    $place = $publication->seq;
+                    $place = explode('-', $pages)[0];
+                    if (!is_int($place)) {
+                        $place = Zord::roman2number($place);
+                    }
                     $settings = $this->getSettings('submission', $publication);
                     $doi = $settings['pub-id::doi'][$this->locale($journal->primary_locale)]['value'] ?? '';
                     if (!empty($doi) && substr($doi, 0, strlen(DROZ_DOI_PREFIX)) === DROZ_DOI_PREFIX) {

@@ -33,7 +33,6 @@
 		"order": {
 			"journal": {"asc": "place"},
 			"issue": [{"desc": "volume"}, {"desc": "number"}],
-			"section": {"asc": "place"},
 			"paper": {"asc": "place"},
 			"author": [{"asc": "last"}, {"asc": "first"}]
 		},
@@ -47,6 +46,10 @@
 				},
 				"onlineIssn": {
 					"template": "text"
+				},
+				"extraCSS": {
+					"template": "text",
+					"multiline": true
 				},
 				"rootDescription": {
 					"template": "text",

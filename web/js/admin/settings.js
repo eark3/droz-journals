@@ -45,7 +45,15 @@ var bindUI = function() {
 					$dialog.hide();
 				},
 				success: function(result) {
-					alert(result.message);
+					if (result.errors) {
+						var errors = '';
+						[].forEach.call(result.errors, function(error) {
+							errors = errors + error + "\n";
+						});
+						alert(errors);
+					} else {
+						alert(result.message);
+					}
 				}
 			});
 		}

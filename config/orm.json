@@ -43,8 +43,7 @@
 			"id",
 			"journal",
 			"name",
-			"parent",
-			"place"
+			"parent"
 		],
 		"key": "id"
 	},

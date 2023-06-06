@@ -86,13 +86,23 @@ class JournalsImport extends Import {
         $this->purge('issue', $_issue);
         if ($this->issue['reset'] ?? false) {
             $papers = (new PaperEntity())->retrieveAll(['issue' => $_issue->id]);
+            $_papers = [];
+            $_authors = [];
             foreach ($papers as $_paper) {
                 $this->purge('paper', $_issue, $_paper);
                 $_papers[] = $_paper->id;
+                $authors = (new AuthorEntity())->retrieveAll(['paper' => $_paper->id]);
+                foreach ($authors as $_author) {
+                    $_authors[] = $_author->id;
+                }
             }
             (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
             (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
             (new PaperEntity())->delete(['issue' => $_issue->id]);
+            (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
+            (new IssueEntity())->delete($_issue->id);
         }
         foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
@@ -100,10 +110,10 @@ class JournalsImport extends Import {
             $name = $paper['section'];
             $parent = 0;
             $tokens = explode(':', $name);
-            if (count($tokens) === 3) {
-                list($name, $place, $title) = $tokens;
-            } else if (count($tokens) === 4) {
-                list($name, $place, $title, $parent) = $tokens;
+            if (count($tokens) === 2) {
+                list($name, $title) = $tokens;
+            } else if (count($tokens) > 2) {
+                list($name, $title, $parent) = $tokens;
                 $_parent = (new SectionEntity())->retrieveOne([
                     'journal' => $this->journal->id,
                     'name'    => $parent
@@ -113,7 +123,6 @@ class JournalsImport extends Import {
             $_section = JournalsUtils::import('section', [
                 'journal'  => $this->journal->id,
                 'name'     => $name,
-                'place '   => $place ?? '__IGNORE__',
                 'parent'   => $parent ?? '__IGNORE__',
                 'settings' => ($title ?? false) ? ['title' => [$this->journal->locale => [
                     'content' => 'string',
@@ -128,6 +137,12 @@ class JournalsImport extends Import {
                 foreach (explode(',', $paper['reset']) as $reset) {
                     switch ($reset) {
                         case 'authors': {
+                            $_authors = [];
+                            $authors = (new AuthorEntity())->retrieveAll(['paper' => $_paper->id]);
+                            foreach ($authors as $_author) {
+                                $_authors[] = $_author->id;
+                            }
+                            (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
                             (new AuthorEntity())->deleteAll(['paper' => $_paper->id]);
                             break;
                         }
@@ -153,8 +168,13 @@ class JournalsImport extends Import {
             }
             foreach (['html','pdf'] as $type) {
                 $file = $this->folder.$ean.DS.$paper['short'].'.'.$type;
-                if (!in_array($type, $galleys) && file_exists($file) && is_file($file) && is_readable($file)) {
+                $exists = file_exists($file) && is_file($file) && is_readable($file);
+                $subscription = ($paper['status'] ?? 'subscription') === 'subscription';
+                if (!in_array($type, $galleys) && $exists) {
                     $galleys[] = $type;
+                }
+                if ($type === 'pdf' && !in_array('shop', $galleys) && $exists && $subscription) {
+                    $galleys[] = 'shop';
                 }
             }
             foreach ($galleys as $type) {
@@ -165,6 +185,19 @@ class JournalsImport extends Import {
             }
             if (!empty($galleys)) {
                 $this->info(3, "galleys : ".implode(', ', $galleys));
+            }
+        }
+        $cover = $this->folder.$ean.DS.'cover.jpg';
+        if (file_exists($cover) && is_file($cover) && is_readable($cover)) {
+            $filename = 'cover_'.$this->short.'.jpg';
+            copy($cover, STORE_FOLDER.'public'.DS.'journals'.DS.'images'.DS.$this->journal->context.DS.$filename);
+            $criteria = ['object' => $_issue->id, 'name' => 'coverImage', 'locale' => $this->journal->locale];
+            $setting = (new SettingEntity('issue'))->retrieveOne($criteria);
+            $criteria['value'] = $filename;
+            if ($setting === false) {
+                (new SettingEntity('issue'))->create($criteria);
+            } else {
+                (new SettingEntity('issue'))->update($setting->id, $criteria);
             }
         }
         return true;
@@ -250,6 +283,9 @@ class JournalsImport extends Import {
         $issue = (new IssueEntity())->retrieveOne($this->short);
         if ($issue === false) {
             $this->issue['published'] = date('Y-m-d');
+            $this->issue['open'] = date('Y-m-d', strtotime('+ 3 years'));
+        } else {
+            $this->issue['modified'] = date('Y-m-d');
         }
         $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         $result = true;
@@ -267,10 +303,10 @@ class JournalsImport extends Import {
                 $name = null;
                 if (count($tokens) === 1) {
                     $name = $section;
-                } else if (count($tokens) === 3) {
-                    list($name, $place, $title) = $tokens;
-                } else if (count($tokens) > 3) {
-                    list($name, $place, $title, $parent) = $tokens;
+                } else if (count($tokens) === 2) {
+                    list($name, $title) = $tokens;
+                } else if (count($tokens) > 2) {
+                    list($name, $title, $parent) = $tokens;
                     $_parent = (new SectionEntity())->retrieveOne([
                         'journal' => $this->journal->id,
                         'name'    => $parent
@@ -284,7 +320,7 @@ class JournalsImport extends Import {
                     'journal' => $this->journal->id,
                     'name'    => $name
                 ]) : false;
-                if ($_section === false && (!isset($name) || !isset($place) || !isset($title))) {
+                if ($_section === false && (!isset($name) || !isset($title))) {
                     $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $name]));
                     $result &= false;
                 }

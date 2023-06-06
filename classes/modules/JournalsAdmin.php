@@ -1,11 +1,27 @@
 <?php
 
-class JournalsAdmin extends Admin {
+use CSSValidator\CSSValidator;
+
+class JournalsAdmin extends StoreAdmin {
         
     use JournalsModule;
     
+    protected $errors = [];
+    
     protected function adjusted($type, $name, $value, $settings) {
         $config = Zord::value('admin', ['settings','fields', $type, $name]) ?? [];
+        if ($type === 'journal' && $name === 'extraCSS') {
+            $validator = new CSSValidator();
+            $result = $validator->validateFragment($value);
+            if ($result->isValid()) {
+                $extra = '/build/css/'.$settings[$type]['context'].'/extra.css';
+                $file = Zord::liveFolder(substr(dirname($extra), 1)).basename($extra);
+                file_put_contents($file, $value);
+            } else {
+                $this->errors[] = $this->locale->settings->errors->css;
+                return false;
+            }
+        }
         if ($config['template'] === 'image' && isset($_FILES[$name])) {
             $source = $_FILES[$name]['tmp_name'];
             if (empty($source)) {
@@ -172,13 +188,11 @@ class JournalsAdmin extends Admin {
             }
         }
         if ($journal !== false && $issue !== false) {
-            $_criteria['section'] = [
-                'journal' => $journal->id,
-                'order'   => Zord::value('admin', ['settings','order','section'])
-            ];
-            foreach ((new SectionEntity())->retrieveAll($_criteria['section']) as $_section) {
-                $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'section' => $_section->id]);
-                if ($papers->getIterator()->valid()) {
+            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
+            $done = [];
+            foreach ($papers as $_paper) {
+                if (!in_array($_paper->section, $done)) {
+                    $_section = (new SectionEntity())->retrieveOne($_paper->section);
                     $selected = false;
                     if ($section !== false) {
                         $selected = ($_section->id === $section->id);
@@ -190,6 +204,7 @@ class JournalsAdmin extends Admin {
                         'label'    => $_section->name,
                         'selected' => $selected
                     ];
+                    $done[] = $_paper->section;
                 }
             }
         }
@@ -237,11 +252,8 @@ class JournalsAdmin extends Admin {
             if ($type !== 'section') {
                 $object = (new $class())->retrieveFirst($_criteria[$type]);
             } else {
-                $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
-                foreach ($papers as $_paper) {
-                    $sections[] = $_paper->section;
-                }
-                $object = (new $class())->retrieveFirst(['id' => ['in' => $sections], 'order' => ['asc' => 'place']]);
+                $paper = (new PaperEntity())->retrieveFirst(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
+                $object = (new $class())->retrieveOne($paper->section);
             }
         }
         $settings['journal'] = JournalsUtils::settings('journal', $journal !== false ? $journal : $object, $_lang);
@@ -397,7 +409,12 @@ class JournalsAdmin extends Admin {
                     if (!empty($_update)) {
                         (new $class())->update($object->id, $_update);
                     }
-                    return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? ['message' => $this->locale->settings->updated] : $this->redirect($this->baseURL.'/admin'); 
+                    if (empty($this->errors)) {
+                        $result = ['message' => $this->locale->settings->updated];
+                    } else {
+                        $result = ['errors' => $this->errors];
+                    }
+                    return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? $result : $this->redirect($this->baseURL.'/admin'); 
                 } else {
                     return $this->_settings($type, $object, $name, $_lang);
                 }

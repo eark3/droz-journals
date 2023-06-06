@@ -271,7 +271,7 @@ class JournalsUtils {
                 'name'   => 'title',
                 'locale' => $journal->locale
             ]);
-            $_section = $section->name.':'.$section->place.':'.($setting->value ?? $section->name).($section->parent > 0 ? ':'.$section->parent : '');
+            $_section = $section->name.':'.($setting->value ?? $section->name).($section->parent > 0 ? ':'.$section->parent : '');
             $_paper = [
                 'pages'    => $paper->pages,
                 'status'   => $paper->status,
