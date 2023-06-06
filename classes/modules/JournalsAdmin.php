@@ -214,6 +214,7 @@ class JournalsAdmin extends StoreAdmin {
                 'section' => $section->id,
                 'order'   => Zord::value('admin', ['settings','order','paper'])
             ];
+            $dossier = null;
             foreach ((new PaperEntity())->retrieveAll($_criteria['paper']) as $_paper) {
                 $selected = false;
                 if ($paper !== false) {
@@ -221,11 +222,20 @@ class JournalsAdmin extends StoreAdmin {
                 } else if ($type === 'paper' && $object !== false) {
                     $selected = ($_paper->id === $object->id);
                 }
-                $choices['paper'][] = [
+                $setting = (new SettingEntity('paper'))->retrieveOne(['object' => $_paper->id, 'name' => 'title', 'locale' => $journal->locale]);
+                $choice  = [
                     'value'    => $_paper->id,
                     'label'    => JournalsUtils::short($journal->context, $issue->volume, $issue->number, $_paper->pages),
                     'selected' => $selected
                 ];
+                if ($setting->value === 'Dossier complet') {
+                    $dossier = $choice;
+                } else {
+                    $choices['paper'][] = $choice;
+                }
+            }
+            if (isset($dossier)) {
+                $choices['paper'][] = $dossier;
             }
         }
         if ($paper !== false) {
@@ -249,7 +259,15 @@ class JournalsAdmin extends StoreAdmin {
         }
         $class = ucfirst($type).'Entity';
         if ($criteria === 'first') {
-            if ($type !== 'section') {
+            if ($type === 'paper') {
+                $objects = (new $class())->retrieveAll($_criteria[$type]);
+                foreach ($objects as $object) {
+                    $setting = (new SettingEntity('paper'))->retrieveOne(['object' => $object->id, 'name' => 'title', 'locale' => $journal->locale]);
+                    if ($setting->value !== 'Dossier complet') {
+                        break;
+                    }
+                }
+            } else if ($type !== 'section') {
                 $object = (new $class())->retrieveFirst($_criteria[$type]);
             } else {
                 $paper = (new PaperEntity())->retrieveFirst(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
