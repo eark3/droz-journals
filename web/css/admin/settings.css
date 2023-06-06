@@ -48,7 +48,7 @@
 
 #form select,
 #form textarea,
-#form input {
+#form input:not([type='radio']) {
 	display: block;
 }
 
