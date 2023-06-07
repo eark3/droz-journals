@@ -2,6 +2,10 @@
 	display: flex;
 }
 
+body.root .pkp_structure_content.login {
+	display: flex;
+}
+
 .pkp_structure_main {
 	margin: auto;
 }
