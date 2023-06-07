@@ -31,6 +31,7 @@
 				"printIssn": "ISSN version imprimée",
 				"onlineIssn": "ISSN version en ligne",
 				"extraCSS": "Feuille de style complémentaire",
+				"mobileBarrier": "Barrière mobile (en années)",
 				"rootDescription": "Description en page principale",
 				"description": "Description en page d'accueil de la revue",
 				"homepageImage": "Vignette en page d'acceuil de la revue",

@@ -281,13 +281,13 @@ class JournalsImport extends Import {
         }
         $this->short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'] ?? null);
         $issue = (new IssueEntity())->retrieveOne($this->short);
+        $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         if ($issue === false) {
             $this->issue['published'] = date('Y-m-d');
-            $this->issue['open'] = date('Y-m-d', strtotime('+ 3 years'));
+            $this->issue['open'] = date('Y-m-d', strtotime('+ '.($this->settings['mobileBarrier'] ?? 3).' years'));
         } else {
             $this->issue['modified'] = date('Y-m-d');
         }
-        $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         $result = true;
         list($source,$target) = $this->folders($ean);
         foreach ($this->issue['papers'] ?? [] as $index => $paper) {

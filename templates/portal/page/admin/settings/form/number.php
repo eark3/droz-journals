@@ -1,0 +1,1 @@
+<input id="<?php echo $name; ?>" value="<?php echo $settings[$type][$name] ?? ($config['default'] ?? ''); ?>" class="setting number" type="number" name="update[<?php echo $name; ?>]"<?php echo isset($config['min']) ? ' min="'.$config['min'].'"': ''; ?><?php echo isset($config['max']) ? ' max="'.$config['max'].'"': ''; ?>/>
