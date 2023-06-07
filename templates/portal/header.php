@@ -11,7 +11,7 @@
 			<div class="col-xs-6 col-sm-4 pull-right">
 				<ul class="nav pull-right">
 					<li class="dropdown">
-						<a href="/" class="dropdown-toggle" data-toggle="dropdown">revues.droz.org<b class="caret"></b></a>
+						<a href="/" class="dropdown-toggle" data-toggle="dropdown"><?php echo $host; ?><b class="caret"></b></a>
 	 					<ul class="dropdown-menu dropdown-menu-right">
 <?php foreach ($journals as $_journal) { ?>
 							<li><a href="/<?php echo $_journal['context']; ?>"><?php echo $_journal['settings']['name']; ?></a></li>
