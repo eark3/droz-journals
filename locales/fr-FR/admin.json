@@ -57,6 +57,7 @@
 				"title": "Titre du numéro",
 				"description": "Description du numéro",
 				"coverImage": "Image de couverture",
+				"published": "Date de piblication",
 				"open": "Date pour un accès libre"
 			},
 			"section": {
