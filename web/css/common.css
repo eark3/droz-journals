@@ -1,3 +1,7 @@
+.pkp_structure_content.home {
+	display: flex;
+}
+
 .journal-description img {
 	max-width: 100%;
 	height: auto
