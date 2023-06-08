@@ -9,7 +9,6 @@ class JournalsImport extends Import {
     protected $journal  = null;
     protected $settings = null;
     protected $issue    = null;
-    protected $short    = null;
     protected $empty    = false;
     protected $new      = false;
     protected $cache    = null;
@@ -71,7 +70,6 @@ class JournalsImport extends Import {
         $this->journal = null;
         $this->settings = null;
         $this->issue = null;
-        $this->short = null;
         $this->empty = false;
         $this->new   = false;
     }
@@ -154,8 +152,9 @@ class JournalsImport extends Import {
                 }
             }
             $authors = [];
-            foreach ($paper['authors'] as $author) {
+            foreach ($paper['authors'] as $index => $author) {
                 $author['paper'] = $_paper->id;
+                $author['place'] = $index;
                 $_author = JournalsUtils::import('author', $author);
                 $authors[] = JournalsUtils::name($_author);
             }
@@ -189,7 +188,7 @@ class JournalsImport extends Import {
         }
         $cover = $this->folder.$ean.DS.'cover.jpg';
         if (file_exists($cover) && is_file($cover) && is_readable($cover)) {
-            $filename = 'cover_'.$this->short.'.jpg';
+            $filename = 'cover_'.$ean.'.jpg';
             copy($cover, STORE_FOLDER.'public'.DS.'journals'.DS.'images'.DS.$this->journal->context.DS.$filename);
             $criteria = ['object' => $_issue->id, 'name' => 'coverImage', 'locale' => $this->journal->locale];
             $setting = (new SettingEntity('issue'))->retrieveOne($criteria);
@@ -279,8 +278,18 @@ class JournalsImport extends Import {
             $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
             return false;
         }
-        $this->short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'] ?? null);
-        $issue = (new IssueEntity())->retrieveOne($this->short);
+        list($journal, $volume, $number) = JournalsUtils::chunks($ean);
+        if ($journal !== $this->journal->context) {
+            $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
+            return false;
+        }
+        if (empty($volume)) {
+            $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
+            return false;
+        }
+        $this->issue['volume'] = $volume;
+        $this->issue['number'] = $number;
+        $issue = (new IssueEntity())->retrieveOne($ean);
         $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         if ($issue === false) {
             $this->issue['published'] = date('Y-m-d');
@@ -482,7 +491,7 @@ class JournalsImport extends Import {
                 'context' => $this->journal->context
             ];
             $mail = [
-                'category' => 'issue'.DS.$this->short,
+                'category' => 'issue'.DS.$ean,
                 'template' => '/mail/issue/publication',
                 'subject'  => Zord::getLocaleValue('title', Zord::value('context', 'root'), $this->journal->locale).' - '.$this->settings['name'],
                 'models'   => $models

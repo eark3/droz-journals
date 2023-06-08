@@ -33,6 +33,30 @@ class JournalsUtils {
         return $short;
     }
     
+    public static function chunks($short) {
+        $tokens = explode('_', $short);
+        $chunks = [];
+        if (count($tokens) > 0) {
+            $chunks['journal'] = $tokens[0];
+        }
+        if (count($tokens) > 1) {
+            $_tokens = explode('.', $tokens[1]);
+            if (count($_tokens) > 0) {
+                $chunks['volume'] = $_tokens[0];
+            }
+            $chunks['number'] = count($_tokens) > 1 ?  $_tokens[1] : null;
+        }
+        if (count($tokens) > 2) {
+            $chunks['pages'] = $tokens[2];
+        }
+        return [
+            $chunks['journal'] ?? null,
+            $chunks['volume']  ?? null,
+            $chunks['number']  ?? null,
+            $chunks['pages']   ?? null
+        ];
+    }
+    
     public static function pages($paper, $explode = false) {
         $pages = $paper->pages;
         $tokens = explode('-', $pages);
