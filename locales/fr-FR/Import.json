@@ -18,6 +18,9 @@
 				},
 				"ref": {
 					"wrong": "${ref} n'est pas une référence valide"
+				},
+				"sameAs": {
+					"section": "La section ${parent} ne peut être le parent d'elle-même"
 				}
 			}
 		},

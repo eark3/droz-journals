@@ -74,6 +74,18 @@ class JournalsImport extends Import {
         $this->new   = false;
     }
     
+    protected function resources($ean) {
+        $result = parent::resources($ean);
+        $metadata = $this->folder.$ean.'.json';
+        if (!file_exists($metadata)) {
+            $papers = glob($this->folder.$ean.DS.'*.html');
+            foreach ($papers as $paper) {
+                
+            }
+        }
+        return $result;
+    }
+    
     protected function metadata($ean) {
         if (empty($this->issue)) {
             $this->info(2, $this->locale->messages->metadata->info->nodata);
@@ -105,29 +117,12 @@ class JournalsImport extends Import {
         foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
-            $name = $paper['section'];
-            $parent = 0;
-            $tokens = explode(':', $name);
-            if (count($tokens) === 2) {
-                list($name, $title) = $tokens;
-            } else if (count($tokens) > 2) {
-                list($name, $title, $parent) = $tokens;
-                $_parent = (new SectionEntity())->retrieveOne([
-                    'journal' => $this->journal->id,
-                    'name'    => $parent
-                ]);
-                $parent = $_parent->id;
-            }
-            $_section = JournalsUtils::import('section', [
-                'journal'  => $this->journal->id,
-                'name'     => $name,
-                'parent'   => $parent ?? '__IGNORE__',
-                'settings' => ($title ?? false) ? ['title' => [$this->journal->locale => [
-                    'content' => 'string',
-                    'value'   => $title
-                ]]]: null
-            ]);
+            $section = $paper['section'];
+            $section['journal'] = $this->journal->id;
+            $section['parent'] = $section['parent'] ?? '__IGNORE__';
+            $_section = JournalsUtils::import('section', $section);
             $paper['section'] = $_section->id;
+            $paper['status'] = $paper['status'] ?? 'subscription';
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
             $this->info(2, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));
@@ -299,6 +294,7 @@ class JournalsImport extends Import {
         }
         $result = true;
         list($source,$target) = $this->folders($ean);
+        $sections = [];
         foreach ($this->issue['papers'] ?? [] as $index => $paper) {
             if (empty($paper['pages'])) {
                 $this->error(3, $this->locale->messages->check->error->missing->pages.' ('.$index.')');
@@ -308,28 +304,35 @@ class JournalsImport extends Import {
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $section = $paper['section'] ?? null;
             if ($section) {
-                $tokens = explode(':', $section);
-                $name = null;
-                if (count($tokens) === 1) {
-                    $name = $section;
-                } else if (count($tokens) === 2) {
-                    list($name, $title) = $tokens;
-                } else if (count($tokens) > 2) {
-                    list($name, $title, $parent) = $tokens;
-                    $_parent = (new SectionEntity())->retrieveOne([
-                        'journal' => $this->journal->id,
-                        'name'    => $parent
-                    ]);
-                    if ($_parent === false) {
-                        $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $parent]));
-                        $result &= false;
+                $name = $section['name'] ?? null;
+                $parent = $section['parent'] ?? 0;
+                $title = $section['settings']['title'][$this->journal->locale]['value'] ?? null;
+                if ($parent !== 0) {
+                    if (!in_array($parent, $sections)) {
+                        if ($name !== $parent) {
+                            $_parent = (new SectionEntity())->retrieveOne([
+                                'journal' => $this->journal->id,
+                                'name'    => $parent
+                            ]);
+                            if ($_parent !== false) {
+                                $sections[] = $parent;
+                            } else {
+                                $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $parent]));
+                                $result &= false;
+                            }
+                        } else {
+                            $this->error(3, Zord::substitute($this->locale->messages->check->error->sameAs->section, ['parent' => $parent]));
+                            $result &= false;
+                        }
                     }
                 }
                 $_section = isset($name) ? (new SectionEntity())->retrieveOne([
                     'journal' => $this->journal->id,
                     'name'    => $name
                 ]) : false;
-                if ($_section === false && (!isset($name) || !isset($title))) {
+                if ($_section !== false || (isset($name) && isset($title))) {
+                    $sections[] = $name;
+                } else {
                     $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $name]));
                     $result &= false;
                 }

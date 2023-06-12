@@ -252,10 +252,25 @@ class JournalsUtils {
             'modified'  => $issue->modified,
             'open'      => $issue->open
         ];
-        $journal = (new JournalEntity())->retrieveOne($issue->journal);
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
         foreach ($papers as $paper) {
             $section = (new SectionEntity())->retrieveOne($paper->section);
+            $settings = (new SettingEntity('section'))->retrieveAll(['object' => $section->id]);
+            $_settings = [];
+            foreach ($settings as $setting) {
+                $_settings[$setting->name][$setting->locale] = [
+                    'content' => $setting->content,
+                    'value'   => $setting->value
+                ];
+            }
+            $_section = [
+                'name'     => $section->name,
+                'settings' => $_settings
+            ];
+            $parent = (new SectionEntity())->retrieveOne($section->parent);
+            if ($parent) {
+                $_section['parent'] = $parent->name;
+            }
             $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id]);
             $_authors = [];
             foreach ($authors as $author) {
@@ -290,12 +305,6 @@ class JournalsUtils {
                     'value'   => $setting->value
                 ];
             }
-            $setting = (new SettingEntity('section'))->retrieveOne([
-                'object' => $section->id,
-                'name'   => 'title',
-                'locale' => $journal->locale
-            ]);
-            $_section = $section->name.':'.($setting->value ?? $section->name).($section->parent > 0 ? ':'.$section->parent : '');
             $_paper = [
                 'pages'    => $paper->pages,
                 'status'   => $paper->status,

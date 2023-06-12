@@ -109,7 +109,7 @@ trait JournalsModule {
             $result = $this->cache->getItem($type, $key);
         } else {
             $result = $this->properties('issue', $issue);
-            $copyright = 'Copyright (c) '.date('Y', strtotime($issue->published)).' Librairie Droz';
+            $copyright = 'Copyright (c) '.$issue->year.' Librairie Droz';
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
             $serial = JournalsUtils::serial($issue);
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];

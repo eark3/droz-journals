@@ -23,6 +23,7 @@ body,
 	background-color: #fafafa;
 	color:#606060;
 	-webkit-hyphens:none;
+	hyphens:none;
 	text-align:justify;
 	font-size: 1em;
 	line-height: 1.7em;
