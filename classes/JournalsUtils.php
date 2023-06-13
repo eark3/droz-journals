@@ -125,7 +125,7 @@ class JournalsUtils {
                     ];
                     $_data = [
                         'value'   => $item['value'],
-                        'content' => $item['content']
+                        'content' => $item['content'] ?? 'string'
                     ];
                     $setting = (new SettingEntity($entity->_type))->retrieveOne($key);
                     if ($setting === false) {

@@ -162,11 +162,12 @@ class JournalsImport extends Import {
                 $this->info(3, "authors : ".implode(', ', $authors));
             };
             $galleys = [];
-            foreach ($paper['galleys'] as $type) {
+            foreach ($paper['galleys'] ?? [] as $type) {
                 $galleys[] = $type;
             }
+            $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             foreach (['html','pdf'] as $type) {
-                $file = $this->folder.$ean.DS.$paper['short'].'.'.$type;
+                $file = $this->folder.$ean.DS.$short.'.'.$type;
                 $exists = file_exists($file) && is_file($file) && is_readable($file);
                 $subscription = ($paper['status'] ?? 'subscription') === 'subscription';
                 if (!in_array($type, $galleys) && $exists) {
