@@ -30,8 +30,10 @@ class JournalsImport extends Import {
     
     private function purge($type, $issue, $paper = null) {
         $key = str_replace('-', '_' ,JournalsUtils::short($this->journal->context, $issue->volume, $issue->number, $paper->pages ?? null, true));
-        if ($this->cache->hasItem($type, $key)) {
-            $this->cache->deleteItem($type, $key);
+        foreach (array_keys(Zord::objectToArray(Zord::getLocale('portal')->lang)) as $lang) {
+            if ($this->cache->hasItem($lang.DS.$type, $key)) {
+                $this->cache->deleteItem($lang.DS.$type, $key);
+            }
         }
     }
     
