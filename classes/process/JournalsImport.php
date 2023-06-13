@@ -184,6 +184,21 @@ class JournalsImport extends Import {
             if (!empty($galleys)) {
                 $this->info(3, "galleys : ".implode(', ', $galleys));
             }
+            if (in_array('shop', $galleys) && empty($paper['settings']['pub-id::doi'][$this->journal->locale]['value'])) {
+                $criteria = [
+                    'type'   => 'paper',
+                    'object' => $_paper->id,
+                    'name'   => 'pub-id::doi',
+                    'locale' => $this->journal->locale
+                ];
+                $setting = (new SettingEntity('paper'))->retrieveOne($criteria);
+                $criteria['value'] = DROZ_DOI_PREFIX.$short;
+                if ($setting === false) {
+                    (new SettingEntity('paper'))->create($criteria);
+                } else {
+                    (new SettingEntity('paper'))->update($setting->id, $criteria);
+                }
+            }
         }
         foreach (['jpg','png'] as $ext) {
             $cover = $this->folder.$ean.DS.'cover.'.$ext;
@@ -480,7 +495,7 @@ class JournalsImport extends Import {
     }
     
     protected function notify($ean) {
-        if ($this->new) {
+        if ($this->new && NOTIFY_ISSUE_PUBLICATION) {
             $batch = [];
             $recipients = [];
             $index = 1;
