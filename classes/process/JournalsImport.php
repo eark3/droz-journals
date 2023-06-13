@@ -123,6 +123,11 @@ class JournalsImport extends Import {
             $_section = JournalsUtils::import('section', $section);
             $paper['section'] = $_section->id;
             $paper['status'] = $paper['status'] ?? 'subscription';
+            $place = explode('-', $paper['pages'])[0];
+            if (!is_int($place)) {
+                $place = Zord::roman2number($place);
+            }
+            $paper['place'] = $place;
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
             $this->info(2, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));
@@ -181,17 +186,24 @@ class JournalsImport extends Import {
                 $this->info(3, "galleys : ".implode(', ', $galleys));
             }
         }
-        $cover = $this->folder.$ean.DS.'cover.jpg';
-        if (file_exists($cover) && is_file($cover) && is_readable($cover)) {
-            $filename = 'cover_'.$ean.'.jpg';
-            copy($cover, STORE_FOLDER.'public'.DS.'journals'.DS.'images'.DS.$this->journal->context.DS.$filename);
-            $criteria = ['object' => $_issue->id, 'name' => 'coverImage', 'locale' => $this->journal->locale];
-            $setting = (new SettingEntity('issue'))->retrieveOne($criteria);
-            $criteria['value'] = $filename;
-            if ($setting === false) {
-                (new SettingEntity('issue'))->create($criteria);
-            } else {
-                (new SettingEntity('issue'))->update($setting->id, $criteria);
+        foreach (['jpg','png'] as $ext) {
+            $cover = $this->folder.$ean.DS.'cover.'.$ext;
+            if (file_exists($cover) && is_file($cover) && is_readable($cover)) {
+                $filename = 'cover_'.$ean.'.'.$ext;
+                copy($cover, STORE_FOLDER.'public'.DS.'journals'.DS.'images'.DS.$this->journal->context.DS.$filename);
+                $criteria = [
+                    'object' => $_issue->id,
+                    'name'   => 'coverImage',
+                    'locale' => $this->journal->locale
+                ];
+                $setting = (new SettingEntity('issue'))->retrieveOne($criteria);
+                $criteria['value'] = $filename;
+                if ($setting === false) {
+                    (new SettingEntity('issue'))->create($criteria);
+                } else {
+                    (new SettingEntity('issue'))->update($setting->id, $criteria);
+                }
+                break;
             }
         }
         return true;
@@ -289,9 +301,8 @@ class JournalsImport extends Import {
         if ($issue === false) {
             $this->issue['published'] = date('Y-m-d');
             $this->issue['open'] = date('Y-m-d', strtotime('+ '.($this->settings['mobileBarrier'] ?? 3).' years'));
-        } else {
-            $this->issue['modified'] = date('Y-m-d');
         }
+        $this->issue['modified'] = date('Y-m-d');
         $result = true;
         list($source,$target) = $this->folders($ean);
         $sections = [];
