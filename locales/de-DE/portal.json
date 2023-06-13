@@ -24,7 +24,9 @@
 		"summary": "Inhalt <br />dieser Ausgabe"
 	},
 	"about": "Über uns",
-	"admin": "Administration",
+	"admin": {
+		"menu": "Administration"
+	},
 	"edit": "Bearbeiten",
 	"export": "Exportieren",
 	"pages": {

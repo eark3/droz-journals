@@ -22,7 +22,9 @@
 		"summary": "Summary <br />of the issue"
 	},
 	"about": "About",
-	"admin": "Administration",
+	"admin": {
+		"menu": "Administration"
+	},
 	"edit": "Edit",
 	"export": "Export",
 	"pages": {

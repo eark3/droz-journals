@@ -22,7 +22,9 @@
 		"summary": "Sommaire <br />de ce numéro"
 	},
 	"about": "À propos",
-	"admin": "Administration",
+	"admin": {
+		"menu": "Administration"
+	},
 	"edit": "Editer",
 	"export": "Exporter",
 	"pages": {
