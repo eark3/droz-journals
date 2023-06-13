@@ -125,11 +125,7 @@ class JournalsImport extends Import {
             $_section = JournalsUtils::import('section', $section);
             $paper['section'] = $_section->id;
             $paper['status'] = $paper['status'] ?? 'subscription';
-            $place = explode('-', $paper['pages'])[0];
-            if (!is_int($place)) {
-                $place = Zord::roman2number($place);
-            }
-            $paper['place'] = $place;
+            $paper['place'] = JournalsUtils::place($paper['pages']);
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
             $this->info(2, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));

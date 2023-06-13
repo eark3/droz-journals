@@ -147,10 +147,7 @@ class OJSImport extends ProcessExecutor {
                     $status = $publication->access_status ? 'free' : 'subscription';
                     $pages = str_replace(['_','/'], ['-','-'], JournalsUtils::pages($paper));
                     $section = $names[$paper->section_id];
-                    $place = explode('-', $pages)[0];
-                    if (!is_int($place)) {
-                        $place = Zord::roman2number($place);
-                    }
+                    $place = JournalsUtils::place($pages);
                     $settings = $this->getSettings('submission', $publication);
                     $doi = $settings['pub-id::doi'][$this->locale($journal->primary_locale)]['value'] ?? '';
                     if (!empty($doi) && substr($doi, 0, strlen(DROZ_DOI_PREFIX)) === DROZ_DOI_PREFIX) {

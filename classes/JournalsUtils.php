@@ -99,7 +99,7 @@ class JournalsUtils {
                         "object"  => $object->id,
                         "name"    => $name,
                         "value"   => $item['value'],
-                        "content" => $item['content'],
+                        "content" => $item['content'] ?? 'string',
                         "locale"  => $locale
                     ]);
                 }
@@ -240,6 +240,17 @@ class JournalsUtils {
             }
         }
         return $settings;
+    }
+    
+    public static function place($pages) {
+        $place = explode('-', $pages)[0];
+        if (!is_numeric($place)) {
+            $place = Zord::roman2number($place);
+            $place = $place + 1000;
+        } else {
+            $place = $place + 2000;
+        }
+        return $place;
     }
     
     public static function export($issue) {

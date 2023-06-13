@@ -22,7 +22,8 @@
 		"paper": [
 			"journal",
 			"issue",
-			"pages"
+			"pages",
+			"place"
 		],
 		"author": [
 			"paper",
