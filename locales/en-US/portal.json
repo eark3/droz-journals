@@ -54,6 +54,7 @@
 		},
 		"issue": "Issue",
 		"abstract": "Abstract",
+		"keywords": "Keywords",
 		"others": "Most read articles by the same author(s) "
 	},
 	"download": {

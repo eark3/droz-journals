@@ -75,7 +75,7 @@ abstract class JournalsEntity extends Entity {
     }
     
     public function delete($criteria = null, $deep = false) {
-        $entity = parent::retrieve($criteria = null, $deep = false);
+        $entity = parent::retrieve($criteria, $deep);
         parent::delete($criteria, $deep);
         if ($entity) {
             if ($this->is_many($criteria)) {

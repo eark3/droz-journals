@@ -188,6 +188,9 @@
 					"multiline": true,
 					"class": "html"
 				},
+				"keywords": {
+					"template": "text"
+				},
 				"pub-id::doi": {
 					"template": "text"
 				},

@@ -54,6 +54,7 @@
 		},
 		"issue": "Numéro",
 		"abstract": "Résumé",
+		"keywords": "Mots-clés",
 		"others": "Articles les plus lus de cet auteur"
 	},
 	"download": {

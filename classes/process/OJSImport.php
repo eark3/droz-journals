@@ -160,6 +160,17 @@ class OJSImport extends ProcessExecutor {
                             unset($settings['subtitle'][$locale]);
                         }
                     }
+                    $keywords = [];
+                    foreach ((new OJSVocabEntity())->retrieveAll(['symbolic' => 'submissionKeyword', 'assoc_id' => $publication->submission_id]) as $vocab) {
+                        foreach ((new OJSVocabEntryEntity())->retrieveAll(['controlled_vocab_id' => $vocab->controlled_vocab_id, 'order' => ['asc' => 'seq']]) as $entry) {
+                            foreach ((new OJSVocabEntrySettingEntity())->retrieveAll(['controlled_vocab_entry_id' => $entry->controlled_vocab_entry_id]) as $setting) {
+                                $keywords[$this->locale($setting->locale)][] = $setting->setting_value;
+                            }
+                        }
+                    }
+                    foreach ($keywords as $locale => $values) {
+                        $settings['keywords'][$locale]['value'] = implode(', ', $values);
+                    }
                     $authors = [];
                     foreach ((new OJSAuthorEntity())->retrieveAll(['submission_id' => $publication->submission_id]) as $author) {
                         $last   = trim($author->last_name);

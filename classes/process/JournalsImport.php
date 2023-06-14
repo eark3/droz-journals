@@ -116,7 +116,9 @@ class JournalsImport extends Import {
             if (!empty($_authors)) {
                 (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
             }
-            (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            if (!empty($_papers)) {
+                (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            }
             if (!empty($_papers)) {
                 (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
             }
@@ -338,7 +340,7 @@ class JournalsImport extends Import {
             $this->papers[] = $paper['pages'];
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $_paper = (new PaperEntity())->retrieveOne($short);
-            $reset = explode(',', $paper['reset'] ?? '');
+            $reset = !empty($paper['reset']) ? explode(',', $paper['reset']) : [];
             foreach (['authors','galleys'] as $key) {
                 if (!in_array($key, $reset) && !empty($paper[$key])) {
                     $reset[] = $key;

@@ -50,6 +50,14 @@
 					</div>
 				</div>
 <?php } ?>
+<?php if (isset($paper['settings']['keywords'])) { ?>
+				<div class="item keywords"">
+					<h4><?php echo $locale->article->keywords; ?></h4>
+					<p class="value">
+						<?php echo $paper['settings']['keywords']; ?>
+					</p>
+				</div>
+<?php } ?>
 			</section>
 			<div class="item citation">
 				<div class="panel panel-default citation_formats">
