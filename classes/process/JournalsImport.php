@@ -111,9 +111,13 @@ class JournalsImport extends Import {
                 }
             }
             (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
-            (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
+            if (!empty($_authors)) {
+                (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
+            }
             (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
-            (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
+            if (!empty($_papers)) {
+                (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
+            }
             (new PaperEntity())->delete(['issue' => $_issue->id]);
             (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
             (new IssueEntity())->delete($_issue->id);
@@ -126,7 +130,6 @@ class JournalsImport extends Import {
             $section['parent'] = $section['parent'] ?? '__IGNORE__';
             $_section = JournalsUtils::import('section', $section);
             $paper['section'] = $_section->id;
-            $paper['status'] = $paper['status'] ?? 'subscription';
             $paper['place'] = JournalsUtils::place($paper['pages']);
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
@@ -140,7 +143,9 @@ class JournalsImport extends Import {
                             foreach ($authors as $_author) {
                                 $_authors[] = $_author->id;
                             }
-                            (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
+                            if (!empty($_authors)) {
+                                (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
+                            }
                             (new AuthorEntity())->deleteAll(['paper' => $_paper->id]);
                             break;
                         }
@@ -330,8 +335,31 @@ class JournalsImport extends Import {
             }
             $this->papers[] = $paper['pages'];
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
+            $_paper = (new PaperEntity())->retrieveOne($short);
+            $reset = explode(',', $paper['reset'] ?? '');
+            foreach (['authors','galleys'] as $key) {
+                if (!in_array($key, $reset) && !empty($paper[$key])) {
+                    $reset[] = $key;
+                }
+            }
+            if (!empty($reset)) {
+                $this->issue['papers'][$index]['reset'] = implode(',', $reset);
+            }
+            $status = $paper['status'] ?? null;
+            if (empty($status)) {
+                $this->issue['papers'][$index]['status'] = $_paper !== false ? $_paper->status : 'subscription';
+            }
             $section = $paper['section'] ?? null;
-            if ($section) {
+            if (empty($section)) {
+                if ($_paper !== false) {
+                    $_section = (new SectionEntity())->retrieveOne($_paper->section);
+                    $this->issue['papers'][$index]['section'] = ['name' => $_section->name];
+                    $sections[] = $_section->name;
+                } else {
+                    $this->error(3, Zord::substitute($this->locale->messages->check->error->without->section, ['paper' => $short]));
+                    $result &= false;
+                }
+            } else {
                 $name = $section['name'] ?? null;
                 $parent = $section['parent'] ?? 0;
                 $title = $section['settings']['title'][$this->journal->locale]['value'] ?? null;
@@ -364,9 +392,6 @@ class JournalsImport extends Import {
                     $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $name]));
                     $result &= false;
                 }
-            } else {
-                $this->error(3, Zord::substitute($this->locale->messages->check->error->without->section, ['paper' => $short]));
-                $result &= false;
             }
             foreach ($paper['galleys'] ?? [] as $galley) {
                 if ($galley === 'shop') {
