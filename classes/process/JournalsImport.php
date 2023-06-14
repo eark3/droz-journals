@@ -110,7 +110,9 @@ class JournalsImport extends Import {
                     $_authors[] = $_author->id;
                 }
             }
-            (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            if (!empty($_papers)) {
+                (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+            }
             if (!empty($_authors)) {
                 (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
             }
