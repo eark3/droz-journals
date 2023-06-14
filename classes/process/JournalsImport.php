@@ -9,6 +9,7 @@ class JournalsImport extends Import {
     protected $journal  = null;
     protected $settings = null;
     protected $issue    = null;
+    protected $papers   = [];
     protected $empty    = false;
     protected $new      = false;
     protected $cache    = null;
@@ -72,6 +73,7 @@ class JournalsImport extends Import {
         $this->journal = null;
         $this->settings = null;
         $this->issue = null;
+        $this->papers = [];
         $this->empty = false;
         $this->new   = false;
     }
@@ -150,7 +152,7 @@ class JournalsImport extends Import {
                 }
             }
             $authors = [];
-            foreach ($paper['authors'] as $index => $author) {
+            foreach ($paper['authors'] ?? [] as $index => $author) {
                 $author['paper'] = $_paper->id;
                 $author['place'] = $index;
                 $_author = JournalsUtils::import('author', $author);
@@ -326,6 +328,7 @@ class JournalsImport extends Import {
                 $result &= false;
                 continue;
             }
+            $this->papers[] = $paper['pages'];
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $section = $paper['section'] ?? null;
             if ($section) {
@@ -435,6 +438,9 @@ class JournalsImport extends Import {
         ];
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
         foreach ($papers as $paper) {
+            if (!in_array($paper->pages, $this->papers)) {
+                continue;
+            }
             $settings = JournalsUtils::settings('paper', $paper, $journal->locale);
             if ($settings['pub-id::doi'] ?? false) {
                 $this->info(2, $settings['pub-id::doi']);
