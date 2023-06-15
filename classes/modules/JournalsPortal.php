@@ -7,7 +7,7 @@ class JournalsPortal extends Portal {
     protected function published() {
         return [
             'journal'   => $this->controler->journal->id,
-            'published' => ['<' => $this->controler->getHost() !== PRODUCTION_HOST ? '9999-12-31' : date('Y-m-d')],
+            'published' => ['<=' => $this->controler->getHost() !== PRODUCTION_HOST ? '9999-12-31' : date('Y-m-d')],
             'order'     => [['desc' => 'volume'],['desc' => 'number']]
         ];
     }
