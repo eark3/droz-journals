@@ -72,8 +72,16 @@
 	margin-top: 20px;
 }
 
+#form .choices label:not(:first-of-type) {
+	margin-top: 0;
+}
+
 #form label[for^="status_"] {
 	margin-top: revert;
+}
+
+.chosen-container {
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 #select button[aria-label] {

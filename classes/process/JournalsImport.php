@@ -126,6 +126,7 @@ class JournalsImport extends Import {
             (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
             (new IssueEntity())->delete($_issue->id);
         }
+        list($journal,$issue) = explode('_', $ean);
         foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
             $paper['issue']   = $_issue->id;
@@ -153,10 +154,6 @@ class JournalsImport extends Import {
                             (new AuthorEntity())->deleteAll(['paper' => $_paper->id]);
                             break;
                         }
-                        case 'galleys': {
-                            (new GalleyEntity())->deleteAll(['paper' => $_paper->id]);
-                            break;
-                        }
                     }
                 }
             }
@@ -170,20 +167,20 @@ class JournalsImport extends Import {
             if (!empty($authors)) {
                 $this->info(3, "authors : ".implode(', ', $authors));
             };
-            $galleys = [];
-            foreach ($paper['galleys'] ?? [] as $type) {
-                $galleys[] = $type;
-            }
-            $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
-            foreach (['html','pdf'] as $type) {
-                $file = $this->folder.$ean.DS.$short.'.'.$type;
-                $exists = file_exists($file) && is_file($file) && is_readable($file);
+            (new GalleyEntity())->deleteAll(['paper' => $_paper->id]);
+            $galleys = $paper['galleys'] ?? [];
+            if (empty($galleys)) {
+                $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
                 $subscription = ($paper['status'] ?? 'subscription') === 'subscription';
-                if (!in_array($type, $galleys) && $exists) {
-                    $galleys[] = $type;
-                }
-                if ($type === 'pdf' && !in_array('shop', $galleys) && $exists && $subscription) {
-                    $galleys[] = 'shop';
+                foreach (['html','pdf'] as $type) {
+                    $file = STORE_FOLDER.'journals'.DS.$journal.DS.$issue.DS.$short.'.'.$type;
+                    $exists = file_exists($file) && is_file($file) && is_readable($file);
+                    if ($exists && !in_array($type, $galleys)) {
+                        $galleys[] = $type;
+                        if ($type === 'pdf' && $subscription) {
+                            $galleys[] = 'shop';
+                        }
+                    }
                 }
             }
             foreach ($galleys as $type) {

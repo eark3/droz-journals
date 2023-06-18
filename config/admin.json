@@ -200,6 +200,16 @@
 						"free",
 						"subscription"
 					]
+				},
+				"galleys": {
+					"template": "select",
+					"multiple": true,
+					"holder": "Choisissez...",
+					"amongst": [
+						"html",
+						"pdf",
+						"shop"
+					]
 				}
 			},
 			"author": {

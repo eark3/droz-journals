@@ -63,6 +63,7 @@ var bindUI = function() {
 			displayUI(this.dataset.type, this.dataset.id, this.dataset.lang);
 		}
 	});
+	activateChosen();
 };
 
 var displayUI = function(type, id, lang) {

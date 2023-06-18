@@ -8,8 +8,18 @@ class JournalsAdmin extends StoreAdmin {
     
     protected $errors = [];
     
-    protected function adjusted($type, $name, $value, $settings) {
+    protected function adjusted($type, $object, $name, $value, $settings) {
         $config = Zord::value('admin', ['settings','fields', $type, $name]) ?? [];
+        if ($type === 'paper' && $name === 'galleys') {
+            (new GalleyEntity())->deleteAll(['paper' => $object->id]);
+            foreach ($value as $type) {
+                (new GalleyEntity())->create([
+                    'paper' => $object->id,
+                    'type'  => $type
+                ]);
+            }
+            return false;
+        }
         if ($type === 'journal' && $name === 'extraCSS') {
             $validator = new CSSValidator();
             $result = $validator->validateFragment($value);
@@ -359,7 +369,7 @@ class JournalsAdmin extends StoreAdmin {
                         if (in_array($name, $fields)) {
                             $_update[$name] = $value;
                         }
-                        $adjusted = $this->adjusted($type, $name, $value, $settings);
+                        $adjusted = $this->adjusted($type, $object, $name, $value, $settings);
                         if ($adjusted) {
                             list($value, $content) = $adjusted;
                             $key = [

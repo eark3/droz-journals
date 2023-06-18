@@ -214,6 +214,11 @@ class JournalsUtils {
             foreach ($object->as_array() as $key => $value) {
                 $settings[$key] = $value;
             }
+            if ($type === 'paper') {
+                foreach ((new GalleyEntity())->retrieveAll(['paper' => $object->id]) as $galley) {
+                    $settings['galleys'][] = $galley->type;
+                }
+            }
             foreach ($locales as $_locale) {
                 $criteria['locale'] = $_locale;
                 $entities = (new SettingEntity($type))->retrieveAll($criteria);

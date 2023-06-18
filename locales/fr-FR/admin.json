@@ -71,10 +71,16 @@
 				"keywords": "Mots-clés de l'article",
 				"pub-id::doi": "DOI de l'article",
 				"status": "Statut de l'accès",
+				"galleys": "Disponible",
 				"choices": {
 					"status": {
 						"free": "Accès libre",
 						"subscription": "Réservé aux abonnés"
+					},
+					"galleys": {
+						"html": "en HTML",
+						"pdf": "en PDF",
+						"shop": "dans la boutique"
 					}
 				}
 			},
