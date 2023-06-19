@@ -9,7 +9,6 @@ class JournalsImport extends Import {
     protected $journal  = null;
     protected $settings = null;
     protected $issue    = null;
-    protected $papers   = [];
     protected $empty    = false;
     protected $new      = false;
     protected $cache    = null;
@@ -73,7 +72,6 @@ class JournalsImport extends Import {
         $this->journal = null;
         $this->settings = null;
         $this->issue = null;
-        $this->papers = [];
         $this->empty = false;
         $this->new   = false;
     }
@@ -334,7 +332,6 @@ class JournalsImport extends Import {
                 $result &= false;
                 continue;
             }
-            $this->papers[] = $paper['pages'];
             $short = JournalsUtils::short($this->journal->context, $this->issue['volume'], $this->issue['number'], $paper['pages']);
             $_paper = (new PaperEntity())->retrieveOne($short);
             $reset = !empty($paper['reset']) ? explode(',', $paper['reset']) : [];
@@ -464,9 +461,6 @@ class JournalsImport extends Import {
         ];
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
         foreach ($papers as $paper) {
-            if (!in_array($paper->pages, $this->papers)) {
-                continue;
-            }
             $settings = JournalsUtils::settings('paper', $paper, $journal->locale);
             if ($settings['pub-id::doi'] ?? false) {
                 $this->info(2, $settings['pub-id::doi']);
