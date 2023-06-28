@@ -6,7 +6,7 @@ trait JournalsModule {
     
     public function configure() {
         $this->cache = Cache::instance();
-        $theme =strtolower($this->context);
+        $theme = strtolower($this->context);
         $this->addStyle($this->checkCSS('bootstrap3', $theme));
         $this->addStyle('/journals/css/common.css');
         $this->addStyle($this->checkCSS($theme, 'index'));
