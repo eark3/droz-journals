@@ -4,7 +4,7 @@
 									<?php echo $section['settings']['title']; ?>
 								</p>
 							</div>
-<?php foreach ($section['papers'] as $paper) { ?>
+<?php foreach (($section['papers'] ?? []) as $paper) { ?>
 <?php   $this->render('#paper', ['paper' => $paper]); ?>
 <?php } ?>
 						</section>

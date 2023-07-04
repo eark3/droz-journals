@@ -119,6 +119,10 @@ trait JournalsModule {
             foreach ($papers as $paper) {
                 if (!isset($_sections[$paper->section])) {
                     $section = (new SectionEntity())->retrieveOne($paper->section);
+                    if ($section->parent !== 0 && !isset($_sections[$section->parent])) {
+                        $parent = (new SectionEntity())->retrieveOne($section->parent);
+                        $_sections[$section->parent] = $this->properties('section', $parent);
+                    }
                     $_sections[$paper->section] = $this->properties('section', $section);
                 }
             }
