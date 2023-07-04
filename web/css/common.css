@@ -26,8 +26,8 @@ body.root .pkp_structure_content.login {
 }
 
 .pkp_block.block_toc1 ul li.sub,
-.section.sub {
-	font-size: 0.9em;
+.section.sub .page-header {
+	font-size: 0.9em !important;
 }
 
 .pkp_block > .content > ul > li.sub {
