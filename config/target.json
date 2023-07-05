@@ -50,11 +50,12 @@
 				"authors": "FILTER_SANITIZE_STRING"
 			}
 		},
-		"papers": {
+		"data": {
 			"response": "DATA",
-			"shortcut": "papers",
+			"shortcut": "data",
 			"parameters": {
-				"ean": "FILTER_SANITIZE_STRING"
+				"ean": "FILTER_SANITIZE_STRING",
+				"scope": "FILTER_SANITIZE_STRING"
 			}
 		},
 		"issues": {

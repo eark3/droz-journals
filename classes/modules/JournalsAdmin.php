@@ -42,16 +42,17 @@ class JournalsAdmin extends StoreAdmin {
             $context = $settings['journal']['acronym'];
             switch ($name) {
                 case 'homepageImage': {
-                    $filename = $context.DS.$filename;
+                    $uploadName = $name.'_'.str_replace('-', '_', $this->lang).'.'.pathinfo($filename, PATHINFO_EXTENSION);
                     list($width, $height) = getimagesize($source);
                     $value = [
                         'name'         => $filename,
-                        'uploadName'   => $name.'_'.str_replace('-', '_', $this->lang).'.'.pathinfo($filename, PATHINFO_EXTENSION),
+                        'uploadName'   => $uploadName,
                         'width'        => $width,
                         'heigth'       => $height,
                         'dateUploaded' => date('Y-m-d H:i:s'),
                         'altText'      => ''
                     ];
+                    $filename = $context.DS.$uploadName;
                     break;
                 }
                 case 'coverImage': {
