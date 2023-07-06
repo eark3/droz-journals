@@ -94,8 +94,6 @@ class JournalsImport extends Import {
             return true;
         }
         $this->issue["journal"] = $this->journal->id;
-        $_issue = JournalsUtils::import('issue', $this->issue);
-        $this->purge('issue', $_issue);
         if ($this->issue['reset'] ?? false) {
             $papers = (new PaperEntity())->retrieveAll(['issue' => $_issue->id]);
             $_papers = [];
@@ -124,6 +122,8 @@ class JournalsImport extends Import {
             (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
             (new IssueEntity())->deleteOne($_issue->id);
         }
+        $_issue = JournalsUtils::import('issue', $this->issue);
+        $this->purge('issue', $_issue);
         list($journal,$issue) = explode('_', $ean);
         foreach ($this->issue['papers'] as $paper) {
             $paper['journal'] = $this->journal->id;
