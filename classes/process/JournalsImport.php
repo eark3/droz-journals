@@ -95,6 +95,7 @@ class JournalsImport extends Import {
         }
         $this->issue["journal"] = $this->journal->id;
         if ($this->issue['reset'] ?? false) {
+            $_issue = (new IssueEntity())->retrieveOne($ean);
             $papers = (new PaperEntity())->retrieveAll(['issue' => $_issue->id]);
             $_papers = [];
             $_authors = [];
