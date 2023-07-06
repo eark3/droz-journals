@@ -120,9 +120,9 @@ class JournalsImport extends Import {
             if (!empty($_papers)) {
                 (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
             }
-            (new PaperEntity())->delete(['issue' => $_issue->id]);
+            (new PaperEntity())->deleteAll(['issue' => $_issue->id]);
             (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
-            (new IssueEntity())->delete($_issue->id);
+            (new IssueEntity())->deleteOne($_issue->id);
         }
         list($journal,$issue) = explode('_', $ean);
         foreach ($this->issue['papers'] as $paper) {
