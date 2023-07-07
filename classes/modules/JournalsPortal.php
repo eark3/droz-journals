@@ -511,7 +511,7 @@ class JournalsPortal extends Portal {
         }
         $issue = (new IssueEntity())->retrieveOne($ean);
         if ($issue === false) {
-            return $this->error(404);
+            return [];
         }
         if (empty($issue->ean)) {
             return $this->error(406);
