@@ -91,6 +91,11 @@ class JournalsUtils {
     }
     
     public static function create($entity, $data) {
+        foreach ($data as $key => $value) {
+            if ($value === '__IGNORE__') {
+                unset($data[$key]);
+            }
+        }
         $object = $entity->create($data);
         if ($object) {
             foreach ($data['settings'] ?? [] as $name => $locales) {

@@ -131,6 +131,13 @@ class JournalsImport extends Import {
             $paper['issue']   = $_issue->id;
             $section = $paper['section'];
             $section['journal'] = $this->journal->id;
+            if ($section['parent'] ?? false) {
+                $_parent = (new SectionEntity())->retrieveOne([
+                    'journal' => $this->journal->id,
+                    'name'    => $section['parent']
+                ]);
+                $section['parent'] = $_parent !== false ? $_parent->id : null;
+            }
             $section['parent'] = $section['parent'] ?? '__IGNORE__';
             $_section = JournalsUtils::import('section', $section);
             $paper['section'] = $_section->id;
@@ -381,15 +388,17 @@ class JournalsImport extends Import {
                         }
                     }
                 }
-                $_section = isset($name) ? (new SectionEntity())->retrieveOne([
-                    'journal' => $this->journal->id,
-                    'name'    => $name
-                ]) : false;
-                if ($_section !== false || (isset($name) && isset($title))) {
-                    $sections[] = $name;
-                } else {
-                    $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $name]));
-                    $result &= false;
+                if (!in_array($name, $sections)) {
+                    $_section = isset($name) ? (new SectionEntity())->retrieveOne([
+                        'journal' => $this->journal->id,
+                        'name'    => $name
+                    ]) : false;
+                    if ($_section !== false || (isset($name) && isset($title))) {
+                        $sections[] = $name;
+                    } else {
+                        $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $name]));
+                        $result &= false;
+                    }
                 }
             }
             foreach ($paper['galleys'] ?? [] as $galley) {
