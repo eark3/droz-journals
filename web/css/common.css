@@ -25,9 +25,13 @@ body.root .pkp_structure_content.login {
 	border-width: 0
 }
 
-.pkp_block.block_toc1 ul li.sub,
-.section.sub .page-header {
+.pkp_block.block_toc1 ul li.sub {
 	font-size: 0.9em !important;
+}
+
+.section.sub .page-header {
+	font-size: 1.1em !important;
+	text-align: right;
 }
 
 .pkp_block > .content > ul > li.sub {
