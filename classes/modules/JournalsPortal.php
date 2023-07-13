@@ -162,7 +162,9 @@ class JournalsPortal extends Portal {
                         $ariadne['active'] = [$_paper['settings']['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
                     } else {
                         $page = 'article';
-                        $ariadne['section'] = [$_section['title'], '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$_section['name']];
+                        if ($_paper['settings']['title'] !== 'Dossier complet') {
+                            $ariadne['section'] = [$_section['title'], '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$_section['name']];
+                        }
                         $others = [];
                         foreach ($_paper['authors'] ?? [] as $author) {
                             foreach ((new AuthorEntity())->retrieveAll([
