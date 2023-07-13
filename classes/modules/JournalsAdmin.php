@@ -382,15 +382,17 @@ class JournalsAdmin extends StoreAdmin {
                                 'name'   => $name,
                                 'locale' => $_lang
                             ];
+                            $setting = (new SettingEntity($type))->retrieveOne($key);
                             if ($adjusted === '__DELETE__') {
-                                (new SettingEntity($type))->deleteOne($key);
+                                if ($setting !== false) {
+                                    (new SettingEntity($type))->deleteOne($setting->id);
+                                }
                             } else {
                                 list($value, $content) = $adjusted;
                                 $set = [
                                     'value'   => $value,
                                     'content' => $content
                                 ];
-                                $setting = (new SettingEntity($type))->retrieveOne($key);
                                 if ($setting !== false) {
                                     (new SettingEntity($type))->updateOne($key, $set);
                                 } else {
