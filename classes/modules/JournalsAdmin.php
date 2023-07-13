@@ -383,7 +383,7 @@ class JournalsAdmin extends StoreAdmin {
                                 'locale' => $_lang
                             ];
                             if ($adjusted === '__DELETE__') {
-                                (new SettingEntity($type))->deleteteOne($key);
+                                (new SettingEntity($type))->deleteOne($key);
                             } else {
                                 list($value, $content) = $adjusted;
                                 $set = [
