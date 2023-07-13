@@ -309,6 +309,10 @@ class JournalsImport extends Import {
             return false;
         }
         $this->issue = Zord::arrayFromJSONFile($this->folder.$ean.'.json');
+        if (!is_array($this->issue) || !Zord::is_associative($this->issue)) {
+            $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
+            return false;
+        }
         if (empty($this->issue) && !file_exists($this->folder.$ean)) {
             $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
             return false;
