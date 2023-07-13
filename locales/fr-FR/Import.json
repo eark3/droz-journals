@@ -16,6 +16,9 @@
 				"without": {
 					"section": "L'article ${paper} n'a pas de section définie"
 				},
+				"json": {
+					"wrong": "${json} n'est pas un fichier JSON valide"
+				},
 				"ref": {
 					"wrong": "${ref} n'est pas une référence valide"
 				},
