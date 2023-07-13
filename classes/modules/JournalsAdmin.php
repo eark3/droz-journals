@@ -403,6 +403,13 @@ class JournalsAdmin extends StoreAdmin {
                                     if ($this->cache->hasItem($_type, $key)) {
                                         $this->cache->deleteItem($_type, $key);
                                     }
+                                    $_type = $_lang.DS.'paper';
+                                    foreach ((new PaperEntity())->retrieveAll(['issue' => $object->id]) as $paper) {
+                                        $key = $this->_key('paper', ['context' => $journal->context, 'issue' => $object, 'paper' => $paper]);
+                                        if ($this->cache->hasItem($_type, $key)) {
+                                            $this->cache->deleteItem($_type, $key);
+                                        }
+                                    }
                                     break;
                                 }
                                 case 'section': {
