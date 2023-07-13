@@ -42,7 +42,7 @@
 <?php   } ?>
 				</div>
 <?php }?>
-<?php if (isset($paper['settings']['abstract'])) { ?>
+<?php if (!empty($paper['settings']['abstract'])) { ?>
 				<div class="article-summary" id="summary">
 					<h2><?php echo $locale->article->abstract; ?></h2>
 					<div class="article-abstract">
@@ -50,7 +50,7 @@
 					</div>
 				</div>
 <?php } ?>
-<?php if (isset($paper['settings']['keywords'])) { ?>
+<?php if (!empty($paper['settings']['keywords'])) { ?>
 				<div class="item keywords"">
 					<h4><?php echo $locale->article->keywords; ?></h4>
 					<p class="value">
