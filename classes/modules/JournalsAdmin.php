@@ -20,6 +20,11 @@ class JournalsAdmin extends StoreAdmin {
             }
             return false;
         }
+        if ($type === 'paper' && $name === 'keywords') {
+            if (empty($value)) {
+                return '__DELETE__';
+            }
+        }
         if ($type === 'journal' && $name === 'extraCSS') {
             $validator = new CSSValidator();
             $result = $validator->validateFragment($value);
@@ -372,21 +377,25 @@ class JournalsAdmin extends StoreAdmin {
                         }
                         $adjusted = $this->adjusted($type, $object, $name, $value, $settings);
                         if ($adjusted) {
-                            list($value, $content) = $adjusted;
                             $key = [
                                 'object' => $object->id,
                                 'name'   => $name,
                                 'locale' => $_lang
                             ];
-                            $set = [
-                                'value'   => $value,
-                                'content' => $content
-                            ];
-                            $setting = (new SettingEntity($type))->retrieveOne($key);
-                            if ($setting !== false) {
-                                (new SettingEntity($type))->updateOne($key, $set);
+                            if ($adjusted === '__DELETE__') {
+                                (new SettingEntity($type))->deleteteOne($key);
                             } else {
-                                (new SettingEntity($type))->create(array_merge($key, $set));
+                                list($value, $content) = $adjusted;
+                                $set = [
+                                    'value'   => $value,
+                                    'content' => $content
+                                ];
+                                $setting = (new SettingEntity($type))->retrieveOne($key);
+                                if ($setting !== false) {
+                                    (new SettingEntity($type))->updateOne($key, $set);
+                                } else {
+                                    (new SettingEntity($type))->create(array_merge($key, $set));
+                                }
                             }
                             switch ($type) {
                                 case 'journal': {
