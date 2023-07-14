@@ -1,5 +1,6 @@
 var scrollToAnchor = function(hash, top) {
-	var position = jQuery(hash).offset().top;
+	var element = document.getElementById(hash.substring(1));
+	var position = jQuery(element).offset().top;
 	jQuery("body, html").animate({
 		scrollTop: top ? 0 : position - 90
 	});
@@ -20,7 +21,8 @@ jQuery(document).ready(function() {
 		var index = href.indexOf('#');
 		if (href !== '#' && index >= 0) {
 			var hash = href.substring(index);
-			if (jQuery(hash).length) {
+			var section = document.getElementById(hash.substring(1));
+			if (section !== undefined && section !== null) {
 				e.preventDefault();
 				e.stopPropagation();
 				scrollToAnchor(hash);
