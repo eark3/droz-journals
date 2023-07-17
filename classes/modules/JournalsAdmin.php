@@ -8,6 +8,16 @@ class JournalsAdmin extends StoreAdmin {
     
     protected $errors = [];
     
+    protected function enhanceProfile($login, $data) {
+        if (!empty($data['ipv4']) || !empty($data['ipv6'])) {
+            $user = User::get($login);
+            if (!empty($user->name)) {
+                $data['institution'] = $user->name;
+            }
+        }
+        return $data;
+    }
+    
     protected function adjusted($type, $object, $name, $value, $settings) {
         $config = Zord::value('admin', ['settings','fields', $type, $name]) ?? [];
         if ($type === 'paper' && $name === 'galleys') {
