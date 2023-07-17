@@ -5,9 +5,16 @@
 		]
 	},
 	"user": {
-		"profile": [
-			"institution"
-		]
+		"profile": {
+			"__RESET__": [
+				"name",
+				"email",
+				"ipv4",
+				"ipv6",
+				"password",
+				"institution"
+			]
+		}
 	},
 	"default": {
 		"csl": {

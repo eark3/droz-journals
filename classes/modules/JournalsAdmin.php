@@ -8,11 +8,10 @@ class JournalsAdmin extends StoreAdmin {
     
     protected $errors = [];
     
-    protected function enhanceProfile($login, $data) {
+    protected function enhanceProfile($data) {
         if (!empty($data['ipv4']) || !empty($data['ipv6'])) {
-            $user = User::get($login);
-            if (!empty($user->name)) {
-                $data['institution'] = $user->name;
+            if (!empty($data['name'])) {
+                $data['institution'] = $data['name'];
             }
         }
         return $data;
