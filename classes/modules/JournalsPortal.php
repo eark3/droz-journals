@@ -348,7 +348,7 @@ class JournalsPortal extends Portal {
         $reference = [
             'type'            => 'article-journal',
             'id'              => $short,
-            'title'           => $_paper['title'],
+            'title'           => html_entity_decode($_paper['title']),
             'volume'          => $issue->volume,
             'container-title' => str_replace('<br/>', ' ', $_journal['name']),
             'page'            => JournalsUtils::pages($paper),
