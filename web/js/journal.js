@@ -1,5 +1,8 @@
 jQuery(document).ready(function() {
 	jQuery(".fancybox").fancybox();
+});
+
+jQuery(window).on('load', function() {
 	var block_toc1 = jQuery('.block_toc1');
 	var block_toc2 = jQuery('.block_toc2');
 	if (block_toc1.length > 0 && block_toc2.length > 0) {
