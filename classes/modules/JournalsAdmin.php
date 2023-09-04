@@ -12,7 +12,7 @@ class JournalsAdmin extends StoreAdmin {
         if (!empty($user->ipv4) || !empty($user->ipv6) || !empty($data['ipv4']) || !empty($data['ipv6'])) {
             $data['institution'] = $user->name;
         }
-        return parent::enhanceProfile($data);
+        return parent::enhanceProfile($user, $data);
     }
     
     protected function adjusted($type, $object, $name, $value, $settings) {
