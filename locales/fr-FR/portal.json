@@ -1,7 +1,8 @@
 {
 	"language": "Langue",
 	"lang": {
-		"de-DE": "Allemand (DE)"
+		"de-DE": "Allemand (DE)",
+		"it-IT": "Italiano (IT)"
 	},
 	"root": {
 		"journal": "Voir la revue",

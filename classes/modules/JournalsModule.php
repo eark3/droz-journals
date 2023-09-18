@@ -58,11 +58,11 @@ trait JournalsModule {
         return parent::message($type, $content);
     }
     
-    protected function properties($type, $object) {
+    protected function properties($type, $object, $lang = null) {
         foreach (Zord::value('orm', [ucfirst($type).'Entity','fields']) as $field) {
             $result[$field] = $object->$field;
         }
-        $result['settings'] = $this->_settings($type, $object);
+        $result['settings'] = $this->_settings($type, $object, null, $lang);
         return $result;
     }
     
@@ -160,11 +160,11 @@ trait JournalsModule {
         if ($this->cache->hasItem($type, $key)) {
             return $this->cache->getItem($type, $key);
         }
-        $result = $this->properties('paper', $paper);
+        $result = $this->properties('paper', $paper, $paper->lang);
         $result['short'] = $short;
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
-            $_author = $this->properties('author', $author);
+            $_author = $this->properties('author', $author, $paper->lang);
             $_author = Zord::array_merge($_author, [
                 'first'   => $author->first,
                 'last'    => $author->last,

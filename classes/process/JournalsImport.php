@@ -477,7 +477,7 @@ class JournalsImport extends Import {
         ];
         $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
         foreach ($papers as $paper) {
-            $settings = JournalsUtils::settings('paper', $paper, $journal->locale);
+            $settings = JournalsUtils::settings('paper', $paper, $paper->lang ?? $journal->locale);
             if ($settings['pub-id::doi'] ?? false) {
                 $this->info(2, $settings['pub-id::doi']);
                 list($start, $end) = JournalsUtils::pages($paper, true);

@@ -470,6 +470,9 @@ class JournalsAdmin extends StoreAdmin {
                     }
                     return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'XMLHttpRequest' ? $result : $this->redirect($this->baseURL.'/admin'); 
                 } else {
+                    if ($type === 'paper') {
+                        $_lang = $object->lang ?? $_lang;
+                    }
                     return $this->_settings($type, $object, $name, $_lang);
                 }
             }
