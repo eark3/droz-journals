@@ -11,7 +11,8 @@
 					"file": "Il manque le fichier ${file}",
 					"ean": "Le numéro EAN doit être renseigné",
 					"section": "La section ${section} n'est pas définie",
-					"pages": "Numéros de pages non renseignés"
+					"pages": "Numéros de pages non renseignés",
+					"title": "Le titre n'est renseigné ni dans la langue de l'article ni dans celle de la revue"
 				},
 				"without": {
 					"section": "L'article ${paper} n'a pas de section définie"

@@ -428,6 +428,33 @@ class JournalsImport extends Import {
                     }
                 }
             }
+            if (($paper['lang'] ?? $this->journal->locale) !== $this->journal->locale) {
+                $settings = $_paper !== false ? JournalsUtils::settings('paper', $_paper, $this->journal->locale) : [];
+                foreach (['title','subtitle','abstract'] as $name) {
+                    if (isset($paper['settings'][$name][$paper['lang']]) && !isset($settings[$name]) && !isset($paper['settings'][$name][$this->journal->locale])) {
+                        $this->issue['papers'][$index]['settings'][$name][$this->journal->locale] = $paper['settings'][$name][$paper['lang']];
+                    }
+                }
+                foreach ($paper['authors'] ?? [] as $_index => $author) {
+                    $_author = $_paper !== false ? (new AuthorEntity())->retrieveOne([
+                        'paper'  => $_paper->id,
+                        'first'  => $author['first'] ?? null,
+                        'middle' => $author['middle'] ?? null,
+                        'last'   => $author['last'] ?? null
+                    ]) : false;
+                    $settings = $_author !== false ? JournalsUtils::settings('author', $_author, $this->journal->locale) : [];
+                    foreach (['affiliation'] as $name) {
+                        if (isset($author['settings'][$name][$paper['lang']]) && !isset($settings[$name]) && !isset($author['settings'][$name][$this->journal->locale])) {
+                            $this->issue['papers'][$index]['authors'][$_index]['settings'][$name][$this->journal->locale] = $author['settings'][$name][$paper['lang']];
+                        }
+                    }
+                }
+            }
+            if ($_paper === false && empty($this->issue['papers'][$index]['settings']['title'][$this->journal->locale])) {
+                $this->error(3, $this->locale->messages->check->error->missing->title.' ('.$index.')');
+                $result &= false;
+                continue;
+            }
         }
         $this->empty = !file_exists($this->folder.$ean);
         $this->new = ((new IssueEntity())->retrieveOne([
