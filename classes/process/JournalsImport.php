@@ -141,7 +141,8 @@ class JournalsImport extends Import {
             $section['parent'] = $section['parent'] ?? '__IGNORE__';
             $_section = JournalsUtils::import('section', $section);
             $paper['section'] = $_section->id;
-            $paper['place'] = JournalsUtils::place($paper['pages']);
+            Zord::log($paper['settings']['title']);
+            $paper['place'] = JournalsUtils::place($paper['pages'], ($paper['settings']['title'][$this->journal->locale]['value'] ?? null) === 'Dossier complet');
             $_paper = JournalsUtils::import('paper', $paper);
             $this->purge('paper', $_issue, $_paper);
             $this->info(2, "paper : ".JournalsUtils::short($this->journal->context, $_issue->volume, $_issue->number, $_paper->pages));

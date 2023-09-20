@@ -147,19 +147,21 @@ class OJSImport extends ProcessExecutor {
                     $status = $publication->access_status ? 'free' : 'subscription';
                     $pages = str_replace(['_','/'], ['-','-'], JournalsUtils::pages($paper));
                     $section = $names[$paper->section_id];
-                    $place = JournalsUtils::place($pages);
                     $settings = $this->getSettings('submission', $publication);
                     $doi = $settings['pub-id::doi'][$this->locale($journal->primary_locale)]['value'] ?? '';
                     if (!empty($doi) && substr($doi, 0, strlen(DROZ_DOI_PREFIX)) === DROZ_DOI_PREFIX) {
                         $suffix = substr($doi, strlen(DROZ_DOI_PREFIX));
                         $mapping['papers'][$suffix] = $_short;
                     }
+                    $dossier = false;
                     foreach ($settings['title'] ?? [] as $locale => $item) {
                         if ($item['value'] === "PDF du dossier") {
+                            $dossier = true;
                             $settings['title'][$locale]['value'] = 'Dossier complet';
                             unset($settings['subtitle'][$locale]);
                         }
                     }
+                    $place = JournalsUtils::place($pages, $dossier);
                     $keywords = [];
                     foreach ((new OJSVocabEntity())->retrieveAll(['symbolic' => 'submissionKeyword', 'assoc_id' => $publication->submission_id]) as $vocab) {
                         foreach ((new OJSVocabEntryEntity())->retrieveAll(['controlled_vocab_id' => $vocab->controlled_vocab_id, 'order' => ['asc' => 'seq']]) as $entry) {

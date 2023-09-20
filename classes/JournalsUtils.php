@@ -252,13 +252,17 @@ class JournalsUtils {
         return $settings;
     }
     
-    public static function place($pages) {
+    public static function place($pages, $dossier) {
         $place = explode('-', $pages)[0];
-        if (!is_numeric($place)) {
-            $place = Zord::roman2number($place);
-            $place = $place + 1000;
+        if ($dossier) {
+            $place = $place + 3000;
         } else {
-            $place = $place + 2000;
+            if (!is_numeric($place)) {
+                $place = Zord::roman2number($place);
+                $place = $place + 1000;
+            } else {
+                $place = $place + 2000;
+            }
         }
         return $place;
     }
