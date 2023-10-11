@@ -96,32 +96,34 @@ class JournalsImport extends Import {
         $this->issue["journal"] = $this->journal->id;
         if ($this->issue['reset'] ?? false) {
             $_issue = (new IssueEntity())->retrieveOne($ean);
-            $papers = (new PaperEntity())->retrieveAll(['issue' => $_issue->id]);
-            $_papers = [];
-            $_authors = [];
-            foreach ($papers as $_paper) {
-                $this->purge('paper', $_issue, $_paper);
-                $_papers[] = $_paper->id;
-                $authors = (new AuthorEntity())->retrieveAll(['paper' => $_paper->id]);
-                foreach ($authors as $_author) {
-                    $_authors[] = $_author->id;
+            if ($_issue !== false) {
+                $papers = (new PaperEntity())->retrieveAll(['issue' => $_issue->id]);
+                $_papers = [];
+                $_authors = [];
+                foreach ($papers as $_paper) {
+                    $this->purge('paper', $_issue, $_paper);
+                    $_papers[] = $_paper->id;
+                    $authors = (new AuthorEntity())->retrieveAll(['paper' => $_paper->id]);
+                    foreach ($authors as $_author) {
+                        $_authors[] = $_author->id;
+                    }
                 }
+                if (!empty($_papers)) {
+                    (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+                }
+                if (!empty($_authors)) {
+                    (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
+                }
+                if (!empty($_papers)) {
+                    (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
+                }
+                if (!empty($_papers)) {
+                    (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
+                }
+                (new PaperEntity())->deleteAll(['issue' => $_issue->id]);
+                (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
+                (new IssueEntity())->deleteOne($_issue->id);
             }
-            if (!empty($_papers)) {
-                (new AuthorEntity())->deleteAll(['paper' => ['in' => $_papers]]);
-            }
-            if (!empty($_authors)) {
-                (new SettingEntity('author'))->deleteAll(['object' => ['in' => $_authors]]);
-            }
-            if (!empty($_papers)) {
-                (new GalleyEntity())->deleteAll(['paper' => ['in' => $_papers]]);
-            }
-            if (!empty($_papers)) {
-                (new SettingEntity('paper'))->deleteAll(['object' => ['in' => $_papers]]);
-            }
-            (new PaperEntity())->deleteAll(['issue' => $_issue->id]);
-            (new SettingEntity('issue'))->deleteAll(['object' => $_issue->id]);
-            (new IssueEntity())->deleteOne($_issue->id);
         }
         $_issue = JournalsUtils::import('issue', $this->issue);
         $this->purge('issue', $_issue);
