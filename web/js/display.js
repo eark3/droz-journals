@@ -33,7 +33,7 @@ jQuery(document).ready(function() {
 	}
 	if (jQuery(".bibl_block").length) {
 		jQuery(".bibl_block").clone().addClass('sidebar').appendTo( "#biblio" );
-		jQuery(".bibl_block:not(.sidebar)").remove();
+		//jQuery(".bibl_block:not(.sidebar)").remove();
 		jQuery(".bibl_block").removeClass('sidebar');
 	} else {
 		hideTab('biblio');
