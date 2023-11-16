@@ -37,8 +37,12 @@ class JournalsPortal extends Portal {
             $ariadne = ['home' => '/'.$this->context];
             switch ($page) {
                 case 'archive': {
+                    $issue = $this->params['issue'] ?? null;
                     $start = $this->params['start'] ?? 0;
                     $rows  = $this->params['rows']  ?? SEARCH_PAGE_DEFAULT_SIZE;
+                    if ($issue === 'all') {
+                        $rows = SEARCH_PAGE_MAX_SIZE;
+                    }
                     $ariadne['active'] = 'archive';
                     $criteria = $this->published();
                     $entities = (new IssueEntity())->retrieveAll($criteria);
