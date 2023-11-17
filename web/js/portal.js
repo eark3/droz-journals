@@ -45,16 +45,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}
 	};
 	
-	[].forEach.call(document.querySelectorAll('.dropdown-toggle'), function(toggle) {
-		toggle.addEventListener("click", function(event) {
-			event.preventDefault();
-			toggleMenu(toggle);
-			event.stopPropagation();
-			return false;
-		});
-		toggle.nextElementSibling.addEventListener("mouseleave", function(event) {
-			toggleMenu(toggle);
-		});
+	[].forEach.call(document.querySelectorAll('.dropdown'), function(dropdown) {
+		var toggle = dropdown.querySelector('.dropdown-toggle');
+		var menu = dropdown.querySelector('.dropdown-menu');
+		if (toggle && menu) {
+			toggle.addEventListener("click", function(event) {
+				event.preventDefault();
+				toggleMenu(toggle);
+				event.stopPropagation();
+				return false;
+			});
+			menu.addEventListener("mouseleave", function(event) {
+				toggleMenu(toggle);
+			});
+		}
 	});
 	
 	/*
