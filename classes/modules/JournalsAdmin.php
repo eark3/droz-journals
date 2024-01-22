@@ -8,6 +8,52 @@ class JournalsAdmin extends StoreAdmin {
     
     protected $errors = [];
     
+    protected function postContext($operation, $name) {
+        switch($operation) {
+            case 'create': {
+                foreach ((new JournalEntity())->retrieveAll() as $journal) {
+                    (new JournalEntity())->updateOne($journal->context, [
+                        'place' => $journal->place + 2
+                    ]);
+                }
+                (new JournalEntity())->create([
+                    'context' => $name,
+                    'locale'  => $this->lang,
+                    'place'   => 1
+                ]);
+                $folder = STORE_FOLDER.'public'.DS.'journals'.DS.'images'.DS.$name;
+                $homepageImage = $folder.DS.'homepageImage_fr_FR.jpg';
+                if (!file_exists($homepageImage)) {
+                    if (!file_exists($folder)) {
+                        mkdir($folder, 0777, true);
+                    }
+                    $image = imagecreatetruecolor(200, 300);
+                    $bg = imagecolorallocate ($image, 240, 240, 240);
+                    $text = imagecolorallocate($image, 16, 16, 16);
+                    imagefilledrectangle($image, 0, 0, 200, 300, $bg);
+                    imagestring($image, 3, 10, 100, Zord::getLocaleValue('title', Zord::value('context', $name), $this->lang), $text);
+                    imagejpeg($image, $homepageImage, 100);
+                }
+                break;
+            }
+            case 'delete': {
+                $deleted = (new JournalEntity())->retrieveOne($name);
+                if ($deleted) {
+                    foreach ((new JournalEntity())->retrieveAll() as $journal) {
+                        if ($journal->place > $deleted->place) {
+                            (new JournalEntity())->updateOne($journal->context, [
+                                'place' => $journal->place - 2
+                            ]);
+                        }
+                    }
+                    (new JournalEntity())->deleteAll(['context' => $name]);
+                }
+                break;
+            }
+        }
+        return true;
+    }
+    
     protected function enhanceProfile($user, $data) {
         if (!empty($user->ipv4) || !empty($user->ipv6) || !empty($data['ipv4']) || !empty($data['ipv6'])) {
             $data['institution'] = $user->name;

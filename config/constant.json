@@ -14,5 +14,6 @@
 	"MAX_MOST_READ": 3,
 	"MAX_MAIL_RECIPIENTS": 20,
 	"NOTIFY_ISSUE_PUBLICATION": true,
-	"PRODUCTION_HOST": "revues.droz.org"
+	"PRODUCTION_HOST": "revues.droz.org",
+	"DEFAULT_THEME": "ROOT"
 }

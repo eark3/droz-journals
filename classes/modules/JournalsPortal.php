@@ -17,15 +17,15 @@ class JournalsPortal extends Portal {
             $issue = (new IssueEntity())->retrieveFirst($this->published());
             if ($issue) {
                 $this->controler->issue = $issue;
-                return $this->page('home', [
-                    'issue' => $this->_issue($issue),
-                    'edit'  => [
-                        'type'  => 'journal',
-                        'id'    => $this->controler->journal->id,
-                        'short' => JournalsUtils::short($this->controler->journal->context)
-                    ]
-                ]);
             }
+            return $this->page('home', [
+                'issue' => $issue ? $this->_issue($issue) : false,
+                'edit'  => [
+                    'type'  => 'journal',
+                    'id'    => $this->controler->journal->id,
+                    'short' => JournalsUtils::short($this->controler->journal->context)
+                ]
+            ]);
         }
         return parent::home();
     }

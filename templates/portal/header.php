@@ -14,7 +14,7 @@
 						<a href="/" class="dropdown-toggle" data-toggle="dropdown"><?php echo $host; ?><b class="caret"></b></a>
 	 					<ul class="dropdown-menu dropdown-menu-right">
 <?php foreach ($journals as $_journal) { ?>
-							<li><a href="/<?php echo $_journal['context']; ?>"><?php echo $_journal['settings']['name']; ?></a></li>
+							<li><a href="/<?php echo $_journal['context']; ?>"><?php echo $_journal['settings']['name'] ?? Zord::value('context', [$_journal['context'],'title',$_journal['locale']]); ?></a></li>
 <?php } ?>
 						</ul>
 					</li>
@@ -26,7 +26,7 @@
 		<div class="navbar-header">
 			<h1 class="site-name">
 				<div class="navbar-brand">
-					<a href="/<?php echo $context; ?>"><?php echo $journal['settings']['name']; ?></a>
+					<a href="/<?php echo $context; ?>"><?php echo $journal['settings']['name'] ?? Zord::value('context', [$journal['context'],'title',$journal['locale']]); ?></a>
 				</div>
 			</h1>
 		</div>

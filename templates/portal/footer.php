@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-4">
-				<?php echo $journal['settings']['pageFooter']; ?>
+				<?php echo $journal['settings']['pageFooter'] ?? ''; ?>
 <?php if (!empty($journal['settings']['onlineIssn'])) { ?>
 				<?php echo $locale->footer->issn->online; ?> : <?php echo $journal['settings']['onlineIssn']; ?>
 				<br/>

@@ -7,9 +7,19 @@ trait JournalsModule {
     public function configure() {
         $this->cache = Cache::instance();
         $theme = strtolower($this->context);
-        $this->addStyle($this->checkCSS('bootstrap3', $theme));
+        $default = strtolower(DEFAULT_THEME);
+        $css = $this->checkCSS('bootstrap3', $theme);
+        
+        if (!isset($css)) {
+            $css = $this->checkCSS('bootstrap3', $default);
+        }
+        $this->addStyle($css);
         $this->addStyle('/journals/css/common.css');
-        $this->addStyle($this->checkCSS($theme, 'index'));
+        $css = $this->checkCSS($theme, 'index');
+        if (!isset($css)) {
+            $css = $this->checkCSS($default, 'index');
+        }
+        $this->addStyle($css);
         $extra = '/build/css/'.$this->context.'/extra.css';
         if (file_exists(Zord::liveFolder(substr(dirname($extra), 1)).basename($extra))) {
             $this->addStyle($extra);
@@ -42,6 +52,9 @@ trait JournalsModule {
     protected function checkCSS($name, $root) {
         $sourceFolder = Zord::getComponentPath('web'.DS.'themes'.DS).$name;
         $source = $sourceFolder.DS.'styles'.DS.$root.'.less';
+        if (!file_exists($source)) {
+            return null;
+        }
         $target = Zord::liveFolder('build'.DS.'css'.DS.$this->context).$name.'.css';
         if (Zord::needsUpdate($target, Zord::listRecursive($sourceFolder))) {
             $parser = new Less_Parser();
