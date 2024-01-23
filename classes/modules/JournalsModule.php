@@ -9,7 +9,6 @@ trait JournalsModule {
         $theme = strtolower($this->context);
         $default = strtolower(DEFAULT_THEME);
         $css = $this->checkCSS('bootstrap3', $theme);
-        
         if (!isset($css)) {
             $css = $this->checkCSS('bootstrap3', $default);
         }

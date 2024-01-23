@@ -8,7 +8,18 @@ class JournalsAdmin extends StoreAdmin {
     
     protected $errors = [];
     
-    protected function postContext($operation, $name) {
+    protected function preContext($operation, $name, $context) {
+        if ($operation === 'create') {
+            $context[$name]['url'][] = [
+                "secure" => true,
+                "host"   => $_SERVER['SERVER_NAME'],
+                "path"   => "/".$name
+            ];
+        }
+        return parent::preContext($operation, $name, $context);
+    }
+        
+    protected function postContext($operation, $name, $context) {
         switch($operation) {
             case 'create': {
                 foreach ((new JournalEntity())->retrieveAll() as $journal) {
@@ -51,7 +62,6 @@ class JournalsAdmin extends StoreAdmin {
                 break;
             }
         }
-        return true;
     }
     
     protected function enhanceProfile($user, $data) {
