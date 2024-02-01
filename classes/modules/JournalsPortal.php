@@ -14,6 +14,7 @@ class JournalsPortal extends Portal {
     
     public function home() {
         if (isset($this->controler->journal)) {
+            $this->hit();
             $issue = (new IssueEntity())->retrieveFirst($this->published());
             if ($issue) {
                 $this->controler->issue = $issue;
@@ -109,6 +110,7 @@ class JournalsPortal extends Portal {
                 }
             }
             if ($models !== false) {
+                $this->hit();
                 return $this->page($page, array_merge($models, ['ariadne' => $ariadne]));
             }
         }
@@ -250,6 +252,7 @@ class JournalsPortal extends Portal {
             }
         }
         if ($models !== false) {
+            $this->hit(['display' => $display]);
             $models = array_merge($models, ['ariadne' => $ariadne]);
             if (isset($view)) {
                 return $this->view('/portal/'.$view, $models);
@@ -378,23 +381,27 @@ class JournalsPortal extends Portal {
     }
     
     public function info() {
-        $content = $this->params['content'] ?? null;
-        if (empty($content)) {
-            return $this->error(404, 'missing content');
+        if (isset($this->controler->journal)) {
+            $content = $this->params['content'] ?? null;
+            if (empty($content)) {
+                return $this->error(404, 'missing content');
+            }
+            $title = $this->locale->pages->$content ?? null;
+            $settings = $this->_settings('journal', $this->controler->journal);
+            if (!isset($settings[$content])) {
+                return $this->error(404, 'no setting');
+            }
+            $this->hit();
+            return $this->page('info', [
+                'title'   => $title,
+                'content' => $settings[$content],
+                'ariadne' => [
+                    'home'   => '/'.$this->context,
+                    'active' => $title ?? $this->locale->ariadne->$content
+                ]
+            ]);
         }
-        $title = $this->locale->pages->$content ?? null;
-        $settings = $this->_settings('journal', $this->controler->journal);
-        if (!isset($settings[$content])) {
-            return $this->error(404, 'no setting');
-        }
-        return $this->page('info', [
-            'title'   => $title,
-            'content' => $settings[$content],
-            'ariadne' => [
-                'home'   => '/'.$this->context,
-                'active' => $title ?? $this->locale->ariadne->$content
-            ]
-        ]);
+        return $this->home();
     }
     
     public function login() {
@@ -593,6 +600,29 @@ class JournalsPortal extends Portal {
             }
         }
         return $list;
+    }
+    
+    public function hit($point = []) {
+        $point['user'] = $this->user->login;
+        if (isset($this->controler->journal)) {
+            $point['journal'] = $this->controler->journal->context;
+            if (isset($this->controler->issue)) {
+                $point['issue'] = JournalsUtils::short(
+                    $this->controler->journal->context,
+                    $this->controler->issue->volume,
+                    $this->controler->issue->number,
+                );
+                if (isset($this->controler->paper)) {
+                    $point['paper'] = JournalsUtils::short(
+                        $this->controler->journal->context,
+                        $this->controler->issue->volume,
+                        $this->controler->issue->number,
+                        $this->controler->paper->pages,
+                    );
+                }
+            }
+            (new UserHasQueryEntity())->create($point);
+        }
     }
 }
 

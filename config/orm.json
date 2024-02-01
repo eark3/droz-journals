@@ -83,5 +83,16 @@
 			"type"
 		],
 		"key": "id"
-	}
+	},
+	"UserHasQueryEntity": {
+		"table": "user_has_query",
+		"fields": [
+	        "user",
+	        "journal",
+	        "issue",
+	        "paper",
+	        "display",
+	        "when"
+        ]
+    }
 }
