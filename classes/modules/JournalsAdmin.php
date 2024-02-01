@@ -129,7 +129,7 @@ class JournalsAdmin extends StoreAdmin {
                     break;
                 }
                 case 'bannerImage': {
-                    $value = '/public/journals/images/'.$filename;
+                    $value = $filename;
                     break;
                 }
             }
