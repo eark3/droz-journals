@@ -27,11 +27,21 @@ class JournalsAdmin extends StoreAdmin {
                         'place' => $journal->place + 2
                     ]);
                 }
-                (new JournalEntity())->create([
+                $journal = (new JournalEntity())->create([
                     'context' => $name,
                     'locale'  => $this->lang,
                     'place'   => 1
                 ]);
+                foreach ([
+                    'acronym' => $name, 
+                    'name'    => $context[$name]['title'][$this->lang]
+                ] as $key => $value) {
+                    (new SettingEntity('journal'))->create([
+                        'object' => $journal->id,
+                        'name'   => $key,
+                        'value'  => $value
+                    ]);
+                }
                 $folder = STORE_FOLDER.'public'.DS.'journals'.DS.'images'.DS.$name;
                 $homepageImage = $folder.DS.'homepageImage_fr_FR.jpg';
                 if (!file_exists($homepageImage)) {
