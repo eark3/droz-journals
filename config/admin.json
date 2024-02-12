@@ -169,6 +169,9 @@
 				},
 				"open": {
 					"template": "date"
+				},
+				"copyright": {
+					"template": "date"
 				}
 			},
 			"section": {

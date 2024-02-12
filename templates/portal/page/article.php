@@ -26,7 +26,7 @@
 <?php } ?>
 			<div class="panel panel-default copyright">
 				<div class="panel-body">
-					<a href="<?php echo $baseURL; ?>/info/license" class="copyright"><?php echo isset($issue['settings']['published']) ? 'Copyright (c) '.explode('-', $issue['settings']['published'])[0].' Librairie Droz' : $issue['copyright']; ?></a>
+					<a href="<?php echo $baseURL; ?>/info/license" class="copyright"><?php echo $issue['settings']['copyright'] ? 'Copyright (c) '.explode('-', $issue['settings']['copyright'])[0].' Librairie Droz' : $issue['copyright']; ?></a>
 				</div>
 			</div>
 		</section>
