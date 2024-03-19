@@ -1,0 +1,270 @@
+//-------------------------------------------------
+//DEFINITION DES COULEURS DE BASE DE LA REVUE ITA
+//-------------------------------------------------
+
+/* TON DE LA GUIDELINE */
+@TON1: #00416D;
+@TON2: #00416D;
+@TON3: #E3DFC8;
+
+/* COULEUR DES TEXTES*/
+@TEXTE: #606060;
+@TEXTE_SUR_TON1:#F5F1DA;
+@TEXTE_SUR_TON2:#F8BD7F;
+
+/* COULEUR DES TEXTES DANS LE BANDEAU */
+@TITRE_BANDEAU: #F8BD7F;
+@LIEN: @TON2;
+@LIEN_HOVER: @TON2;
+
+@SSMENU_BG:#F8BD7F;
+@SSMENU_LIEN:#00416D;
+@SSMENU_LIEN_HOVER:#00416D;
+
+/* COULEUR BARRE LATERALE */
+@LATERAL_BG_ENTETE:#F8BD7F;
+@LATERAL_ENTETE_TEXTE:#00416D;
+@LATERAL_BG:#DBDCD6;
+
+/* COULEUR DU PREMIER ENCADRE SUR LA PAGE D'ACCUEIL */
+@ENCADRE:#E3DFC8;
+
+/* COULEUR BOUTTON HOVER*/
+@BTN_HOVER:#F8BD7F;
+@BTN_TEXT_HOVER: #00416D;
+
+/* PIED DE PAGE */
+@FOOTER_LIEN:#F8BD7F;
+@FOOTER_LIEN_HOVER:#E3DFC8;
+
+/* POLICES DE LA REVUE */
+
+@font-face {
+    font-family: 'Fenice';
+    src: url('/fonts/FeniceBook.woff2') format('woff2'),
+        url('/fonts/FeniceBook.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@FONT: 'Fenice';
+@FONT_TITRE: 'Fenice';
+
+
+//-------------------------------------------
+//POLICES
+//-------------------------------------------
+
+@font-family-base:  @FONT;
+@font-heading:@FONT_TITRE;
+
+body{
+	font-family: @FONT !important;
+	color:@TEXTE !important;
+	background: #eaeaea !important;
+	letter-spacing: 0.5px;
+}
+body.pkp_page_article.pkp_op_view{
+
+}
+.pkp_structure_page{
+	margin-top: -22px !important;
+	padding-top: 22px !important;
+}
+.pkp_structure_content.container{
+
+}
+
+.galley_view iframe{
+
+}
+.pkp_page_index .current_issue .sections{
+	background: #eaeaea !important;
+}
+
+h1,h1, h2, h3, h4, h5, h6, small, .current_issue_title,.page-header,.media-heading,.navbar-brand{
+	font-family: @FONT_TITRE !important;
+	color:@TEXTE !important;
+}
+
+a{
+	color:@LIEN;
+}
+
+h1.page-header{
+	font-weight:400;
+}
+
+
+//-------------------------------------------
+// COULEUR DU TEXTE
+//-------------------------------------------
+@text-dark: @TEXTE;
+
+//-------------------------------------------
+// COULEUR DOMINANTE = bouton / liens
+//-------------------------------------------
+
+@journal-base-color: @TON1;
+
+//-------------------------------------------
+//BANDEAU
+//-------------------------------------------
+
+@LIEN_BANDEAU: @TEXTE_SUR_TON1;
+@LIEN_BANDEAU_HOVER: @TON1;
+@BG_LIEN_BANDEAU_HOVER: @TEXTE_SUR_TON1;
+
+@bg-navbar: @TON1;
+
+.header_view{
+	color: @TEXTE_SUR_TON1 !important;
+}
+
+#navbarContainer{
+	background-color:@TON1 !important;
+}
+
+.navbar-brand a{
+	color:@TITRE_BANDEAU;
+}
+
+#nav-menu a{
+	color:@LIEN_BANDEAU;
+}
+
+#nav-menu .navbar-nav > li > a:hover{
+	background-color:@BG_LIEN_BANDEAU_HOVER;
+	border-color:@bg-navbar;
+	color: @LIEN_BANDEAU_HOVER;
+	border-top:1px solid;
+}
+
+.navbar-nav > li > .dropdown-menu{
+	background-color:@SSMENU_BG !important;
+
+	a{
+		color:@SSMENU_LIEN !important;
+	}
+
+	a:hover{
+		color:@SSMENU_LIEN_HOVER !important;
+	}
+}
+
+//-------------------------------------------
+// SIDEBAR
+//-------------------------------------------
+
+
+.pkp_block,
+div.pkp_block > div.content > ul > li{
+	background-color:@LATERAL_BG !important;
+}
+.pkp_block .title{
+	background-color: @LATERAL_BG_ENTETE !important;
+	color:@LATERAL_ENTETE_TEXTE !important;
+}
+
+#languageSelect > .btn-info{
+	background-color:@LATERAL_BG_ENTETE !important;
+	color:@LATERAL_ENTETE_TEXTE !important;
+	border-color:@LATERAL_BG_ENTETE !important;
+}
+
+.pkp_block.block_droz a{
+	font-weight: 800;
+	font-size: 1em;
+	//background-color:@LATERAL_BG_ENTETE !important;
+	//color:@LATERAL_ENTETE_TEXTE !important;
+	//border-color:@LATERAL_BG_ENTETE !important;
+}
+
+.pkp_block.block_droz a:hover{
+	//border-color:@LATERAL_BG_ENTETE !important;
+}
+
+.btn.galley-link-buy-droz{
+	border-color: #32455D !important;
+    background: #32455D !important;
+}
+.btn.galley-link-buy-droz:hover{
+	background-color:@BTN_HOVER !important;
+	color:@BTN_TEXT_HOVER !important;
+	border-color:@BTN_HOVER !important;
+}
+
+.block_shpf{
+	display:none !important;
+}
+//-------------------------------------------
+// ENCADRE
+//-------------------------------------------
+
+@bg-media-body: @TON3;
+.media{
+	background-color:@ENCADRE !important;
+}
+
+.media .media-body{
+	background-color:@ENCADRE !important;
+}
+.media-body{
+	background-color:@TON3 !important;
+}
+
+
+//-------------------------------------------
+// BOUTTON
+//-------------------------------------------
+@btn-default-color:  @TEXTE_SUR_TON2; 
+
+.btn,
+.btn-default, 
+.pkp_block.block_make_submission a{
+	background-color:@TON1 !important;
+	color:@TEXTE_SUR_TON1 !important;
+	border-color:@TON1 !important;
+}
+
+.btn:hover,
+.btn-default:hover, 
+.pkp_block.block_make_submission a:hover{
+	background-color:@BTN_HOVER !important;
+	color:@BTN_TEXT_HOVER !important;
+	border-color:@BTN_HOVER !important;
+}
+
+
+
+//-------------------------------------------
+// FOOTER
+//-------------------------------------------
+
+footer[role="contentinfo"]{
+	background-color: @TON1 !important;
+	color: @TEXTE_SUR_TON1;
+
+	a{
+		color:@FOOTER_LIEN !important;
+	}
+
+	a:hover{
+		color:@FOOTER_LIEN_HOVER !important;
+	}
+}
+
+//-------------------------------------------
+// MISC
+//-------------------------------------------
+
+.journal-description img{
+	max-width:100%;
+	height:auto;
+	padding-right:10px;
+}
+
+
+
