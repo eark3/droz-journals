@@ -416,6 +416,7 @@ class JournalsPortal extends Portal {
                 return $account->disconnect();
             }
             case 'requestResetPassword': {
+                $account->setParam('choose', $this->params['choose'] ?? null);
                 return $account->reset();
             }
         }

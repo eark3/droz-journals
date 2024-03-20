@@ -99,11 +99,14 @@
 		"signOut": "Ausloggen",
 		"username": " Benutzer/innen-Name",
 		"password": "Passwort",
+		"change": "Ändern Sie das Passwort",
+		"confirm": "Bestätigung des Passworts",
 		"forgot": "Passwort vergessen?",
 		"remember": "Eingeloggt bleiben",
 		"email": " E-Mail-Adresse der registrierten Benutzerin/des registrierten Benutzers",
 		"reset": "Passwort zurücksetzen",
-		"lost": "Aus Sicherheitsgründen schickt das System den registrierten Benutzer/innen ein neues Passwort statt des aktuellen Passworts per E-Mail.<br /><br />Tragen Sie zur Wiederherstellung des Passwortes unten Ihre E-Mail-Adresse ein. Eine Bestätigung geht an diese E-Mail-Adresse."
+		"lost": "Aus Sicherheitsgründen bietet dieses System den registrierten Nutzern an, ihr aktuelles Passwort zu ändern, anstatt sie daran zu erinnern.<br /><br />Tragen Sie zur Wiederherstellung des Passwortes unten Ihre E-Mail-Adresse ein. Eine Bestätigung geht an diese E-Mail-Adresse.",
+		"choose": "Ich möchte mein Passwort selbst wählen können"
 	},
 	"warning": {
 		"restricted": "Der Zugang ist Abonnenten vorbehalten"

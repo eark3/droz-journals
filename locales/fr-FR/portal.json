@@ -36,7 +36,8 @@
 		"license": "Mentions légales",
 		"subscription": "Abonnement",
 		"login": "Se connecter",
-		"login/lostPassword": "Demander un mot de passe"
+		"login/lostPassword": "Demander un mot de passe",
+		"login/changePassword": "Changer le mot de passe"
 	},
 	"published": "Publié",
 	"access": {
@@ -98,11 +99,14 @@
 		"signOut": "Se déconnecter",
 		"username": "Nom d'utilisateur",
 		"password": "Mot de passe",
+		"change": "Changer le mot de passe",
+		"confirm": "Confirmer le mot de passe",
 		"forgot": "Vous avez oublié votre mot de passe ?",
 		"remember": "Mémoriser mon nom d'usager et mon mot de passe",
 		"email": "Courriel de l'utilisateur inscrit",
 		"reset": "Réinitialiser le mot de passe",
-		"lost": "Pour des raisons de sécurité, ce système envoie un nouveau mot de passe par courriel aux utilisateurs inscrits au lieu de rappeler le mot de passe actuel.<br /><br />Indiquez votre adresse courriel ci-dessous pour réinitialiser votre mot de passe. Une demande de confirmation sera envoyée par courriel."
+		"lost": "Pour des raisons de sécurité, ce système propose aux utilisateurs inscrits de changer leur mot de passe actuel plutôt que de le leur rappeler.<br /><br />Indiquez votre adresse courriel ci-dessous pour réinitialiser votre mot de passe. Une demande de confirmation sera envoyée par courriel.",
+		"choose": "Je souhaite pouvoir choisir mon mot de passe"
 	},
 	"warning": {
 		"restricted": "Accès réservé aux abonnés"

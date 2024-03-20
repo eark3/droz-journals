@@ -17,11 +17,26 @@ class JournalsAccount extends Account {
                 }
                 break;
             }
+            case 'password': {
+                $models['needform'] = empty($models['message']) || substr($models['message'], 0, strpos($models['message'], '=')) !== 'success';
+                $models['token']    = $this->params['token'] ?? null;
+                $page = 'login/changePassword';
+            }
         }
         return $this->page($page, $models);
     }
     
+    public function notifyReset($user, $models = []) {
+        $choose = $this->params['choose'] ?? false;
+        $models['mode'] = empty($choose) ? 'new' : 'choose';
+        return parent::notifyReset($user, $models);
+    }
+    
     protected function _password($login) {
+        $mode = $this->params['mode'] ?? 'new';
+        if ($mode === 'choose') {
+            return parent::_password($login);
+        }
         $characters = RANDOM_PASSWORD_CHARACTERS;
         $password = '';
         for ($index = 0; $index < RANDOM_PASSWORD_LENGTH; $index++) {

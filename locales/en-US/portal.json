@@ -97,11 +97,14 @@
 		"signOut": "Logout",
 		"username": "Username",
 		"password": "Password",
+		"change": "Change password",
+		"confirm": "Confirm password",
 		"forgot": "Forgot your password?",
 		"remember": "Keep me logged in",
 		"email": " Registered user's email",
 		"reset": "Reset password",
-		"lost": "Enter your account email address below and an email will be sent with instructions on how to reset your password."
+		"lost": "For security reasons, this system suggests that registered users change their current password rather than being reminded of it.<br /><br />Enter your account email address below and an email will be sent with instructions on how to reset your password.",
+		"choose": "I would like to be able to choose my password"
 	},
 	"warning": {
 		"restricted": "Access reserved for subscribers"

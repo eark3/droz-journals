@@ -7,9 +7,13 @@
 		"reset_password": {
 			"receive": "Votre nouveau mot de passe",
 			"new": "Votre nouveau mot de passe est : ${password}",
+			"modes": {
+				"new": "recevoir un nouveau",
+				"choose": "créer/modifier le"
+			},
 			"sent": "Vous allez recevoir votre nouveau mot de passe par courriel",
-			"click_here": "Cliquer <span class=\"here\">ici</span> pour recevoir un nouveau mot de passe du compte ",
-			"copy_paste": "Copier/coller le lien ci-dessous dans votre navigateur pour recevoir un nouveau mot de passe"
+			"click_here": "Cliquer <span class=\"here\">ici</span> pour $[mail.reset_password.modes.${mode}] mot de passe du compte ${login}",
+			"copy_paste": "Copier/coller le lien ci-dessous dans votre navigateur pour $[mail.reset_password.modes.${mode}] mot de passe"
 		}
 	}
 }

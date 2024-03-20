@@ -7,9 +7,13 @@
 		"reset_password": {
 			"receive": "Your new password",
 			"new": "Your new password is : ${password}",
+			"modes": {
+				"new": "receive a new",
+				"choose": "create/reset"
+			},
 			"sent": "You will receive your new password by email",
-			"click_here": "Click <span class=\"here\">here</span> to receive a new password for account ",
-			"copy_paste": "Copy/paste the link below into your browser to receive a new password"
+			"click_here": "Click <span class=\"here\">here</span> to $[mail.reset_password.modes.${mode}] password for account ${login}",
+			"copy_paste": "Copy/paste the link below into your browser to $[mail.reset_password.modes.${mode}] password"
 		}
 	}
 }
