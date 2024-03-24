@@ -1,4 +1,13 @@
 {
+	"resources": {
+		"styles": [
+			{
+				"media": "screen",
+				"type": "text/css",
+				"href": "/journals/css/admin/resources.css"
+			}
+		]
+	},
 	"settings": {
 		"styles": [
 			{

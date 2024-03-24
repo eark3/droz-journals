@@ -15,5 +15,6 @@
 	"MAX_MAIL_RECIPIENTS": 20,
 	"NOTIFY_ISSUE_PUBLICATION": true,
 	"PRODUCTION_HOST": "revues.droz.org",
-	"DEFAULT_THEME": "ROOT"
+	"DEFAULT_THEME": "ROOT",
+	"PUBLIC_RESOURCE_BASE": "public/journals"
 }
