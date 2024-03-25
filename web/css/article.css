@@ -204,6 +204,9 @@ img {
 	margin-bottom:0;
 }
 
+.version_ITA_Zord_2023 .mainContainer .section_block {
+	display:none;
+}
 
 /*------------------------------*/
 /* 			BLOC AUTEUR			*/
