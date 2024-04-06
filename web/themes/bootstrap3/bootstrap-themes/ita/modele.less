@@ -114,8 +114,8 @@ h1.page-header{
 //-------------------------------------------
 
 @LIEN_BANDEAU: @TEXTE_SUR_TON1;
-@LIEN_BANDEAU_HOVER: @TON1;
-@BG_LIEN_BANDEAU_HOVER: @TEXTE_SUR_TON1;
+@LIEN_BANDEAU_HOVER: #ffffff;
+@BG_LIEN_BANDEAU_HOVER: #9c2a2c;
 
 @bg-navbar: @TON1;
 
@@ -143,7 +143,7 @@ h1.page-header{
 }
 
 .navbar-nav > li > .dropdown-menu{
-	background-color:@SSMENU_BG !important;
+	background-color:#9c2a2c !important;
 
 	a{
 		color:@SSMENU_LIEN !important;
@@ -187,8 +187,8 @@ div.pkp_block > div.content > ul > li{
 }
 
 .btn.galley-link-buy-droz{
-	border-color: #32455D !important;
-    background: #32455D !important;
+	border-color: #717D73 !important;
+    background: #717D73 !important;
 }
 .btn.galley-link-buy-droz:hover{
 	background-color:@BTN_HOVER !important;
@@ -205,17 +205,28 @@ div.pkp_block > div.content > ul > li{
 
 @bg-media-body: @TON3;
 .media{
-	background-color:@ENCADRE !important;
+	background-color:#EBEBEB  !important;
 }
 
 .media .media-body{
-	background-color:@ENCADRE !important;
+	background-color:#EBEBEB !important;
+}
+#main-content.page_index_journal .media,
+#main-content.page_index_journal .media .media-body{
+	background-color:#D7D7D7 !important;
 }
 .media-body{
 	background-color:@TON3 !important;
 }
 
+.cmp_breadcrumbs > ol{
+	background-color:#EBEBEB !important;
+}
 
+#main-content.page_index_journal .articleSummaryWrapper,
+#main-content.page_index_journal .articleSummaryWrapper .media-body{
+	background-color:#EBEBEB !important;
+}
 //-------------------------------------------
 // BOUTTON
 //-------------------------------------------
@@ -283,4 +294,10 @@ img.html-galley-btn-arrow{
 
 html{
 	background: #ffffff !important;
+}
+
+.description.issue_toc.pkp_block.block_toc1,
+.description.pkp_block.block_toc2,
+div.description.pkp_block.block_toc2 > div.content > ul > li{
+	background-color:@TON3 !important;	
 }
