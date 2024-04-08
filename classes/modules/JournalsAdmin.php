@@ -277,7 +277,7 @@ class JournalsAdmin extends StoreAdmin {
             }
         }
         if ($journal !== false && $issue !== false) {
-            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id]);
+            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
             $done = [];
             foreach ($papers as $_paper) {
                 if (!in_array($_paper->section, $done)) {

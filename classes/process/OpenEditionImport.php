@@ -102,7 +102,15 @@ class OpenEditionImport extends ProcessExecutor {
                     }
                     $_papers = $metadata['paper'];
                     uasort($_papers, function($first,$second) {
-                        return explode('-',$first['extent'])[0] <=> explode('-',$second['extent'])[0];
+                        $beginFirst = explode('-',$first['extent'])[0];
+                        $beginSecond = explode('-',$second['extent'])[0];
+                        if (!is_numeric($beginFirst) && is_numeric($beginSecond)) {
+                            return -1;
+                        }
+                        if (is_numeric($beginFirst) && !is_numeric($beginSecond)) {
+                            return 1;
+                        }
+                        return $beginFirst <=> $beginSecond;
                     });
                     $metadata['paper'] = $_papers;
                     foreach ($mets->structMap->xpath('//mets:div[@TYPE="part"]') as $div) {
@@ -120,7 +128,6 @@ class OpenEditionImport extends ProcessExecutor {
                             }
                         }
                     }
-                    file_put_contents('/tmp/metadata.'.$journal.'.'.basename($folder).'.json', json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
                     $issue['year'] = $metadata['issue']['created'];
                     $urns = $metadata['issue']['identifier']['URN'] ?? [];
                     if (!is_array($urns)) {
@@ -147,7 +154,11 @@ class OpenEditionImport extends ProcessExecutor {
                     ];
                     $papers = [];
                     $sections = [];
+                    $previous = null;
                     foreach ($metadata['paper'] as $paper) {
+                        $beginPrevious = isset($previous) ? explode('-', $previous['extent'])[0] : null;
+                        $beginPaper = explode('-', $paper['extent'])[0];
+                        $changeNumbering = !isset($beginPrevious) || (!is_numeric($beginPrevious) && is_numeric($beginPaper));
                         $_paper = [];
                         $_paper['pages'] = $paper['extent'];
                         $_paper['status'] = self::$STATUS[$paper['accessRights']];
@@ -197,7 +208,7 @@ class OpenEditionImport extends ProcessExecutor {
                             }
                         } else {
                             $section = 'SECTION_'.$short.'_'.(count($sections) + 1);
-                            if (count($sections) === 0 || substr($sections[count($sections) - 1], 0, 8) !== 'SECTION_') {
+                            if (count($sections) === 0 || substr($sections[count($sections) - 1], 0, 8) !== 'SECTION_' || $changeNumbering) {
                                 $sections[] = $section;
                             }
                         }
@@ -233,6 +244,7 @@ class OpenEditionImport extends ProcessExecutor {
                             }
                         }
                         $papers[] = $_paper;
+                        $previous = $paper;
                     }
                     $issue['papers'] = $papers;
                     file_put_contents(Zord::liveFolder('import').$short.'.json', json_encode($issue, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
