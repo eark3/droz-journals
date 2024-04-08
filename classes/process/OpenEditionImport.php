@@ -146,6 +146,7 @@ class OpenEditionImport extends ProcessExecutor {
                         ]
                     ];
                     $papers = [];
+                    $sections = [];
                     foreach ($metadata['paper'] as $paper) {
                         $_paper = [];
                         $_paper['pages'] = $paper['extent'];
@@ -191,28 +192,26 @@ class OpenEditionImport extends ProcessExecutor {
                         ];
                         $section = $paper['isPartOf']['section'] ?? false;
                         if ($section) {
-                            $_paper['section'] = [
-                                'name'     => $section,
-                                'settings' => [
-                                    'title' => [
-                                        $_journal->locale => [
-                                            'value' => $metadata['section'][$section]['title']
-                                        ]
-                                    ]
-                                ]
-                            ];
+                            if (!in_array($section, $sections)) {
+                                $sections[] = $section;
+                            }
                         } else {
-                            $_paper['section'] = [
-                                'name'  => 'UNNAMED',
-                                'settings' => [
-                                    'title' => [
-                                        $_journal->locale => [
-                                            'value' => 'Titre de section'
-                                        ]
+                            $section = 'SECTION_'.$short.'_'.(count($sections) + 1);
+                            if (count($sections) === 0 || substr($sections[count($sections) - 1], 0, 8) !== 'SECTION_') {
+                                $sections[] = $section;
+                            }
+                        }
+                        $section = $sections[count($sections) - 1];
+                        $_paper['section'] = [
+                            'name'     => $section,
+                            'settings' => [
+                                'title' => [
+                                    $_journal->locale => [
+                                        'value' => $metadata['section'][$section]['title'] ?? 'Titre de section'
                                     ]
                                 ]
-                            ];
-                        }
+                            ]
+                        ];
                         $creator = $paper['creator'] ?? false;
                         if ($creator) {
                             if (!is_array($creator)) {
