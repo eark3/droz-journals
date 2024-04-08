@@ -534,33 +534,35 @@ class JournalsImport extends Import {
         }
         $this->info(2, $filename);
         file_put_contents($filename, (new View('/xml/crossref', Zord::array_map_recursive(function($item) {return htmlentities(str_replace('&nbsp;', ' ', strip_tags($item)), ENT_XML1, 'UTF-8');}, $models)))->render());
-        $httpClient = new Client($connection['config']);
-        $multipart = [];
-        foreach ($connection['parameters'] as $name => $contents) {
-            $multipart[] = ['name' => $name, 'contents' => $contents];
-        }
-        $multipart[] = ['name' => 'mdFile', 'contents' => fopen($filename, 'r')];
-        try {
-            $this->info(2, $this->locale->messages->crossref->info->file->sending, false, true);
-            $httpClient->request('POST', $connection['url'], ['multipart' => $multipart]);
-            $this->report(0, 'OK', 'OK');
-        } catch(RequestException $error) {
-            $this->report(0, 'KO', 'KO');
-            $returnMessage = $error->getMessage();
-            if ($error->hasResponse()) {
-                $responseBody = $error->getResponse()->getBody(true);
-                $statusCode = $error->getResponse()->getStatusCode();
-                if ($statusCode == 403) {
-                    $xmlDoc = new DOMDocument();
-                    $xmlDoc->loadXML($responseBody);
-                    $msg = $xmlDoc->getElementsByTagName('msg')->item(0)->nodeValue;
-                    $returnMessage = $msg.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
-                } else {
-                    $returnMessage = $responseBody.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
-                }
+        if (NOTIFY_ISSUE_PUBLICATION) {
+            $httpClient = new Client($connection['config']);
+            $multipart = [];
+            foreach ($connection['parameters'] as $name => $contents) {
+                $multipart[] = ['name' => $name, 'contents' => $contents];
             }
-            $this->error(2, $returnMessage);
-            return false;
+            $multipart[] = ['name' => 'mdFile', 'contents' => fopen($filename, 'r')];
+            try {
+                $this->info(2, $this->locale->messages->crossref->info->file->sending, false, true);
+                $httpClient->request('POST', $connection['url'], ['multipart' => $multipart]);
+                $this->report(0, 'OK', 'OK');
+            } catch(RequestException $error) {
+                $this->report(0, 'KO', 'KO');
+                $returnMessage = $error->getMessage();
+                if ($error->hasResponse()) {
+                    $responseBody = $error->getResponse()->getBody(true);
+                    $statusCode = $error->getResponse()->getStatusCode();
+                    if ($statusCode == 403) {
+                        $xmlDoc = new DOMDocument();
+                        $xmlDoc->loadXML($responseBody);
+                        $msg = $xmlDoc->getElementsByTagName('msg')->item(0)->nodeValue;
+                        $returnMessage = $msg.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
+                    } else {
+                        $returnMessage = $responseBody.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
+                    }
+                }
+                $this->error(2, $returnMessage);
+                return false;
+            }
         }
         return true;
     }
