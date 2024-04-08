@@ -50,7 +50,7 @@ class OpenEditionImport extends ProcessExecutor {
                         'volume' => $volume,
                         'number' => $number
                     ];
-                    $metadata = [];
+                    $metadata = ['journal' => $journal];
                     $mets = simplexml_load_string(file_get_contents($mets[0]))->GetRecord->record->metadata->children('mets', true);
                     $mets->rewind();
                     $mets = $mets->current();
@@ -138,6 +138,11 @@ class OpenEditionImport extends ProcessExecutor {
                             $_journal->locale => [
                                 'value' => $metadata['issue']['title']
                             ]
+                        ],
+                        'coverImage' => [
+                            $_journal->locale => [
+                                'value' => Zord::substitute(Zord::value('import', ['openedition','coverImage',$journal]), $metadata)
+                            ]
                         ]
                     ];
                     $papers = [];
@@ -154,6 +159,9 @@ class OpenEditionImport extends ProcessExecutor {
                             }
                             if ($type === 'pdf') {
                                 copy($file, $filename.'.pdf');
+                                if (isset($issue['ean']) && $_paper['status'] === 'subscription') {
+                                    $_paper['galleys'][] = 'shop';
+                                }
                             } else if ($type === 'tei') {
                                 file_put_contents($filename.'.html', $this->tei2html(file_get_contents($file)));
                             }

@@ -35,5 +35,10 @@
 			"paper",
 			"type"
 		]
+	},
+	"openedition": {
+		"coverImage": {
+			"ITA" : "${journal}_vignette_couv_${issue.created}.jpg"
+		}
 	}
 }
