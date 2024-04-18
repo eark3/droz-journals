@@ -180,7 +180,7 @@ class OpenEditionImport extends ProcessExecutor {
                                 mkdir(dirname($filename), 0777, true);
                             }
                             if ($type === 'pdf') {
-                                //Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
+                                Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
                                 if (isset($issue['ean']) && $_paper['status'] === 'subscription') {
                                     $_paper['galleys'][] = 'shop';
                                 }
