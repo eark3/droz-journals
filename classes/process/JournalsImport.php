@@ -534,7 +534,7 @@ class JournalsImport extends Import {
         }
         $this->info(2, $filename);
         file_put_contents($filename, (new View('/xml/crossref', Zord::array_map_recursive(function($item) {return htmlentities(str_replace('&nbsp;', ' ', strip_tags($item)), ENT_XML1, 'UTF-8');}, $models)))->render());
-        if (NOTIFY_ISSUE_PUBLICATION) {
+        if (CROSSREF_UPLOAD_SUBMISSION) {
             $httpClient = new Client($connection['config']);
             $multipart = [];
             foreach ($connection['parameters'] as $name => $contents) {
