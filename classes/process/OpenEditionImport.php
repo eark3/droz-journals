@@ -2,6 +2,8 @@
 
 class OpenEditionImport extends ProcessExecutor {
     
+    private static $XML_PARSE_BIG_LINES = 4194304;
+    
     public static $FILES = [
         'pdf'  => [
             'dir'    => 'pdf',
@@ -20,8 +22,16 @@ class OpenEditionImport extends ProcessExecutor {
         'info:eu-repo/semantics/openAccess'      => 'free'
     ];
     
+    protected $styles = [];
+    
     public function parameters($string) {
-        $parameters = ['journals' => explode(',', $string)];
+        $parameters = explode(' ', $string);
+        $journals = explode(',', $parameters[0]);
+        $steps = Zord::value('import', 'steps');
+        if (count($parameters) > 1) {
+            $steps = explode(',', $parameters[1]);
+        }
+        $parameters = ['journals' => $journals, 'steps' => $steps];
         $this->setParameters($parameters);
         return $parameters;
     }
@@ -165,17 +175,18 @@ class OpenEditionImport extends ProcessExecutor {
                         $_short = JournalsUtils::short($journal, $volume, $number, $_paper['pages']);
                         foreach ($paper['files'] as $type => $file) {
                             $_paper['galleys'][] = self::$FILES[$type]['galley'];
-                            $filename = Zord::liveFolder('import').DS.$short.DS.$_short;
+                            $filename = Zord::liveFolder('import').$short.DS.$_short;
                             if (!file_exists(dirname($filename))) {
                                 mkdir(dirname($filename), 0777, true);
                             }
                             if ($type === 'pdf') {
-                                copy($file, $filename.'.pdf');
+                                //Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
                                 if (isset($issue['ean']) && $_paper['status'] === 'subscription') {
                                     $_paper['galleys'][] = 'shop';
                                 }
                             } else if ($type === 'tei') {
-                                file_put_contents($filename.'.html', $this->tei2html(file_get_contents($file)));
+                                $_paper['html'] = $filename.'.html';
+                                $_paper['tei']  = $file;
                             }
                         }
                         $doi = DROZ_DOI_PREFIX.$_short;
@@ -247,6 +258,11 @@ class OpenEditionImport extends ProcessExecutor {
                         $previous = $paper;
                     }
                     $issue['papers'] = $papers;
+                    foreach ($papers as $paper) {
+                        if (isset($paper['tei'])) {
+                            $this->buildHTML($journal, $issue, $paper, $_journal->locale);
+                        }
+                    }
                     file_put_contents(Zord::liveFolder('import').$short.'.json', json_encode($issue, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
                     $refs[] = $short;
                 }
@@ -255,7 +271,8 @@ class OpenEditionImport extends ProcessExecutor {
                 Zord::getInstance('Import')->execute([
                     'lang' => 'fr-FR',
                     'continue' => true,
-                    'refs' => $refs
+                    'refs' => $refs,
+                    'steps' => $parameters['steps']
                 ]);
             }
         }
@@ -269,12 +286,213 @@ class OpenEditionImport extends ProcessExecutor {
         return str_replace('_', '-', substr(''.$attribute, strlen('MD_')));
     }
     
-    protected function tei2html($content) {
-        $models = [];
-        $html = (new View('/paper.html', $models))->render();
-        return $html; 
+    protected function buildHTML($journal, $issue, $paper, $locale) {
+        $pages = explode('-', $paper['pages']);
+        if (count($pages) < 2) {
+            $pages[] = $pages[0];
+        }
+        $models = [
+            'lang'         => substr($locale, 0, 2),
+            'journalTitle' => Zord::getLocaleValue('title', Zord::value('context', $journal), $locale),
+            'issueTitle'   => $issue['settings']['title'][$locale]['value'],
+            'sectionTitle' => $paper ['section']['settings']['title'][$locale]['value'],
+            'paperTitle'   => $paper['settings']['title'][$locale]['value'],
+            'paperSubtitle'=> $paper['settings']['subtitle'][$locale]['value'] ?? null,
+            'journal'      => $journal,
+            'volume'       => $issue['volume'],
+            'year'         => $issue['year'],
+            'ean'          => $issue['ean'],
+            'doi'          => $paper['settings']['pub-id::doi'][$locale]['value'],
+            'creators'     => $paper['authors'] ?? [],
+            'start'        => $pages[0],
+            'end'          => $pages[1],
+            'section'      => $paper['section']['name']
+        ];
+        $models = array_merge($models, $this->tei2html($paper));
+        $view = new View('/paper.html', $models);
+        $view->setMark(false);
+        $html = $view->render();
+        file_put_contents($paper['html'], $html);
     }
     
+    private function tei2html($paper) {
+        $file = $paper['tei'];
+        $styles = [];
+        $notes = [];
+        $renditions = simplexml_load_string(file_get_contents($file))->teiHeader->encodingDesc->tagsDecl->children();
+        foreach ($renditions as $rendition) {
+            $styles['#'.$rendition->attributes('xml',true)->id] = trim(''.$rendition);
+        }
+        $document = new DOMDocument();
+        $document->load($file, self::$XML_PARSE_BIG_LINES);
+        $header = Zord::firstElementChild($document->documentElement);
+        $text   = Zord::nextElementSibling($header);
+        $front  = Zord::firstElementChild($text);
+        $body   = Zord::nextElementSibling($front);
+        $back   = Zord::nextElementSibling($body);
+        $fragment = new DOMDocument();
+        $fragment->preserveWhiteSpace = false;
+        $fragment->formatOutput = true;
+        $fragment->loadXML('<div></div>');
+        $fragment->replaceChild($fragment->importNode($body, true), $fragment->documentElement);
+        $xpath = new DOMXpath($fragment);
+        $elements = $xpath->query('//*');
+        foreach ($elements as $element) {
+            $tag = $element->nodeName;
+            if ($tag === 'p' && in_array($element->parentNode->nodeName,['body','div'])) {
+                $element->setAttribute('class', 'indent');
+            } else if ($tag !== 'note') {
+                $attributes = [];
+                foreach ($element->attributes as $name => $attribute) {
+                    $attributes[$name] = $attribute->value;
+                }
+                foreach ($attributes as $name => $value) {
+                    $element->removeAttribute($name);
+                    if ($tag === 'cell' && in_array($name, ['rows','cols'])) {
+                        $name = $name.'pan';
+                    } else {
+                        switch ($name) {
+                            case 'rendition': {
+                                $value = $styles[$value];
+                                $name = 'style';
+                                break;
+                            }
+                            case 'rend': {
+                                $name = 'class';
+                                if ($tag === 'q' && $value === 'quotation') {
+                                    $value = 'block';
+                                }
+                                break;
+                            }
+                            case 'target': {
+                                if ($tag = 'ref') {
+                                    $name = 'href';
+                                }
+                                break;
+                            }
+                            case 'url': {
+                                if ($tag === 'graphic') {
+                                    $name = 'src';
+                                    $filename = str_replace('tei', pathinfo($paper['html'], PATHINFO_FILENAME).DS.'images', dirname($file)).DS.basename($value);
+                                    if (!file_exists($filename)) {
+                                        if (!file_exists(dirname($filename))) {
+                                            mkdir(dirname($filename), 0777, true);
+                                        }
+                                        file_put_contents($filename, file_get_contents($value));
+                                    }
+                                    $value = 'images/'.basename($value);
+                                }
+                                break;
+                            }
+                            default: {
+                                $name = null;
+                                break;
+                            }
+                        }
+                    }
+                    if (isset($name)) {
+                        $element->setAttribute($name, $value);
+                    }
+                }
+            }
+        }
+        $content = preg_replace_callback(
+            '#</?(\w+)#',
+            function ($matches) {
+                $start = (substr($matches[0], 1, 1) !== '/');
+                $tag = $matches[1];
+                switch ($tag) {
+                    case 'row': {
+                        $tag = 'tr';
+                        break;
+                    }
+                    case 'cell': {
+                        $tag = 'td';
+                        break;
+                    }
+                    case 'hi': {
+                        $tag = 'span';
+                        break;
+                    }
+                    case 'list': {
+                        $tag = 'ul';
+                        break;
+                    }
+                    case 'item': {
+                        $tag = 'li';
+                        break;
+                    }
+                    case 'q': {
+                        $tag = 'p';
+                        break;
+                    }
+                    case 'ref': {
+                        $tag = 'a';
+                        break;
+                    }
+                    case 'lb': {
+                        $tag = 'br';
+                        break;
+                    }
+                    case 'head': {
+                        $tag = 'h1';
+                        break;
+                    }
+                    case 'figure': {
+                        $tag = 'p';
+                        break;
+                    }
+                    case 'graphic': {
+                        $tag = 'img';
+                        break;
+                    }
+                }
+                return '<'.($start ? '' : '/').$tag;
+            },
+            $fragment->saveXML($fragment->documentElement)
+        );
+        $content = preg_replace('#(\s+)xml:lang="(\w+)"#', '', $content);
+        $fragment->loadXML($content);
+        $fragment->formatOutput = false;
+        $xpath = new DOMXpath($fragment);
+        $elements = $xpath->query('//*');
+        foreach ($elements as $element) {
+            $tag = $element->nodeName;
+            if ($tag === 'note') {
+                $note = $fragment->saveXML($element);
+                $note = preg_replace('#(\s*)<note place="(\w+)" n="(\w+)">(\s*)<p>(\s*)#', '', $note);
+                $note = preg_replace('#(\s*)</p>(\s*)</note>#', '', $note);
+                $num = $element->getAttribute('n');
+                $notes['#fn_'.$num] = $note;
+                $note = $fragment->createElement('sup');
+                $anchor = $fragment->createElement('a', $num);
+                $anchor->setAttribute('id', 'fn_'.$num);
+                $anchor->setAttribute('href', '#fn'.$num);
+                $note->appendChild($anchor);
+                $element->parentNode->replaceChild($note, $element);
+            }
+        }
+        $content = str_replace("<body xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $fragment->saveXML($fragment->documentElement));
+        $content = substr($content, 0, strlen($content) - strlen('</body>'));
+        $content = preg_replace('#/(\w+)>(\s+)<#', '/$1><', $content);
+        $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
+        return [
+            'content' => $content,
+            'notes'   => $notes
+        ];
+    }
+    
+    private function loadXML(&$document, $content) {
+        libxml_clear_errors();
+        $previous = libxml_use_internal_errors(true);
+        if (file_exists($content)) {
+            $document->load($content, self::$XML_PARSE_BIG_LINES);
+        } else {
+            $document->loadXML($content, self::$XML_PARSE_BIG_LINES);
+        }
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+    }
 }
 
 ?>
