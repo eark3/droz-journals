@@ -542,7 +542,7 @@ class JournalsImport extends Import {
             file_put_contents($filename, $view->render());
             if (CROSSREF_UPLOAD_SUBMISSION) {
                 if (empty($connection['parameters'][$prefix])) {
-                    $this->warn(2, $this->locale->message->crossref->warn->parameters->missing.' '.$prefix);
+                    $this->warn(2, $this->locale->messages->crossref->warn->parameters->missing.' '.$prefix);
                     continue;
                 }
                 $httpClient = new Client($connection['config']);
