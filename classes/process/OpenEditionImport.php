@@ -189,7 +189,7 @@ class OpenEditionImport extends ProcessExecutor {
                                 $_paper['tei']  = $file;
                             }
                         }
-                        $doi = DROZ_DOI_PREFIX.$_short;
+                        $doi = null;
                         $urns = $paper['identifier']['URN'] ?? [];
                         if (!is_array($urns)) {
                             $urns = [$urns];
@@ -205,13 +205,15 @@ class OpenEditionImport extends ProcessExecutor {
                                 $_journal->locale => [
                                     'value' => $paper['title']
                                 ]
-                            ],
-                            'pub-id::doi' => [
+                            ]
+                        ];
+                        if (isset($doi)) {
+                            $_paper['settings']['pub-id::doi'] = [
                                 $_journal->locale => [
                                     'value' => $doi
                                 ]
-                            ]
-                        ];
+                            ];
+                        }
                         $section = $paper['isPartOf']['section'] ?? false;
                         if ($section) {
                             if (!in_array($section, $sections)) {
