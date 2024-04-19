@@ -17,5 +17,6 @@
     "CROSSREF_UPLOAD_SUBMISSION": true,
 	"PRODUCTION_HOST": "revues.droz.org",
 	"DEFAULT_THEME": "ROOT",
-	"PUBLIC_RESOURCE_BASE": "public/journals"
+	"PUBLIC_RESOURCE_BASE": "public/journals",
+	"OPEN_EDITION_UPDATE_RESOURCES": true
 }
