@@ -52,6 +52,11 @@
 					"sending": "Envoi du fichier",
 					"empty": "Pas de DOI pour ce numéro"
 				}
+			},
+			"warn": {
+				"parameters": {
+					"missing": "Pas de paramètres de connexion pour le prefix "
+				}
 			}
 		},
 		"notify": {

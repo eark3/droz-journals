@@ -44,10 +44,15 @@
 				"User-Agent": "ojs2"
 			}
 		},
-		"parameters": {
-			"usr": "lidr",
-			"pwd": "li_4720_yzl",
-			"operation": "doMDUpload"
+		"parameters": { 
+			"10.47421": {
+				"usr": "lidr",
+				"pwd": "li_4720_yzl"
+			},
+			"10.4000": {
+				"usr": "lidr",
+				"pwd": "li_4720_yzl"
+			}
 		}
 	}
 }

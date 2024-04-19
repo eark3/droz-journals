@@ -481,18 +481,6 @@ class OpenEditionImport extends ProcessExecutor {
             'notes'   => $notes
         ];
     }
-    
-    private function loadXML(&$document, $content) {
-        libxml_clear_errors();
-        $previous = libxml_use_internal_errors(true);
-        if (file_exists($content)) {
-            $document->load($content, self::$XML_PARSE_BIG_LINES);
-        } else {
-            $document->loadXML($content, self::$XML_PARSE_BIG_LINES);
-        }
-        libxml_clear_errors();
-        libxml_use_internal_errors($previous);
-    }
 }
 
 ?>
