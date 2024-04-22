@@ -18,5 +18,6 @@
 	"PRODUCTION_HOST": "revues.droz.org",
 	"DEFAULT_THEME": "ROOT",
 	"PUBLIC_RESOURCE_BASE": "public/journals",
-	"OPEN_EDITION_UPDATE_RESOURCES": true
+	"OPEN_EDITION_UPDATE_PDF": false,
+	"OPEN_EDITION_UPDATE_HTML": true
 }

@@ -6,7 +6,9 @@
         <meta name="DCTERMS.volume" content="<?php echo $volume; ?>"/>
         <meta name="DCTERMS.year" content="<?php echo $year; ?>"/>
         <meta name="DCTERMS.EAN/ISBN" content="<?php echo $ean; ?>"/>
+<?php if (isset($doi)) { ?>
         <meta name="DCTERMS.DOI" content="<?php echo $doi; ?>"/>
+<?php } ?>
         <meta name="DCTERMS.title.num" content="<?php echo $issueTitle; ?>"/>
         <meta name="DCTERMS.title" content="<?php echo $paperTitle; ?>"/>
 <?php if (isset($paperSubtitle)) { ?>
@@ -50,10 +52,12 @@
          
         </div>
        
-<?php if ($models['content'] ?? false) { ?>
+<?php if (!empty($models['contents'] ?? false)) { ?>
         <div class="text_block">
         
-<?php echo $models['content']; ?>
+<?php   foreach ($models['contents'] as $content) { ?>
+<?php     echo $content; ?>
+<?php   } ?>
         
         </div>
 <?php } ?>

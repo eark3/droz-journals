@@ -180,7 +180,7 @@ class OpenEditionImport extends ProcessExecutor {
                                 mkdir(dirname($filename), 0777, true);
                             }
                             if ($type === 'pdf') {
-                                if (OPEN_EDITION_UPDATE_RESOURCES) {
+                                if (OPEN_EDITION_UPDATE_PDF) {
                                     Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
                                 }
                                 if (isset($issue['ean']) && $_paper['status'] === 'subscription') {
@@ -263,7 +263,7 @@ class OpenEditionImport extends ProcessExecutor {
                     }
                     $issue['papers'] = $papers;
                     foreach ($papers as $paper) {
-                        if (isset($paper['tei']) && OPEN_EDITION_UPDATE_RESOURCES) {
+                        if (isset($paper['tei']) && OPEN_EDITION_UPDATE_HTML) {
                             $this->buildHTML($journal, $issue, $paper, $_journal->locale);
                         }
                     }
@@ -306,7 +306,7 @@ class OpenEditionImport extends ProcessExecutor {
             'volume'       => $issue['volume'],
             'year'         => $issue['year'],
             'ean'          => $issue['ean'],
-            'doi'          => $paper['settings']['pub-id::doi'][$locale]['value'],
+            'doi'          => $paper['settings']['pub-id::doi'][$locale]['value'] ?? null,
             'creators'     => $paper['authors'] ?? [],
             'start'        => $pages[0],
             'end'          => $pages[1],
@@ -321,6 +321,7 @@ class OpenEditionImport extends ProcessExecutor {
     
     private function tei2html($paper) {
         $file = $paper['tei'];
+        $this->info(1, $file);
         $styles = [];
         $notes = [];
         $renditions = simplexml_load_string(file_get_contents($file))->teiHeader->encodingDesc->tagsDecl->children();
@@ -334,155 +335,187 @@ class OpenEditionImport extends ProcessExecutor {
         $front  = Zord::firstElementChild($text);
         $body   = Zord::nextElementSibling($front);
         $back   = Zord::nextElementSibling($body);
-        $fragment = new DOMDocument();
-        $fragment->preserveWhiteSpace = false;
-        $fragment->formatOutput = true;
-        $fragment->loadXML('<div></div>');
-        $fragment->replaceChild($fragment->importNode($body, true), $fragment->documentElement);
-        $xpath = new DOMXpath($fragment);
-        $elements = $xpath->query('//*');
-        foreach ($elements as $element) {
-            $tag = $element->nodeName;
-            if ($tag === 'p' && in_array($element->parentNode->nodeName,['body','div'])) {
-                $element->setAttribute('class', 'indent');
-            } else if ($tag !== 'note') {
-                $attributes = [];
-                foreach ($element->attributes as $name => $attribute) {
-                    $attributes[$name] = $attribute->value;
-                }
-                foreach ($attributes as $name => $value) {
-                    $element->removeAttribute($name);
-                    if ($tag === 'cell' && in_array($name, ['rows','cols'])) {
-                        $name = $name.'pan';
-                    } else {
-                        switch ($name) {
-                            case 'rendition': {
-                                $value = $styles[$value];
-                                $name = 'style';
-                                break;
-                            }
-                            case 'rend': {
-                                $name = 'class';
-                                if ($tag === 'q' && $value === 'quotation') {
-                                    $value = 'block';
+        $contents = [];
+        foreach (['front' => $front, 'body' => $body, 'back' => $back] as $root => $part) {
+            if (!isset($part)) {
+                continue;
+            }
+            $fragment = new DOMDocument();
+            $fragment->preserveWhiteSpace = false;
+            $fragment->formatOutput = true;
+            $fragment->loadXML('<div></div>');
+            $fragment->replaceChild($fragment->importNode($part, true), $fragment->documentElement);
+            $xpath = new DOMXpath($fragment);
+            $elements = $xpath->query('//*');
+            $replacements = [];
+            foreach ($elements as $element) {
+                $tag = $element->nodeName;
+                if ($tag === 'p' && in_array($element->parentNode->nodeName,[$root,'div']) && $element->getAttribute('rend') === '') {
+                    $element->setAttribute('class', 'indent');
+                } else if ($tag !== 'note' || $element->getAttribute('place') !== 'foot') {
+                    $attributes = [];
+                    foreach ($element->attributes as $name => $attribute) {
+                        $attributes[$name] = $attribute->value;
+                    }
+                    foreach ($attributes as $name => $value) {
+                        $element->removeAttribute($name);
+                        if ($tag === 'cell' && in_array($name, ['rows','cols'])) {
+                            $name = $name.'pan';
+                        } else {
+                            switch ($name) {
+                                case 'rendition': {
+                                    $value = $styles[$value];
+                                    $name = 'style';
+                                    break;
                                 }
-                                break;
-                            }
-                            case 'target': {
-                                if ($tag = 'ref') {
-                                    $name = 'href';
-                                }
-                                break;
-                            }
-                            case 'url': {
-                                if ($tag === 'graphic') {
-                                    $name = 'src';
-                                    $filename = str_replace('tei', pathinfo($paper['html'], PATHINFO_FILENAME).DS.'images', dirname($file)).DS.basename($value);
-                                    if (!file_exists($filename)) {
-                                        if (!file_exists(dirname($filename))) {
-                                            mkdir(dirname($filename), 0777, true);
-                                        }
-                                        file_put_contents($filename, file_get_contents($value));
+                                case 'rend': {
+                                    if ($tag === 'q' && $value === 'quotation') {
+                                        $name = 'class';
+                                        $value = 'block';
                                     }
-                                    $value = 'images/'.basename($value);
+                                    if ($tag === 'p' && $value === 'break') {
+                                        $name = 'style';
+                                        $value = 'text-align: center;';
+                                    }
+                                    break;
                                 }
-                                break;
-                            }
-                            default: {
-                                $name = null;
-                                break;
+                                case 'target': {
+                                    if ($tag = 'ref') {
+                                        $name = 'href';
+                                    }
+                                    break;
+                                }
+                                case 'url': {
+                                    if ($tag === 'graphic') {
+                                        $name = 'src';
+                                        $filename = str_replace('tei', pathinfo($paper['html'], PATHINFO_FILENAME).DS.'images', dirname($file)).DS.basename($value);
+                                        if (!file_exists($filename)) {
+                                            if (!file_exists(dirname($filename))) {
+                                                mkdir(dirname($filename), 0777, true);
+                                            }
+                                            file_put_contents($filename, file_get_contents($value));
+                                        }
+                                        $value = 'images/'.basename($value);
+                                    }
+                                    break;
+                                }
+                                case 'type': {
+                                    if ($tag === 'list' && in_array($value, ['ordered','unordered'])) {
+                                        $replacements[] = [
+                                            'element' => $element,
+                                            'tag'     => $value[0].'l'
+                                        ];
+                                        $name = null;
+                                    }
+                                    break;
+                                }
+                                default: {
+                                    $name = null;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (isset($name)) {
-                        $element->setAttribute($name, $value);
+                        if (isset($name)) {
+                            $element->setAttribute($name, $value);
+                        }
                     }
                 }
             }
-        }
-        $content = preg_replace_callback(
-            '#</?(\w+)#',
-            function ($matches) {
-                $start = (substr($matches[0], 1, 1) !== '/');
-                $tag = $matches[1];
-                switch ($tag) {
-                    case 'row': {
-                        $tag = 'tr';
-                        break;
-                    }
-                    case 'cell': {
-                        $tag = 'td';
-                        break;
-                    }
-                    case 'hi': {
-                        $tag = 'span';
-                        break;
-                    }
-                    case 'list': {
-                        $tag = 'ul';
-                        break;
-                    }
-                    case 'item': {
-                        $tag = 'li';
-                        break;
-                    }
-                    case 'q': {
-                        $tag = 'p';
-                        break;
-                    }
-                    case 'ref': {
-                        $tag = 'a';
-                        break;
-                    }
-                    case 'lb': {
-                        $tag = 'br';
-                        break;
-                    }
-                    case 'head': {
-                        $tag = 'h1';
-                        break;
-                    }
-                    case 'figure': {
-                        $tag = 'p';
-                        break;
-                    }
-                    case 'graphic': {
-                        $tag = 'img';
-                        break;
-                    }
+            foreach ($replacements as $replacement) {
+                $node = $fragment->createElement($replacement['tag']);
+                $children = [];
+                foreach ($replacement['element']->childNodes as $child) {
+                    $children[] = $child;
                 }
-                return '<'.($start ? '' : '/').$tag;
-            },
-            $fragment->saveXML($fragment->documentElement)
-        );
-        $content = preg_replace('#(\s+)xml:lang="(\w+)"#', '', $content);
-        $fragment->loadXML($content);
-        $fragment->formatOutput = false;
-        $xpath = new DOMXpath($fragment);
-        $elements = $xpath->query('//*');
-        foreach ($elements as $element) {
-            $tag = $element->nodeName;
-            if ($tag === 'note') {
-                $note = $fragment->saveXML($element);
-                $note = preg_replace('#(\s*)<note place="(\w+)" n="(\w+)">(\s*)<p>(\s*)#', '', $note);
-                $note = preg_replace('#(\s*)</p>(\s*)</note>#', '', $note);
-                $num = $element->getAttribute('n');
-                $notes['#fn_'.$num] = $note;
-                $note = $fragment->createElement('sup');
-                $anchor = $fragment->createElement('a', $num);
-                $anchor->setAttribute('id', 'fn_'.$num);
-                $anchor->setAttribute('href', '#fn'.$num);
-                $note->appendChild($anchor);
-                $element->parentNode->replaceChild($note, $element);
+                foreach ($replacement['element']->attributes as $attribute) {
+                    $node->setAttribute($attribute->nodeName, $attribute->nodeValue);
+                }
+                foreach ($children as $child) {
+                    $node->appendChild($fragment->importNode($child, true));
+                }
+                $replacement['element']->parentNode->replaceChild($node, $replacement['element']);
             }
+            $content = preg_replace_callback(
+                '#</?(\w+)#',
+                function ($matches) {
+                    $start = substr($matches[0], 1, 1) !== '/';
+                    $tag = $matches[1];
+                    switch ($tag) {
+                        case 'row': {
+                            $tag = 'tr';
+                            break;
+                        }
+                        case 'cell': {
+                            $tag = 'td';
+                            break;
+                        }
+                        case 'hi': {
+                            $tag = 'span';
+                            break;
+                        }
+                        case 'item': {
+                            $tag = 'li';
+                            break;
+                        }
+                        case 'q': {
+                            $tag = 'p';
+                            break;
+                        }
+                        case 'ref': {
+                            $tag = 'a';
+                            break;
+                        }
+                        case 'lb': {
+                            $tag = 'br';
+                            break;
+                        }
+                        case 'head': {
+                            $tag = 'h1';
+                            break;
+                        }
+                        case 'figure': {
+                            $tag = 'p';
+                            break;
+                        }
+                        case 'graphic': {
+                            $tag = 'img';
+                            break;
+                        }
+                    }
+                    return '<'.($start ? '' : '/').$tag;
+                },
+                $fragment->saveXML($fragment->documentElement)
+            );
+            $content = preg_replace('#(\s+)xml:lang="(\w+)"#', '', $content);
+            $fragment->loadXML($content);
+            $fragment->formatOutput = false;
+            $xpath = new DOMXpath($fragment);
+            $elements = $xpath->query('//*');
+            foreach ($elements as $element) {
+                $tag = $element->nodeName;
+                if ($tag === 'note' && $element->getAttribute('place') === 'foot') {
+                    $note = $fragment->saveXML($element);
+                    $note = preg_replace('#(\s*)<note place="(\w+)" n="(\w+)">(\s*)<p>(\s*)#', '', $note);
+                    $note = preg_replace('#(\s*)</p>(\s*)</note>#', '', $note);
+                    $num = $element->getAttribute('n');
+                    $notes['#fn_'.$num] = $note;
+                    $note = $fragment->createElement('sup');
+                    $anchor = $fragment->createElement('a', $num);
+                    $anchor->setAttribute('id', 'fn_'.$num);
+                    $anchor->setAttribute('href', '#fn'.$num);
+                    $note->appendChild($anchor);
+                    $element->parentNode->replaceChild($note, $element);
+                }
+            }
+            $content = str_replace("<".$root." xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $fragment->saveXML($fragment->documentElement));
+            $content = substr($content, 0, strlen($content) - strlen('</'.$root.'>'));
+            $content = preg_replace('#/(\w+)>(\s+)<#', '/$1><', $content);
+            $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
+            $contents[] = $content;
         }
-        $content = str_replace("<body xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $fragment->saveXML($fragment->documentElement));
-        $content = substr($content, 0, strlen($content) - strlen('</body>'));
-        $content = preg_replace('#/(\w+)>(\s+)<#', '/$1><', $content);
-        $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
         return [
-            'content' => $content,
-            'notes'   => $notes
+            'contents' => $contents,
+            'notes'    => $notes
         ];
     }
 }
