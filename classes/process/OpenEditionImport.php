@@ -484,7 +484,7 @@ class OpenEditionImport extends ProcessExecutor {
                     }
                     return '<'.($start ? '' : '/').$tag;
                 },
-                $fragment->saveXML($fragment->documentElement)
+                preg_replace('#<(\w+) ([\w|\s|:|=|"|\#|/]*)/>#', '', $fragment->saveXML($fragment->documentElement))
             );
             $content = preg_replace('#(\s+)xml:lang="(\w+)"#', '', $content);
             $fragment->loadXML($content);
