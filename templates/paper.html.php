@@ -49,56 +49,44 @@
                 <p class="au"><?php echo $creator['first'].' '.$creator['last']; ?></p>
             </div>
 <?php } ?>
-         
+        
+<?php if (!empty($models['contents']['front'] ?? false)) { ?>
+            <div class="note_block">
+                <?php echo $models['contents']['front']; ?>
+            </div>
+<?php } ?>
+        
         </div>
-       
-<?php if (!empty($models['contents'] ?? false)) { ?>
+
+<?php if (!empty($models['contents']['body'] ?? false)) { ?>
         <div class="text_block">
         
-<?php   foreach ($models['contents'] as $content) { ?>
-<?php     echo $content; ?>
-<?php   } ?>
+<?php   echo $models['contents']['body']; ?>
         
         </div>
 <?php } ?>
         
-<?php if (!empty($models['biblio'] ?? false)) { ?>
-        <p class="h1">Bibliographie</p>
+<?php if (!empty($models['contents']['back'] ?? false)) { ?>
+        <div class="annex_block bibl_block">
         
-        <div class="bibl_block">
-        
-<?php   foreach ($models['biblio'] as $bibl) { ?>
-            <p class="bibl"><?php echo $bibl; ?></p>
-<?php   } ?>
+<?php   echo $models['contents']['back']; ?>
         
         </div>
 <?php } ?>
         
-<?php if (!empty($models['annexe'] ?? false)) { ?>
-        <p class="h1">Annexe</p>
-    
-        <div class="annex_block">
-        
-<?php   foreach ($models['annexe'] as $annex) { ?>
-            <p class="annex"><?php echo $annex; ?></p>
-<?php   } ?>
-        
-        </div>
-<?php } ?>
-        
-<?php if (!empty($models['notes'] ?? false)) { ?>
+<?php if (!empty($models['contents']['footnotes'] ?? false)) { ?>
         <p class="noindent">____________</p>
         
         <div class="footnotes_block">
         
-<?php   foreach ($models['notes'] as $ref => $note) { ?>
+<?php   foreach ($models['contents']['footnotes'] as $ref => $footnote) { ?>
             <p class="fn">
                 <span class="num">
                     <a id="<?php echo str_replace(['#','_'], '', $ref); ?>" href="<?php echo $ref; ?>">
                         <sup><?php echo str_replace('#fn_', '', $ref); ?></sup>
                     </a>
                 </span>
-                <?php echo $note; ?>
+                <?php echo $footnote; ?>
             </p>
 <?php   } ?>
         

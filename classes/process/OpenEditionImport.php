@@ -323,7 +323,7 @@ class OpenEditionImport extends ProcessExecutor {
         $file = $paper['tei'];
         $this->info(1, $file);
         $styles = [];
-        $notes = [];
+        $footnotes = [];
         $renditions = simplexml_load_string(file_get_contents($file))->teiHeader->encodingDesc->tagsDecl->children();
         foreach ($renditions as $rendition) {
             $styles['#'.$rendition->attributes('xml',true)->id] = trim(''.$rendition);
@@ -407,6 +407,15 @@ class OpenEditionImport extends ProcessExecutor {
                                         ];
                                         $name = null;
                                     }
+                                    if ($tag === 'note' && $value === 'author') {
+                                        $replacements[] = [
+                                            'element' => $element,
+                                            'parent'  => Zord::firstElementChild($element),
+                                            'tag'     => 'p'
+                                        ];
+                                        $name = 'class';
+                                        $value = 'au2';
+                                    }
                                     break;
                                 }
                                 default: {
@@ -424,7 +433,8 @@ class OpenEditionImport extends ProcessExecutor {
             foreach ($replacements as $replacement) {
                 $node = $fragment->createElement($replacement['tag']);
                 $children = [];
-                foreach ($replacement['element']->childNodes as $child) {
+                $parent = $replacement['parent'] ?? $replacement['element'];
+                foreach ($parent->childNodes as $child) {
                     $children[] = $child;
                 }
                 foreach ($replacement['element']->attributes as $attribute) {
@@ -494,29 +504,29 @@ class OpenEditionImport extends ProcessExecutor {
             foreach ($elements as $element) {
                 $tag = $element->nodeName;
                 if ($tag === 'note' && $element->getAttribute('place') === 'foot') {
-                    $note = $fragment->saveXML($element);
-                    $note = preg_replace('#(\s*)<note place="(\w+)" n="(\w+)">(\s*)<p>(\s*)#', '', $note);
-                    $note = preg_replace('#(\s*)</p>(\s*)</note>#', '', $note);
+                    $footnote = $fragment->saveXML($element);
+                    $footnote = preg_replace('#(\s*)<note place="(\w+)" n="(\w+)">(\s*)<p>(\s*)#', '', $footnote);
+                    $footnote = preg_replace('#(\s*)</p>(\s*)</note>#', '', $footnote);
                     $num = $element->getAttribute('n');
-                    $notes['#fn_'.$num] = $note;
-                    $note = $fragment->createElement('sup');
+                    $footnotes['#fn_'.$num] = $footnote;
+                    $footnote = $fragment->createElement('sup');
                     $anchor = $fragment->createElement('a', $num);
                     $anchor->setAttribute('id', 'fn_'.$num);
                     $anchor->setAttribute('href', '#fn'.$num);
-                    $note->appendChild($anchor);
-                    $element->parentNode->replaceChild($note, $element);
+                    $footnote->appendChild($anchor);
+                    $element->parentNode->replaceChild($footnote, $element);
                 }
             }
             $content = str_replace("<".$root." xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $fragment->saveXML($fragment->documentElement));
             $content = substr($content, 0, strlen($content) - strlen('</'.$root.'>'));
-            $content = preg_replace('#/(\w+)>(\s+)<#', '/$1><', $content);
+            $content = str_replace(' xmlns:default="http://www.tei-c.org/ns/1.0"', '', $content);
+            $content = preg_replace('#(\s+)<(\w+)#', '<$2', $content);
+            $content = preg_replace('#/(\w+)>(\s+)#', '/$1>', $content);
             $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
-            $contents[] = $content;
+            $contents[$root] = $content;
         }
-        return [
-            'contents' => $contents,
-            'notes'    => $notes
-        ];
+        $contents['footnotes'] = $footnotes;
+        return ['contents' => $contents];
     }
 }
 
