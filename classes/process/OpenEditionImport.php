@@ -520,8 +520,8 @@ class OpenEditionImport extends ProcessExecutor {
             $content = str_replace("<".$root." xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $fragment->saveXML($fragment->documentElement));
             $content = substr($content, 0, strlen($content) - strlen('</'.$root.'>'));
             $content = str_replace(' xmlns:default="http://www.tei-c.org/ns/1.0"', '', $content);
-            $content = preg_replace('#(\s+)<(\w+)#', '<$2', $content);
-            $content = preg_replace('#/(\w+)>(\s+)#', '/$1>', $content);
+            //$content = preg_replace('#(\s+)<(\w+)#', '<$2', $content);
+            //$content = preg_replace('#/(\w+)>(\s+)#', '/$1>', $content);
             $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
             $contents[$root] = $content;
         }
