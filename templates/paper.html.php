@@ -66,10 +66,20 @@
         </div>
 <?php } ?>
         
-<?php if (!empty($models['contents']['back'] ?? false)) { ?>
-        <div class="annex_block bibl_block">
+<?php if (!empty($models['contents']['appendix'] ?? false)) { ?>
+        <p class="h1">Annexe</p>
+        <div class="annex_block">
         
-<?php   echo $models['contents']['back']; ?>
+<?php   echo $models['contents']['appendix']; ?>
+        
+        </div>
+<?php } ?>
+        
+<?php if (!empty($models['contents']['bibliography'] ?? false)) { ?>
+        <p class="h1">Bibliographie</p>
+        <div class="bibl_block">
+        
+<?php   echo $models['contents']['bibliography']; ?>
         
         </div>
 <?php } ?>

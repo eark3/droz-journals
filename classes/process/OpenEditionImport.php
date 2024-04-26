@@ -352,6 +352,8 @@ class OpenEditionImport extends ProcessExecutor {
                 $tag = $element->nodeName;
                 if ($tag === 'p' && in_array($element->parentNode->nodeName,[$root,'div']) && $element->getAttribute('rend') === '') {
                     $element->setAttribute('class', 'indent');
+                } else if ($tag === 'head') {
+                    $element->setAttribute('class', 'h'.substr($element->getAttribute('subtype'), strlen('level')));
                 } else if ($tag !== 'note' || $element->getAttribute('place') !== 'foot') {
                     $attributes = [];
                     foreach ($element->attributes as $name => $attribute) {
@@ -376,6 +378,10 @@ class OpenEditionImport extends ProcessExecutor {
                                     if ($tag === 'p' && $value === 'break') {
                                         $name = 'style';
                                         $value = 'text-align: center;';
+                                    }
+                                    if ($tag === 'p' && $value === 'epigraph') {
+                                        $name = 'class';
+                                        $value = 'right';
                                     }
                                     break;
                                 }
@@ -480,7 +486,7 @@ class OpenEditionImport extends ProcessExecutor {
                             break;
                         }
                         case 'head': {
-                            $tag = 'h1';
+                            $tag = 'p';
                             break;
                         }
                         case 'figure': {
@@ -489,6 +495,10 @@ class OpenEditionImport extends ProcessExecutor {
                         }
                         case 'graphic': {
                             $tag = 'img';
+                            break;
+                        }
+                        case 'h1': {
+                            $tag = 'p';
                             break;
                         }
                     }
@@ -517,16 +527,29 @@ class OpenEditionImport extends ProcessExecutor {
                     $element->parentNode->replaceChild($footnote, $element);
                 }
             }
-            $content = str_replace("<".$root." xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $fragment->saveXML($fragment->documentElement));
-            $content = substr($content, 0, strlen($content) - strlen('</'.$root.'>'));
-            $content = str_replace(' xmlns:default="http://www.tei-c.org/ns/1.0"', '', $content);
-            //$content = preg_replace('#(\s+)<(\w+)#', '<$2', $content);
-            //$content = preg_replace('#/(\w+)>(\s+)#', '/$1>', $content);
-            $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
-            $contents[$root] = $content;
+            if ($root === 'back') {
+                foreach ($fragment->documentElement->childNodes as $child) {
+                    $type = $child->getAttribute('type');
+                    if ($child->nodeName === 'div' && in_array($type, ['appendix','bibliography'])) {
+                        $contents[$type] = $this->content('div', $fragment, $child);
+                    }
+                }
+            } else {
+                $contents[$root] = $this->content($root, $fragment, $fragment->documentElement);
+            }
         }
         $contents['footnotes'] = $footnotes;
         return ['contents' => $contents];
+    }
+    
+    private function content($root, $document, $element) {
+        $content = str_replace("<".$root." xmlns=\"http://www.tei-c.org/ns/1.0\">", '', $document->saveXML($element));
+        $content = substr($content, 0, strlen($content) - strlen('</'.$root.'>'));
+        $content = str_replace(' xmlns:default="http://www.tei-c.org/ns/1.0"', '', $content);
+        //$content = preg_replace('#(\s+)<(\w+)#', '<$2', $content);
+        //$content = preg_replace('#/(\w+)>(\s+)#', '/$1>', $content);
+        $content = preg_replace('#<sup>(\s+)<a#', '<sup><a', $content);
+        return $content;
     }
 }
 
