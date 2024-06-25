@@ -1,0 +1,228 @@
+/**
+ * @file plugins/themes/droz/styles/index.less
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @brief Layout styles which implement the boxed layout
+ *
+ */
+
+ @font-face {
+     font-family: 'SabonLTStd-Roman';
+     src: url('/fonts/SabonLTStd-Roman.eot');
+     src: url('/fonts/SabonLTStd-Roman.eot?#iefix') format('embedded-opentype'),
+          url('/fonts/SabonLTStd-Roman.woff') format('woff'),
+          url('/fonts/SabonLTStd-Roman.ttf') format('truetype'),
+          url('/fonts/SabonLTStd-Roman.svg#Sri-TSCRegular') format('svg');
+     font-weight: normal;
+     font-style: normal;
+ }
+
+// A grey background on large screens
+html{
+  background: @bg;
+}
+
+body {
+	background: @bg-shade;
+	font-family: @font-base;
+	color: @text-dark;
+  margin-top:135px;
+}
+.sections{
+  margin:0 !important;
+}
+#overNavbar{
+	margin-bottom:0;
+}
+#navbarSearchFrom{
+  margin-top:10px;
+}
+#drozLogoWrapper{
+	padding-bottom:10px  !important;
+	margin-bottom:10px !important;
+}
+#drozLogoImg{
+	float:left;
+}
+#drozLogoLetter{
+	float: left;
+	margin: 50px 0 0 5px;
+}
+@media (max-width: @screen-sm-min) {
+
+	#drozLogoLetter{
+		float: left;
+		margin: 0 0 0 5px;
+	}
+
+}
+.drozLogoName{
+  font-family: @font-logo;
+  font-size:28px;
+}
+.drozLightGrey{
+	color: @text-light;
+	letter-spacing: .1em
+}
+.drozDarkGrey{
+	color: @text-dark;
+	letter-spacing: .03em}
+
+.current_issue_heading{
+  font-weight:bold;
+  font-size:1.6em;
+}
+.current_issue_title{
+  margin-top: 7px !important;
+  margin-bottom: 17px !important;
+}
+h1,h2,h3,h4,h5,h6,small,.current_issue_title{
+  /*font-family: @font-base;*/
+  //font-family: @font-heading;
+  //margin:0;
+  // color:@gray-base !important;
+  //color: @text-dark !important;
+}
+h1{
+    font-size:1.5em;
+}
+h2{
+  font-size:1.3em;
+}
+h3{
+  font-size:1em;
+}
+
+h1 > p.small{
+  font-size:.85em;
+  color:@text-dark;
+}
+
+// A white background for the boxed content area
+.pkp_structure_page {
+	margin: 0 auto;
+	// background: @bg;
+}
+
+.pkp_structure_footer_wrapper {
+	background: @bg-light-shade;
+}
+
+// Removes the left and right borders around the main content panel
+.pkp_structure_main:before,
+.pkp_structure_main:after {
+	display: none;
+}
+
+.pkp_structure_content {
+	padding-top: 0;
+}
+
+.pkp_structure_sidebar {
+  padding-left:5px;
+  padding-right:0;
+}
+
+// Center the content panel when no sidebar is present
+// @todo This was added to the default theme after OJS 3.0.2 was released.
+// The styles can be removed for future versions.
+.pkp_structure_main:first-child:last-child {}
+
+.page-header{
+  padding:0 !important;
+  margin:0 0 20px 0 !important;
+  border:none;
+  line-height:1.3em;
+}
+.active{
+  color:@text-dark !important;
+}
+
+#journalsDropdown{
+  margin-top:8px !important
+}
+
+#languageSelect{
+  margin-bottom:20px;
+}
+#languageSelect > .dropdown-toggle, .block_lib_droz_link
+{
+  width:100%;
+  text-align:left;
+}
+#languageSelect > .btn-info{
+    font-size:1em;
+    /*text-transform: uppercase;*/
+    font-weight:bold;
+    padding-left:15px;
+    color:@text-dark;
+}
+.dropdown-menu > li{
+  font-size:.9em;
+}
+div#languageSelect > ul{
+width:100%;
+}
+
+ul > #main-navigation > li > a{
+  background-color: @text-light;
+}
+
+#overNavbar > div > ul >li > a:hover, .navbar-nav > li > a:hover,.btn:hover, .btn:focus, .btn:active, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active,.open > .dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-primary {
+    color: @text-dark;
+    background-color: @text-light;
+    border-color: @text-light;
+}
+
+.dropdown-toggle[aria-expanded="true"] {
+  color: @text-dark !important;
+  background-color: @text-light !important;
+  border-color: @text-light !important;
+}
+
+.dropdown-menu a:hover{
+    color: @text-dark !important;
+}
+
+.form-control:focus {
+  border-color: @journal-base-color;
+  outline: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.media{
+  margin-bottom:20px;
+}
+.announcement-summary > .media-body{
+  padding:20px;
+}
+.media-heading{
+  font-family: @font-heading;
+  padding-top:20px;
+  line-height:1.3em;
+}
+
+.articleSummaryWrapper{
+  padding-left:0;
+  padding-right:20px;
+  margin-bottom:20px;
+}
+.media-body{
+  background-color:@bg-media-body;
+}
+.label{
+  color:green;
+  font-size:1em;
+  padding:0;
+  margin:0;
+}
+
+#cslCitationFormats > ul{list-style: none;}
+
+#articlesBySameAuthorList > ul{list-style: none;padding-left:0 !important;}
+
+
+.copyright{margin-top:20px;}
