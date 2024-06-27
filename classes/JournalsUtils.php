@@ -170,19 +170,20 @@ class JournalsUtils {
         $number = ($issue->number ?? ($issue['number'] ?? null));
         $pages  = ($paper->pages  ?? ($paper['pages']  ?? null));
         $short  = $issue ? JournalsUtils::short($context, $volume, $number, $pages) : null;
+        $baseURL = Zord::getContextURL($context);
         switch ($type) {
             case 'meta': {
                 if ($short && $pages) {
-                    return '/'.$context.'/article/view/'.$short;
+                    return $baseURL.'/article/view/'.$short;
                 } else if ($short) {
-                    return '/'.$context.'/issue/view/'.$short.(is_string($paper) ? '#'.$paper : '');
+                    return $baseURL.'/issue/view/'.$short.(is_string($paper) ? '#'.$paper : '');
                 } else {
-                    return '/'.$context;
+                    return $baseURL;
                 }
             }
             case 'html': 
             case 'pdf': {
-                return '/'.$context.'/article/view/'.$short.'/'.$type;
+                return $baseURL.'/article/view/'.$short.'/'.$type;
             }
             case 'shop': {
                 return SHOP_BASE_URL.'/product/'.$ean.'/'.$short;
