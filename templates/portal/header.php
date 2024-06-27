@@ -14,7 +14,7 @@
 						<a href="/" class="dropdown-toggle" data-toggle="dropdown"><?php echo $host; ?><b class="caret"></b></a>
 	 					<ul class="dropdown-menu dropdown-menu-right">
 <?php foreach ($journals as $_journal) { ?>
-							<li><a href="/<?php echo $_journal['context']; ?>"><?php echo $_journal['settings']['name'] ?? Zord::value('context', [$_journal['context'],'title',$_journal['locale']]); ?></a></li>
+							<li><a href="<?php Zord::getContextURL($_journal['context']) ?>"><?php echo $_journal['settings']['name'] ?? Zord::value('context', [$_journal['context'],'title',$_journal['locale']]); ?></a></li>
 <?php } ?>
 						</ul>
 					</li>
