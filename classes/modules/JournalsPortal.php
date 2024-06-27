@@ -35,7 +35,7 @@ class JournalsPortal extends Portal {
         if (isset($this->controler->journal)) {
             $page = $this->params['page'] ?? null;
             $models = false;
-            $ariadne = ['home' => '/'.$this->context];
+            $ariadne = ['home' => $this->baseURL];
             switch ($page) {
                 case 'archive': {
                     $issue = $this->params['issue'] ?? null;
@@ -71,7 +71,7 @@ class JournalsPortal extends Portal {
                 }
                 case 'current':
                 case 'view': {
-                    $ariadne['archive'] = '/'.$this->context.'/issue/archive';
+                    $ariadne['archive'] = $this->baseURL.'/issue/archive';
                     $issue = false;
                     if ($page === 'current') {
                         $issue = (new IssueEntity())->retrieveFirst($this->published());
@@ -150,9 +150,9 @@ class JournalsPortal extends Portal {
             $_section = $this->_settings('section', $section);
             $_paper = $this->_paper($paper, $issue);
             $ariadne = [
-                'home' => '/'.$this->context,
-                'archive' => '/'.$this->context.'/issue/archive',
-                'issue' => [$_issue['serial'].(!empty($_issue['settings']['title']) ? ' : '.$_issue['settings']['title'] : ''), '/'.$this->context.'/issue/view/'.$_issue['short']]
+                'home' => $this->baseURL,
+                'archive' => $this->baseURL.'/issue/archive',
+                'issue' => [$_issue['serial'].(!empty($_issue['settings']['title']) ? ' : '.$_issue['settings']['title'] : ''), $this->baseURL.'/issue/view/'.$_issue['short']]
             ];
             if (in_array($display, ['html','pdf']) && !JournalsUtils::readable($this->user, $this->controler->journal, $issue, $paper)) {
                 return $this->page('login', [
@@ -165,11 +165,11 @@ class JournalsPortal extends Portal {
                     if (in_array($display, ['html','pdf'])) {
                         $view = 'display';
                         array_splice($ariadne, 1, 1);
-                        $ariadne['active'] = [$_paper['settings']['title'], '/'.$this->context.'/article/view/'.$_paper['short']];
+                        $ariadne['active'] = [$_paper['settings']['title'], $this->baseURL.'/article/view/'.$_paper['short']];
                     } else {
                         $page = 'article';
                         if ($_paper['settings']['title'] !== 'Dossier complet') {
-                            $ariadne['section'] = [$_section['title'], '/'.$this->context.'/issue/view/'.$_issue['short'].'#'.$_section['name']];
+                            $ariadne['section'] = [$_section['title'], $this->baseURL.'/issue/view/'.$_issue['short'].'#'.$_section['name']];
                         }
                         $others = [];
                         foreach ($_paper['authors'] ?? [] as $author) {
