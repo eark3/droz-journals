@@ -26,7 +26,7 @@
 		<div class="navbar-header">
 			<h1 class="site-name">
 				<div class="navbar-brand">
-					<a href="/<?php echo $context; ?>"><?php echo $journal['settings']['name'] ?? Zord::value('context', [$journal['context'],'title',$journal['locale']]); ?></a>
+					<a href="<?php echo Zord::getContextURL($journal['context']); ?>"><?php echo $journal['settings']['name'] ?? Zord::value('context', [$journal['context'],'title',$journal['locale']]); ?></a>
 				</div>
 			</h1>
 		</div>
