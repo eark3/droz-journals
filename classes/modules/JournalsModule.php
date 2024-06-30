@@ -125,7 +125,7 @@ trait JournalsModule {
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
             $serial = JournalsUtils::serial($issue);
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
-            $link = '/'.$context.'/issue/view/'.$short;
+            $link = $this->baseURL.'/issue/view/'.$short;
             $_sections = [];
             $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
             foreach ($papers as $paper) {
