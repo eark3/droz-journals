@@ -15,7 +15,7 @@
 								<li class="view">
 									<a href="<?php echo Zord::getContextURL($journal['context']); ?>"><?php echo Zord::getLocale('portal'.DS.$journal['context'], $lang)->root->journal ?? $locale->root->journal; ?></a></li>
 								<li class="current">
-									<a href="/<?php echo Zord::getContextURL($journal['context']); ?>/issue/current"><?php echo Zord::getLocale('portal'.DS.$journal['context'], $lang)->root->current ?? $locale->root->current; ?></a></li>
+									<a href="<?php echo Zord::getContextURL($journal['context']); ?>/issue/current"><?php echo Zord::getLocale('portal'.DS.$journal['context'], $lang)->root->current ?? $locale->root->current; ?></a></li>
 							</ul>
 						</div>
 					</li>
