@@ -1,0 +1,29 @@
+{
+	"root": {
+		"journal": "Zur Sammlung",
+		"current": "Letzte Veröffentlichung"
+	},
+	"pages": {
+		"about": "Über die Sammlung",
+		"archives": "Liste früherer Veröffentlichungen"
+	},
+	"issue": {
+		"last": "Letzte Veröffentlichung",
+		"previous" : "Frühere Veröffentlichungen",
+		"archive": "Alle Veröffentlichungen ansehen",
+		"summary": "Zusammenfassung <br/>den Veröffentlichung"
+	},
+	"article": {
+		"issue": "Veröffentlichung"
+	},
+	"aside": {
+		"summary": {
+			"title": "Zusammenfassung den Veröffentlichung"
+		},
+		"infos": {
+			"pages": {
+				"archives": "Liste früherer Veröffentlichungen"
+			}
+		}
+	}
+}

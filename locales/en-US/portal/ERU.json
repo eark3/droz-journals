@@ -1,0 +1,29 @@
+{
+	"root": {
+		"journal": "View series",
+		"current": "Last publication"
+	},
+	"pages": {
+		"about": "About series",
+		"archives": "List of previous publications"
+	},
+	"issue": {
+		"last": "Last publication",
+		"previous" : "Previous publications",
+		"archive": "View all publications",
+		"summary": "Summary <br />of the publication"
+	},
+	"article": {
+		"issue": "Publication"
+	},
+	"aside": {
+		"summary": {
+			"title": "Summary of the publication"
+		},
+		"infos": {
+			"pages": {
+				"archives": "List of previous publications"
+			}
+		}
+	}
+}

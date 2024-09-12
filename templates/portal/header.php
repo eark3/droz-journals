@@ -32,20 +32,20 @@
 		</div>
 		<nav id="nav-menu" class="navbar-collapse collapse" aria-label="Site de navigation">
 			<ul id="main-navigation" class="nav navbar-nav">
-				<li><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->issue->last; ?></a></li>
-				<li><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->issue->previous; ?></a></li>
-				<li class="dropdown">
+				<li class="current"><a href="<?php echo $baseURL; ?>/issue/current"><?php echo $locale->issue->last; ?></a></li>
+				<li class="archive"><a href="<?php echo $baseURL; ?>/issue/archive"><?php echo $locale->issue->previous; ?></a></li>
+				<li class="about dropdown">
 					<a href="<?php echo $baseURL; ?>/info/about" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $locale->about; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
 <?php foreach (Zord::value('portal', ['menu','header']) as $_type => $_pages) { ?>
 <?php   foreach ($_pages as $_page) { ?>
 <?php     if ($_type !== 'info' || !empty($journal['settings'][$_page])) { ?>
-						<li><a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a></li>
+						<li class="<?php echo $_page; ?>"><a href="<?php echo $baseURL; ?>/<?php echo $_type; ?>/<?php echo $_page; ?>"><?php echo $locale->pages->$_page; ?></a></li>
 <?php     }?>
 <?php   } ?>
 <?php } ?>
 					</ul>	
-				<li><a href="<?php echo $baseURL; ?>/info/subscription"><?php echo $locale->pages->subscription; ?></a></li>
+				<li class="subscription"><a href="<?php echo $baseURL; ?>/info/subscription"><?php echo $locale->pages->subscription; ?></a></li>
 			</ul>
 <?php $this->render('/portal/widget/user'); ?>
 		</nav>

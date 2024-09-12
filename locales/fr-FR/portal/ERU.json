@@ -1,0 +1,28 @@
+{
+	"root": {
+		"journal": "Voir la collection",
+		"current": "Derniere publication"
+	},
+	"pages": {
+		"about": "À propos de la collection"
+	},
+	"issue": {
+		"last": "Derniere publication",
+		"previous" : "Publications précédentes",
+		"archive": "Voir toutes les publications",
+		"summary": "Sommaire <br />de cette publication"
+	},
+	"article": {
+		"issue": "Publication"
+	},
+	"aside": {
+		"summary": {
+			"title": "Sommaire de cette publication"
+		},
+		"infos": {
+			"pages": {
+				"archives": "Liste des publications antérieures"
+			}
+		}
+	}
+}
