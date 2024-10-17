@@ -163,6 +163,9 @@
 				"title": {
 					"template": "text"
 				},
+				"ean": {
+					"template": "text"
+				},
 				"description": {
 					"template": "text",
 					"multiline": true,
