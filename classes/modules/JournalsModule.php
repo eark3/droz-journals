@@ -127,7 +127,7 @@ trait JournalsModule {
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
             $link = $this->baseURL.'/issue/view/'.$short;
             $_sections = [];
-            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
+            $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'pages']]]);
             foreach ($papers as $paper) {
                 if (!isset($_sections[$paper->section])) {
                     $section = (new SectionEntity())->retrieveOne($paper->section);
