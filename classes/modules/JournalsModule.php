@@ -148,7 +148,7 @@ trait JournalsModule {
             ]);
             $this->cache->setItem($type, $key, $result);
         }
-        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => ['asc' => 'place']]);
+        $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'pages']]]);
         $dossiers = [];
         foreach ($papers as $paper) {
             $_paper = $this->_paper($paper, $issue, $journal);
