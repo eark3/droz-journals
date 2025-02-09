@@ -32,9 +32,9 @@ class JournalsPortal extends Portal {
     }
     
     public function issue() {
+        $models = false;
         if (isset($this->controler->journal)) {
             $page = $this->params['page'] ?? null;
-            $models = false;
             $ariadne = ['home' => $this->baseURL];
             switch ($page) {
                 case 'archive': {
@@ -118,12 +118,12 @@ class JournalsPortal extends Portal {
     }
     
     public function article() {
+        $models = false;
         if (isset($this->controler->journal)) {
             $page = $this->params['page'] ?? null;
             $paper = $this->params['paper'] ?? null;
             $display = $this->params['display'] ?? null;
             $resource = $this->params['resource'] ?? null;
-            $models = false;
             if (!isset($paper)) {
                 return $this->error(404);
             }
