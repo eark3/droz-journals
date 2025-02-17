@@ -606,6 +606,7 @@ class JournalsImport extends Import {
             $mail = [
                 'category' => 'issue'.DS.$ean,
                 'template' => '/mail/issue/publication',
+                'textonly' => false,
                 'subject'  => Zord::getLocaleValue('title', Zord::value('context', 'root'), $this->journal->locale).' - '.$this->settings['name'],
                 'models'   => $models
             ];
