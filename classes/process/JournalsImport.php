@@ -579,6 +579,13 @@ class JournalsImport extends Import {
         return $result;
     }
     
+    protected function force($ean) {
+        $this->journal = $this->journal($ean);
+        $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
+        $this->new = true;
+        return true;
+    }
+    
     protected function notify($ean) {
         if ($this->new && NOTIFY_ISSUE_PUBLICATION) {
             $batch = [];

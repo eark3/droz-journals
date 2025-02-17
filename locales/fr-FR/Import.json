@@ -2,6 +2,7 @@
 	"steps": {
 		"check": "Vérification des données",
 		"crossref": "Enregistrement des DOI",
+		"force": "Forçage pour la notification des abonnés",
 		"notify": "Notification des abonnés"
 	},
 	"messages": {
