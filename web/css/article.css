@@ -970,6 +970,7 @@ p.annex_B {
 .version_RHP_Zord_2023 .section_block,
 .version_SLLMOO_Zord_2023 .section_block,
 .version_RR_Zord_2023 .section_block,
+.version_ERU_Zord_2023 .section_block,
 .version_RFHL_Zord_2023 .abstract_block,
 .version_CFS_Zord_2023 .abstract_block,
 .version_RThPh_Zord_2023 .abstract_block,
@@ -977,13 +978,15 @@ p.annex_B {
 .version_RHP_Zord_2023 .abstract_block,
 .version_SLLMOO_Zord_2023 .abstract_block,
 .version_RR_Zord_2023 .abstract_block,
+.version_ERU_Zord_2023 .abstract_block,
 .version_RFHL_Zord_2023 .keywords_block,
 .version_CFS_Zord_2023 .keywords_block,
 .version_RThPh_Zord_2023 .keywords_block,
 .version_HCL_Zord_2023 .keywords_block,
 .version_RHP_Zord_2023 .keywords_block,
 .version_SLLMOO_Zord_2023 .keywords_block,
-.version_RR_Zord_2023 .keywords_block {
+.version_RR_Zord_2023 .keywords_block,
+.version_ERU_Zord_2023 .keywords_block {
 	display: none;
 }
 
