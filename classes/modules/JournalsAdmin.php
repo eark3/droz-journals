@@ -288,6 +288,21 @@ class JournalsAdmin extends StoreAdmin {
                     } else if ($type === 'section' && $object !== false) {
                         $selected = ($_section->id === $object->id);
                     }
+                    if (!empty($_section->parent) && !in_array($_section->parent, $done)) {
+                        $_parent = (new SectionEntity())->retrieveOne($_section->parent);
+                        $_selected = false;
+                        if ($section !== false) {
+                            $_selected = ($_parent->id === $section->id);
+                        } else if ($type === 'section' && $object !== false) {
+                            $_selected = ($_parent->id === $object->id);
+                        }
+                        $choices['section'][] = [
+                            'value'    => $_parent->id,
+                            'label'    => $_parent->name,
+                            'selected' => $_selected
+                        ];
+                        $done[] = $_section->parent;
+                    }
                     $choices['section'][] = [
                         'value'    => $_section->id,
                         'label'    => $_section->name,
