@@ -1,13 +1,13 @@
 {
 	"root": {
 		"journal": "Voir la collection",
-		"current": "Derniere publication"
+		"current": "Dernière publication"
 	},
 	"pages": {
 		"about": "À propos de la collection"
 	},
 	"issue": {
-		"last": "Derniere publication",
+		"last": "Dernière publication",
 		"previous" : "Publications précédentes",
 		"archive": "Voir toutes les publications",
 		"summary": "Sommaire <br />de cette publication"
