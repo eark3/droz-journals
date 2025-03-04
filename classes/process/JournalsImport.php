@@ -380,15 +380,16 @@ class JournalsImport extends Import {
                 if ($parent !== 0) {
                     if (!in_array($parent, $sections)) {
                         if ($name !== $parent) {
+                            $sections[] = $parent;
                             $_parent = (new SectionEntity())->retrieveOne([
                                 'journal' => $this->journal->id,
                                 'name'    => $parent
                             ]);
-                            if ($_parent !== false) {
-                                $sections[] = $parent;
-                            } else {
-                                $this->error(3, Zord::substitute($this->locale->messages->check->error->missing->section, ['section' => $parent]));
-                                $result &= false;
+                            if ($_parent === false) {
+                                $_parent = (new SectionEntity())->create([
+                                    'journal' => $this->journal->id,
+                                    'name'    => $parent
+                                ]);
                             }
                         } else {
                             $this->error(3, Zord::substitute($this->locale->messages->check->error->sameAs->section, ['parent' => $parent]));
