@@ -33,7 +33,9 @@ trait JournalsModule {
         $models['host'] = $this->controler->getHost();
         $models['langs'] = Zord::value('portal', 'lang');
         foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
-            $models['journals'][] = $this->_journal($journal);
+            if (!empty(Zord::value('context', [$journal->context,'url']))) {
+                $models['journals'][] = $this->_journal($journal);
+            }
         }
         if (isset($this->controler->journal)) {
             $models['aside'] = Zord::value('portal', ['aside', 'layout', $this->context]) ?? Zord::value('portal', ['aside', 'layout', 'default']);
