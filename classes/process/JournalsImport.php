@@ -620,7 +620,7 @@ class JournalsImport extends Import {
                 'category' => 'issue'.DS.$ean,
                 'template' => '/mail/issue/publication'.($spec ? '/'.$this->journal->context : ''),
                 'textonly' => false,
-                'subject'  => Zord::getLocaleValue('title', Zord::value('context', 'root'), $this->journal->locale).' - '.$this->settings['name'],
+                'subject'  => str_replace('<br/>', ' ', Zord::getLocaleValue('title', Zord::value('context', 'root'), $this->journal->locale).' - '.$this->settings['name']),
                 'models'   => $models
             ];
             foreach ($batch as $recipients) {
