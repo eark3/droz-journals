@@ -583,6 +583,7 @@ class JournalsImport extends Import {
     protected function force($ean) {
         $this->journal = $this->journal($ean);
         $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
+        $this->issue = JournalsUtils::settings('issue', (new IssueEntity())->retrieveOne($ean), $this->journal->locale);
         $this->new = true;
         return true;
     }
@@ -609,11 +610,14 @@ class JournalsImport extends Import {
             }
             $batch[] = $recipients;
             $models = [
-                'context' => $this->journal->context
+                'context' => $this->journal->context,
+                'short'   => $ean,
+                'title'   => $this->issue['settings']['title'][$this->journal->locale]['value'] ?? $this->issue['title']
             ];
+            $spec = Zord::template('/mail/issue/publication/'.$this->journal->context) ?? false;
             $mail = [
                 'category' => 'issue'.DS.$ean,
-                'template' => '/mail/issue/publication',
+                'template' => '/mail/issue/publication'.($spec ? '/'.$this->journal->context : ''),
                 'textonly' => false,
                 'subject'  => Zord::getLocaleValue('title', Zord::value('context', 'root'), $this->journal->locale).' - '.$this->settings['name'],
                 'models'   => $models
