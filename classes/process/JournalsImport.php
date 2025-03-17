@@ -610,9 +610,10 @@ class JournalsImport extends Import {
             }
             $batch[] = $recipients;
             $models = [
-                'context' => $this->journal->context,
-                'short'   => $ean,
-                'title'   => $this->issue['settings']['title'][$this->journal->locale]['value'] ?? $this->issue['title']
+                'settings' => $this->settings,
+                'context'  => $this->journal->context,
+                'short'    => $ean,
+                'issue'    => $this->issue
             ];
             $spec = Zord::template('/mail/issue/publication/'.$this->journal->context) ?? false;
             $mail = [
