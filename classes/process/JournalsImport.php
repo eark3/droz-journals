@@ -589,7 +589,7 @@ class JournalsImport extends Import {
     }
     
     protected function notify($ean) {
-        if ($this->new && NOTIFY_ISSUE_PUBLICATION) {
+        if ($this->new && ($this->issue['notify'] ?? true) && NOTIFY_ISSUE_PUBLICATION) {
             $batch = [];
             $recipients = [];
             $index = 1;
