@@ -5,11 +5,6 @@
 		    "username": {"__CONST__":"DATABASE_DEFAULT_USERNAME"},
 		    "password": {"__CONST__":"DATABASE_DEFAULT_PASSWORD"}
 	    },
-	    "fabric": {
-		    "connection_string": "odbc:FILEMAKER",
-		    "identifier_quote_character": "\"",
-		    "limit_clause_style": "first"
-	    },
 	    "ojs": {
 		    "connection_string": "mysql:host=localhost:13306;dbname=okjq_revues_prod;charset=utf8",
 		    "username": {"__CONST__":"DATABASE_OJS_USERNAME"},
@@ -28,10 +23,6 @@
 	    }
 	},
 	"tunnel": {
-		"fabric": {
-			"host": "178.174.25.2",
-			"user": "zordfm"
-		},
 		"ojs": {
 			"host": "okjp.ftp.infomaniak.com",
 			"user": "okjq_numerique"
