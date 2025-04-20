@@ -67,10 +67,12 @@ class JournalsUtils {
     }
     
     public static function name($author, $reverse = false) {
-        $middle = !empty($author->middle ?? $author['middle']) ? ($author->middle ?? $author['middle']).' ' : '';
+        $first = !empty($author->first ?? $author['first']) ? ($author->first ?? $author['first']) : '';
+        $middle = !empty($author->middle ?? $author['middle']) ? ($author->middle ?? $author['middle']) : '';
+        $last = !empty($author->last ?? $author['last']) ? ($author->last ?? $author['last']) : '';
         return $reverse 
-            ? $middle.($author->last ?? $author['last']).', '.($author->first ?? $author['first'])
-            : ($author->first ?? $author['first']).' '.$middle.($author->last ?? $author['last']);
+            ? $middle.(!empty($middle) ? ' ' : '').$last.(!empty($first) ? ', ' : '').$first
+            : $first.(!empty($first) ? ' ' : '').$middle.(!empty($middle) ? ' ' : '').$last;
     }
     
     public static function status($issue, $paper) {

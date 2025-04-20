@@ -127,7 +127,7 @@ trait JournalsModule {
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
             $serial = JournalsUtils::serial($issue);
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
-            $link = $this->baseURL.'/issue/view/'.$short;
+            $link = Zord::getContextURL($context).'/issue/view/'.$short;
             $_sections = [];
             $papers = (new PaperEntity())->retrieveAll(['issue' => $issue->id, 'order' => [['asc' => 'place'],['asc' => 'pages']]]);
             foreach ($papers as $paper) {

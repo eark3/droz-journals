@@ -38,13 +38,18 @@ class OpenEditionImport extends ProcessExecutor {
     
     public function execute($parameters = []) {
         foreach ($parameters['journals'] ?? [] as $journal) {
+            $issues = '*';
+            if (strpos($journal, '_') > 0) {
+                list($journal, $issues) = explode('_', $journal);
+                $issues = '{'.$issues.'}';
+            }
             $_journal = (new JournalEntity())->retrieveOne($journal);
             if ($_journal === false) {
                 $this->error(0, 'Unknown journal '.$journal);
                 continue;
             }
             $refs = [];
-            $folders = glob(STORE_FOLDER.'journals'.DS.$journal.DS.'*');
+            $folders = glob(STORE_FOLDER.'journals'.DS.$journal.DS.$issues, $issues !== '*' ? GLOB_BRACE : null);
             usort($folders, function($first, $second) {return basename($first) <=> basename($second);});
             foreach ($folders as $folder) {
                 $mets = glob($folder.DS.'*-mets.xml');
@@ -92,7 +97,8 @@ class OpenEditionImport extends ProcessExecutor {
                                 }
                             }
                         }
-                        $type = 'paper';
+                        $type = preg_match('#^\w+(-\w+)?$#', $terms['extent'] ?? '') ? 'paper' : null;
+                        $id = $this->id($dmdSec->attributes()->ID);
                         switch ($terms['type']) {
                             case 'issue': {
                                 $type = 'issue';
@@ -105,9 +111,11 @@ class OpenEditionImport extends ProcessExecutor {
                         }
                         if ($type === 'issue') {
                             $metadata[$type] = $terms;
-                        } else {
-                            $id = $this->id($dmdSec->attributes()->ID);
+                        } else if ($type) {
                             $metadata[$type][$id] = $terms;
+                        }
+                        if (!isset($type)) {
+                            $this->warn(1, 'Missing extent for MD_'.str_replace('-', '_', $id));
                         }
                     }
                     $_papers = $metadata['paper'];
@@ -127,7 +135,9 @@ class OpenEditionImport extends ProcessExecutor {
                         $part = $this->id($div->attributes()->DMDID);
                         foreach($div->children('mets', true) as $_div) {
                             $id = $this->id($_div->attributes()->DMDID);
-                            $metadata['paper'][$id]['isPartOf']['section'] = $part;
+                            if (!empty($metadata['paper'][$id])) {
+                                $metadata['paper'][$id]['isPartOf']['section'] = $part;
+                            }
                         }
                     }
                     foreach (array_keys($metadata['paper']) as $id) {
@@ -181,6 +191,7 @@ class OpenEditionImport extends ProcessExecutor {
                             }
                             if ($type === 'pdf') {
                                 if (OPEN_EDITION_UPDATE_PDF) {
+                                    $this->info(1, $file);
                                     Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
                                 }
                                 if (isset($issue['ean']) && $_paper['status'] === 'subscription') {
@@ -244,18 +255,24 @@ class OpenEditionImport extends ProcessExecutor {
                                 $creator = [$creator];
                             }
                             foreach ($creator as $_creator) {
-                                $middlename = null;
-                                list($lastname, $firstname) = explode(',', $_creator);
-                                $firstname = trim($firstname);
-                                $lastname  = trim($lastname);
-                                if (strpos($firstname, ' ') > 0) {
-                                    list($firstname, $middlename) = explode(' ', $firstname);
+                                if (!empty($_creator)) {
+                                    $firstname = '';
+                                    $middlename = null;
+                                    $lastname = $_creator;
+                                    if (strpos($lastname, ',') > 0) {
+                                        list($lastname, $firstname) = explode(',', $lastname);
+                                        $firstname = trim($firstname);
+                                        $lastname  = trim($lastname);
+                                        if (strpos($firstname, ' ') > 0) {
+                                            list($firstname, $middlename) = explode(' ', $firstname);
+                                        }
+                                    }
+                                    $_paper['authors'][] = [
+                                        'first'  => $firstname,
+                                        'middle' => $middlename,
+                                        'last'   => $lastname
+                                    ];
                                 }
-                                $_paper['authors'][] = [
-                                    'first'  => $firstname,
-                                    'middle' => $middlename,
-                                    'last'   => $lastname
-                                ];
                             }
                         }
                         $papers[] = $_paper;
@@ -305,7 +322,7 @@ class OpenEditionImport extends ProcessExecutor {
             'journal'      => $journal,
             'volume'       => $issue['volume'],
             'year'         => $issue['year'],
-            'ean'          => $issue['ean'],
+            'ean'          => $issue['ean'] ?? null,
             'doi'          => $paper['settings']['pub-id::doi'][$locale]['value'] ?? null,
             'creators'     => $paper['authors'] ?? [],
             'start'        => $pages[0],
