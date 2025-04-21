@@ -1,0 +1,96 @@
+/**
+ * @file plugins/themes/default/styles/sidebar.less
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @brief Styles for the sidebar blocks
+ *
+ */
+ .pkp_block {
+ 	padding: @triple @double;
+ 	font-size: @font-base;
+ 	line-height: @line-base;
+  background-color: @bg;
+  box-shadow:none;
+  /*max-width: 191px;*/
+
+ 	.title {
+    color: @text-dark;
+ 		display: inline-block;
+ 		padding-bottom: 0.5em;
+ 		border-bottom: 1px solid white;
+ 		font-weight: @bold;
+    background-color: @bg-navbar;
+ 		/*text-transform: uppercase;*/
+    width: 100%;
+ 	}
+
+ }
+.block_make_submission a {
+	&:extend(.cmp_manuscript_button all);
+}
+
+.pkp_block{
+  padding:0;
+  background:@bg-blocks;
+}
+div.pkp_block > div.content > ul >li{
+  background:@bg-blocks;
+  font-size:.9em;
+}
+
+div.pkp_block.block_web_feed > div.content > ul > li{
+  margin-bottom:5px;
+}
+
+.pkp_blockNoBorder{
+	/*margin-bottom:15px;*/
+}
+
+.pkp_block > .content > ul > li{
+padding-left:15px;
+}
+
+#languageSelect{
+  margin-bottom:20px;
+}
+#languageSelect > .dropdown-toggle,
+.block_lib_droz_link
+{
+  width:100%;
+  text-align:left;
+}
+#languageSelect > .btn-info{
+    font-size:1em;
+    /*text-transform: uppercase;*/
+    font-weight:bold;
+    padding-left:15px;
+    color:@text-dark;
+}
+.dropdown-menu > li{
+  font-size:.9em;
+}
+div#languageSelect > ul{
+width:100%;
+}
+.pkp_block > .content > ul{
+  padding:0;
+}
+.block_information > .content{
+  padding-bottom:10px;
+  padding-right:0;
+}
+.block_information > .content > ul:not(:first-child):not(:last-child){
+  border-top:1px solid white;
+  border-bottom:1px solid white;
+  padding:10px 0 10px 0;
+}
+.block_information > .content > ul:first-child {
+  padding-bottom:10px;
+}
+.block_information > .content > ul:last-child
+{
+  padding-top:10px;
+}

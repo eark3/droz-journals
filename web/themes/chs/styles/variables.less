@@ -1,0 +1,100 @@
+/**
+ * @file plugins/themes/droz/styles/variables.less
+ *
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2003-2017 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @brief Common variables used through the the theme styles. They provide a
+ *  fully separated interface for defining variables, so that changes desired on
+ *  the frontend won't impact the backend.
+ */
+//
+// Colors
+//
+
+//SAME AS BOOTSTRAP THEME
+//@gray-base:            #3e4b14;//vert
+//@gray-base:            #666666;//gris
+// @gray-darker:         lighten(@gray-base, 13.5%); // #222
+// @gray-dark:           lighten(@gray-base, 20%);   // #333
+// @gray:                lighten(@gray-base, 33.5%); // #555
+// @gray-light:          lighten(@gray-base, 60%);   // #999
+// @gray-lighter:        lighten(@gray-base, 90%); // #eee
+
+@journal-base-color:     #29499b;
+
+@gray-darker:            @journal-base-color;
+@gray-dark:              @journal-base-color;
+@gray:                   @journal-base-color;
+@gray-light:             @journal-base-color;
+@gray-lighter:           @journal-base-color;
+
+@brand-primary:          @journal-base-color;
+@brand-success:          #3FB618;
+@brand-info:             #9954BB;
+@brand-warning:          #FF7518;
+@brand-danger:           #FF0039;
+//END SAME AS BOOTSTRAP THEME
+
+// Background
+@bg:                     #fafafa;
+@bg-shade:               #fafafa !important;
+@bg-light-shade:         #fcfcfc;
+@bg-base:                #4b7d92; // Accent color used in the header
+@text-bg-base:           #fafafa;
+@bg-navbar:              #d0daf3;
+@bg-revue:               #c8e091;//navbar background color
+@bg-blocks:              #dbdcd6;//blocks & breadcrumb background color
+@bg-media-body:          #f4f1e7;
+//links
+@link-color:             #525f28;
+
+//paddings
+@base:                   15px;
+@half:                   8px;
+@double:                 30px;
+@triple:                 45px;
+
+@line-base:              1.2em;
+
+// Primary "anchor" color for links
+@primary:                #c8e091;
+@primary-lift:           lighten(@primary, 10%);
+
+// Accent color
+@accent:                 #f7bc4a;
+
+// Border colors
+//
+@bg-border-color:        @bg-shade;
+
+// @screen-sm-min:          768px;
+// @screen-tablet:          960px;
+// @screen-desktop:         1080px;
+// @screen-lg-desktop:      1080px;
+
+@screen-sm-min:          768px;
+@screen-tablet:          768px;
+@screen-desktop:         992px;
+@screen-lg-desktop:      1080px;
+
+@normal:                 500;
+
+@bg-border:              1px;
+
+//fonts
+@text:                   #606060;
+@bold:                   600;
+@font-heading:           'Bodoni 24', serif;
+@font-logo:              'SabonLTStd-Roman', serif;
+@font-base:              'Roboto', sans-serif;
+@font-lead:              1em;
+@font-base:              1em;
+
+@font-bump:              26px;
+@text-light:             #b5b6b8;//droz gris clair
+@text-dark:              #606060;//droz gris foncé
+@font-sml:               smaller;
+//radius
+@radius:                 after 0;
