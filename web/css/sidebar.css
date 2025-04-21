@@ -276,3 +276,31 @@ ul.tabs li.current{
 .sidebar.SLLMOO .tab-content.current{
 	background-color: #DBDCD6;
 }
+
+/* --------------- CHS -----------------*/
+
+.sidebar.CHS{
+	background: #ffffff;
+	background: #fdf7ec;
+}
+
+.sidebar.CHS ul.tabs{
+	background-color: #878e9b;
+	color: #fcf2d7;
+	border-top: 25px solid #fdf7ec;
+}
+
+.sidebar.CHS ul.tabs li.current{
+	background-color :#9B9487;
+	color: #fcf2d7;
+}
+
+.sidebar.CHS ul.tabs li{
+	color: #ffffff;
+}
+
+.sidebar.CHS .tab-content.current{
+	background-color: #DBDCD6;
+}
+
+
