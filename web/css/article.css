@@ -183,7 +183,9 @@ img {
 .version_HCL_Zord_2023 .chap-title,
 .version_RHP_Zord_2023 .chap-title,
 .version_SLLMOO_Zord_2023 .chap-title,
-.version_RR_Zord_2023 .chap-title {
+.version_RR_Zord_2023 .chap-title,
+.version_ERU_Zord_2023 .chap-title,
+.version_CHS_Zord_2023 .chap-title {
 	margin-bottom:0;
 }
 .version_RFHL_jan_2020 .chap-subtitle,
@@ -199,7 +201,9 @@ img {
 .version_HCL_Zord_2023 .chap-subtitle,
 .version_RHP_Zord_2023 .chap-subtitle,
 .version_SLLMOO_Zord_2023 .chap-subtitle,
-.version_RR_Zord_2023 .chap-subtitle {
+.version_RR_Zord_2023 .chap-subtitle,
+.version_EDU_Zord_2023 .chap-subtitle,
+.version_CHS_Zord_2023 .chap-subtitle {
 	margin-top:0;
 	margin-bottom:0;
 }
@@ -250,7 +254,9 @@ img {
 .version_HCL_Zord_2023 .au1:last-child,
 .version_RHP_Zord_2023 .au1:last-child,
 .version_SLLMOO_Zord_2023 .au1:last-child,
-.version_RR_Zord_2023 .au1:last-child {
+.version_RR_Zord_2023 .au1:last-child,
+.version_ERU_Zord_2023 .au1:last-child,
+.version_CHS_Zord_2023 .au1:last-child {
     margin-bottom: 0;
 }
 
@@ -292,7 +298,9 @@ img {
 .version_HCL_Zord_2023 .author_block,
 .version_RHP_Zord_2023 .author_block,
 .version_SLLMOO_Zord_2023 .author_block,
-.version_RR_Zord_2023 .author_block {
+.version_RR_Zord_2023 .author_block,
+.version_ERU_Zord_2023 .author_block,
+.version_CHS_Zord_2023 .author_block {
     margin-bottom: 30px;
 }
 
@@ -309,7 +317,9 @@ img {
 .version_HCL_Zord_2023 .au2:last-child,
 .version_RHP_Zord_2023 .au2:last-child,
 .version_SLLMOO_Zord_2023 .au2:last-child,
-.version_RR_Zord_2023 .au2:last-child {
+.version_RR_Zord_2023 .au2:last-child,
+.version_ERU_Zord_2023 .au2:last-child,
+.version_CHS_Zord_2023 .au2:last-child {
     margin-top: 0;
 }
 
