@@ -277,6 +277,58 @@ ul.tabs li.current{
 	background-color: #DBDCD6;
 }
 
+/* --------------- RR -----------------*/
+/*
+.sidebar.RR{
+	background: #ffffff;
+	background:#e0c799;
+}
+
+.sidebar.RR ul.tabs{
+	background-color: #5b6982;
+	color: #ffffff;
+	border-top: 25px solid #e0c799;
+}
+
+.sidebar.RR ul.tabs li.current{
+	background-color :#252f40;
+	color: #ffffff;
+}
+
+.sidebar.RR ul.tabs li{
+	color: #ffffff;
+}
+
+.sidebar.RR .tab-content.current{
+	background-color: #DBDCD6;
+}
+*/
+/* --------------- ERU -----------------*/
+/*
+.sidebar.ERU{
+	background: #ffffff;
+	background:#e0c799;
+}
+
+.sidebar.ERU ul.tabs{
+	background-color: #5b6982;
+	color: #ffffff;
+	border-top: 25px solid #e0c799;
+}
+
+.sidebar.ERU ul.tabs li.current{
+	background-color :#252f40;
+	color: #ffffff;
+}
+
+.sidebar.ERU ul.tabs li{
+	color: #ffffff;
+}
+
+.sidebar.ERU .tab-content.current{
+	background-color: #DBDCD6;
+}
+*/
 /* --------------- CHS -----------------*/
 
 .sidebar.CHS{
