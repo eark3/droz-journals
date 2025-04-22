@@ -12,7 +12,8 @@ body.root .pkp_structure_content.login {
 
 .journal-description img {
 	max-width: 100%;
-	height: auto
+	height: auto;
+	object-fit: contain;
 }
 
 .pkp_block.block_toc1 {
