@@ -1,0 +1,246 @@
+{
+	"OJSGalleyEntity": {
+		"table": "submission_galleys",
+		"fields": [
+			"galley_id",
+			"submission_id",
+			"remote_url",
+			"label"
+		],
+		"key": "galley_id"
+	},
+	"OJSPaperEntity": {
+		"table": "submissions",
+		"fields": [
+			"submission_id",
+			"section_id",
+			"locale",
+			"pages"
+		],
+		"key": "submission_id"
+	},
+	"OJSSettingEntity": {
+		"table": "${table}_settings",
+		"fields": [
+			"${field}_id",
+			"locale",
+			"setting_name",
+			"setting_value",
+			"setting_type"
+		],
+		"key": [
+			"${field}_id",
+			"locale",
+			"setting_name"
+		]
+	},
+	"OJSAuthorEntity": {
+		"table": "authors",
+		"fields": [
+			"author_id",
+			"submission_id",
+			"first_name",
+			"middle_name",
+			"last_name",
+			"email",
+			"seq"
+		],
+		"key": "author_id"
+	},
+	"OJSPublicationEntity": {
+		"table": "published_submissions",
+		"fields": [
+			"published_submission_id",
+			"submission_id",
+			"issue_id",
+			"access_status",
+			"seq"
+		],
+		"key": "published_submission_id"
+	},
+	"OJSIssueEntity": {
+		"table": "issues",
+		"fields": [
+			"issue_id",
+			"journal_id",
+			"date_published",
+			"last_modified",
+			"open_access_date",
+			"volume",
+			"number",
+			"published",
+			"year"
+		],
+		"key": "issue_id"
+	},
+	"OJSJournalEntity": {
+		"table": "journals",
+		"fields": [
+			"journal_id",
+			"path",
+			"primary_locale",
+			"seq"
+		],
+		"key": "journal_id"
+	},
+	"OJSSectionEntity": {
+		"table": "sections",
+		"fields": [
+			"section_id",
+			"journal_id",
+			"seq"
+		],
+		"key": "journal_id"
+	},
+	"OJSFileEntity": {
+		"table": "submission_files",
+		"fields": [
+			"file_id",
+			"revision",
+			"submission_id",
+			"genre_id",
+			"file_type",
+			"file_stage",
+			"date_uploaded",
+			"date_modified",
+			"assoc_type",
+			"assoc_id",
+			"original_file_name"
+		],
+		"key": [
+			"file_id",
+			"revision"
+		]
+	},
+	"OJSUserEntity": {
+		"table": "users",
+		"fields": [
+			"user_id",
+			"username",
+			"password",
+			"first_name",
+			"middle_name",
+			"last_name",
+			"email"
+		],
+		"key": "username"
+	},
+	"OJSGroupEntity": {
+		"table": "user_groups",
+		"fields": [
+			"user_group_id",
+			"context_id",
+			"role_id"
+		],
+		"key": [
+			"context_id",
+			"role_id"
+		]
+	},
+	"OJSUserGroupEntity": {
+		"table": "user_user_groups",
+		"fields": [
+			"user_group_id",
+			"user_id"
+		],
+		"key": [
+			"user_group_id",
+			"user_id"
+		]
+	},
+	"OJSSubscriptionTypeEntity": {
+		"table": "subscription_types",
+		"fields": [
+			"type_id",
+			"institutional"
+		],
+		"key": "type_id"
+	},
+	"OJSSubscriptionEntity": {
+		"table": "subscriptions",
+		"fields": [
+			"subscription_id",
+			"journal_id",
+			"user_id",
+			"type_id",
+			"date_start",
+			"date_end",
+			"status"
+		],
+		"key": "subscription_id"
+	},
+	"OJSInstitutionalSubscriptionEntity": {
+		"table": "institutional_subscriptions",
+		"fields": [
+			"institutional_subscription_id",
+			"subscription_id",
+			"institution_name"
+		],
+		"key": "institutional_subscription_id"
+	},
+	"OJSInstitutionalSubscriptionIPEntity": {
+		"table": "institutional_subscription_ip",
+		"fields": [
+			"subscription_id",
+			"ip_string"
+		],
+		"key": "institutional_subscription_id"
+	},
+	"OJSVocabEntity": {
+		"table": "controlled_vocabs",
+		"fields": [
+			"controlled_vocab_id",
+			"symbolic",
+			"assoc_id"
+		],
+		"key": "controlled_vocab_id"
+	},
+	"OJSVocabEntryEntity": {
+		"table": "controlled_vocab_entries",
+		"fields": [
+			"controlled_vocab_entry_id",
+			"controlled_vocab_id",
+			"seq"
+		],
+		"key": [
+			"controlled_vocab_entry_id",
+			"controlled_vocab_id"
+		]
+	},
+	"OJSVocabEntrySettingEntity": {
+		"table": "controlled_vocab_entry_settings",
+		"fields": [
+			"controlled_vocab_entry_id",
+			"locale",
+			"setting_name",
+			"setting_value",
+			"setting_type"
+		],
+		"key": [
+			"controlled_vocab_entry_id",
+			"locale",
+			"setting_name"
+		]
+	},
+	"settings": {
+		"issue_galley": "galley"
+	},
+	"remote": {
+		"base": "revues.droz.org_files",
+		"path": "${base}/journals/${journal}/articles/${article}/submission/proof/${article}-${genre}-${file}-${revision}-${stage}-${date}.${type}"
+	},
+	"criteria": {
+		"galleys": {
+			"label": {"like": "%à l'achat%"},
+			"remote_url": {"like": "http%://%/${reference}/${chapter}"}
+		},
+		"settings": {
+        	"locale": {"in": ["fr_FR","en_US"]},
+        	"setting_name": {"in": ["abstract","title","subtitle"]}
+		},
+		"files": {
+			"file_type": "application/pdf",
+			"file_stage": 10
+		}
+	}
+}
