@@ -169,3 +169,7 @@ body.root .pkp_structure_content.login {
 	padding: 0 0 0 5px;
 	color: revert;
 }
+
+.navbar-brand a {
+	padding-right: 1em;
+}
