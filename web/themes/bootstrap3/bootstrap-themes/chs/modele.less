@@ -4,7 +4,7 @@
 
 /* TON DE LA GUIDELINE */
 @TON1: #b20e0c;
-@TON2: #878e9b;
+@TON2: black;
 @TON3: #fdf7ec;
 
 /* COULEUR DES TEXTES*/
@@ -24,14 +24,14 @@
 /* COULEUR BARRE LATERALE */
 @LATERAL_BG_ENTETE:#b20e0c;
 @LATERAL_ENTETE_TEXTE:#fdf7ec;
-@LATERAL_BG:#DBDCD6;
+@LATERAL_BG:#D7D7D7;
 
 /* COULEUR DU PREMIER ENCADRE SUR LA PAGE D'ACCUEIL */
-@ENCADRE:#fdf7ec;
+@ENCADRE:#efcece;
 
 /* COULEUR BOUTTON HOVER*/
-@BTN_HOVER:#474747;
-@BTN_TEXT_HOVER: #fdf7ec;
+@BTN_HOVER:#b20e0c;
+@BTN_TEXT_HOVER: #black;
 
 /* PIED DE PAGE */
 @FOOTER_LIEN:#fdf7ec;
@@ -171,9 +171,12 @@ div.pkp_block > div.content > ul > li{
 	background-color:@ENCADRE !important;
 }
 .media-body{
-	background-color:@TON3 !important;
+	background-color:@ENCADRE !important;
 }
 
+.cmp_breadcrumbs > ol {
+	background-color:@LATERAL_BG !important;
+}
 
 //-------------------------------------------
 // BOUTTON
