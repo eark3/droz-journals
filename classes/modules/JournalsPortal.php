@@ -188,7 +188,7 @@ class JournalsPortal extends Portal {
                                             'views' => $__paper->views
                                         ],
                                         'issue' => [
-                                            'title' => $this->_settings('journal', $__journal, 'name').': '.JournalsUtils::serial($__issue).': '.$this->_settings('issue', $__issue, 'title'),
+                                            'title' => JournalsUtils::flat($this->_settings('journal', $__journal, 'name')).': '.JournalsUtils::serial($__issue).': '.$this->_settings('issue', $__issue, 'title'),
                                             'url'   => JournalsUtils::url($__journal->context, $__issue)
                                         ]
                                     ];
@@ -357,7 +357,7 @@ class JournalsPortal extends Portal {
             'id'              => $short,
             'title'           => html_entity_decode($_paper['title']),
             'volume'          => $issue->volume,
-            'container-title' => strip_tags(str_replace(['<br/>','&nbsp;'], ' ', $_journal['name'])),
+            'container-title' => JournalsUtils::flat($_journal['name']),
             'page'            => JournalsUtils::pages($paper),
             'accessed'        => ["date-parts" => [[date('Y', $now), date('m', $now), date('d', $now)]]],
             'issued'          => ["date-parts" => [[date('Y', $issued), date('m', $issued), date('d', $issued)]]]

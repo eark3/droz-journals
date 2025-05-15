@@ -22,6 +22,13 @@ class OpenEditionImport extends ProcessExecutor {
         'info:eu-repo/semantics/openAccess'      => 'free'
     ];
     
+    public static $LOCALES = [
+        'fr' => 'fr-FR',
+        'en' => 'en-US',
+        'it' => 'it-IT',
+        'de' => 'de-DE'
+    ];
+    
     protected $styles = [];
     
     public function parameters($string) {
@@ -275,15 +282,13 @@ class OpenEditionImport extends ProcessExecutor {
                                 }
                             }
                         }
+                        if (isset($_paper['tei']) && OPEN_EDITION_UPDATE_HTML) {
+                            $this->buildHTML($journal, $issue, $_paper, $_journal->locale);
+                        }
                         $papers[] = $_paper;
                         $previous = $paper;
                     }
                     $issue['papers'] = $papers;
-                    foreach ($papers as $paper) {
-                        if (isset($paper['tei']) && OPEN_EDITION_UPDATE_HTML) {
-                            $this->buildHTML($journal, $issue, $paper, $_journal->locale);
-                        }
-                    }
                     file_put_contents(Zord::liveFolder('import').$short.'.json', json_encode($issue, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
                     $refs[] = $short;
                 }
@@ -307,7 +312,7 @@ class OpenEditionImport extends ProcessExecutor {
         return str_replace('_', '-', substr(''.$attribute, strlen('MD_')));
     }
     
-    protected function buildHTML($journal, $issue, $paper, $locale) {
+    protected function buildHTML($journal, $issue, &$paper, $locale) {
         $pages = explode('-', $paper['pages']);
         if (count($pages) < 2) {
             $pages[] = $pages[0];
@@ -330,6 +335,9 @@ class OpenEditionImport extends ProcessExecutor {
             'section'      => $paper['section']['name']
         ];
         $models = array_merge($models, $this->tei2html($paper));
+        foreach ($models['contents']['abstracts'] ?? [] as $locale => $abstract) {
+            $paper['settings']['abstract'][$locale]['value'] = $abstract;
+        }
         $view = new View('/paper.html', $models);
         $view->setMark(false);
         $html = $view->render();
@@ -523,7 +531,9 @@ class OpenEditionImport extends ProcessExecutor {
                 },
                 preg_replace('#<(\w+) ([\w|\s|:|=|"|\#|/]*)/>#', '', $fragment->saveXML($fragment->documentElement))
             );
-            $content = preg_replace('#(\s+)xml:lang="(\w+)"#', '', $content);
+            if ($root !== 'front') {
+                $content = preg_replace('#(\s+)xml:lang="(\w+)"#', '', $content);
+            }
             $fragment->loadXML($content);
             $fragment->formatOutput = false;
             $xpath = new DOMXpath($fragment);
@@ -549,6 +559,13 @@ class OpenEditionImport extends ProcessExecutor {
                     $type = $child->getAttribute('type');
                     if ($child->nodeName === 'div' && in_array($type, ['appendix','bibliography'])) {
                         $contents[$type] = $this->content('div', $fragment, $child);
+                    }
+                }
+            } else if ($root === 'front') {
+                foreach ($elements as $element) {
+                    $lang = ''.$element->getAttribute('xml:lang');
+                    if ($element->nodeName === 'div' && !empty($lang) && (self::$LOCALES[$lang] ?? false)) {
+                        $contents['abstracts'][self::$LOCALES[$lang]] = $fragment->saveXML(Zord::firstElementChild($element));
                     }
                 }
             } else {

@@ -355,6 +355,9 @@ class JournalsUtils {
         return $content;
     }
     
+    public static function flat($name) {
+        return strip_tags(str_replace(['<br/>','&nbsp;'], ' ', $name));
+    }
 }
 
 ?>
