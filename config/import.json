@@ -38,7 +38,8 @@
 	},
 	"openedition": {
 		"coverImage": {
-			"ITA" : "${journal}_vignette_couv_${issue.created}.jpg"
+			"ITA" : "${journal}_vignette_couv_${issue.created}.jpg",
+			"CHS" : "${issue.radix}_cover.png"
 		}
 	}
 }

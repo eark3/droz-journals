@@ -63,7 +63,7 @@ class OpenEditionImport extends ProcessExecutor {
                 if (count($mets) === 1) {
                     $volume = basename($folder);
                     $number = null;
-                    if (strpos('.', $volume) > 0) {
+                    if (strpos($volume, '.') > 0) {
                         list($volume, $number) = explode('.', $volume);
                     }
                     $short = JournalsUtils::short($journal, $volume, $number);
@@ -125,6 +125,7 @@ class OpenEditionImport extends ProcessExecutor {
                             $this->warn(1, 'Missing extent for MD_'.str_replace('-', '_', $id));
                         }
                     }
+                    $metadata['issue']['radix'] = str_replace('.', '-', $short);
                     $_papers = $metadata['paper'];
                     uasort($_papers, function($first,$second) {
                         $beginFirst = explode('-',$first['extent'])[0];
@@ -334,24 +335,56 @@ class OpenEditionImport extends ProcessExecutor {
             'end'          => $pages[1],
             'section'      => $paper['section']['name']
         ];
-        $models = array_merge($models, $this->tei2html($paper));
-        foreach ($models['contents']['abstracts'] ?? [] as $locale => $abstract) {
-            $paper['settings']['abstract'][$locale]['value'] = $abstract;
-        }
+        $models = array_merge($models, $this->tei2html($paper, $locale));
         $view = new View('/paper.html', $models);
         $view->setMark(false);
         $html = $view->render();
         file_put_contents($paper['html'], $html);
     }
     
-    private function tei2html($paper) {
+    private function tei2html(&$paper, $locale) {
         $file = $paper['tei'];
         $this->info(1, $file);
         $styles = [];
         $footnotes = [];
-        $renditions = simplexml_load_string(file_get_contents($file))->teiHeader->encodingDesc->tagsDecl->children();
-        foreach ($renditions as $rendition) {
+        $contents = [];
+        $header = simplexml_load_string(file_get_contents($file))->teiHeader;
+        foreach ($header->encodingDesc->tagsDecl->children() as $rendition) {
             $styles['#'.$rendition->attributes('xml',true)->id] = trim(''.$rendition);
+        }
+        foreach ($header->fileDesc->titleStmt->children() as $element) {
+            switch ($element->getName()) {
+                case 'title': {
+                    $type = $element->attributes()->type ?? false;
+                    if ($type && ''.$type === 'sub') {
+                        $removable = [];
+                        foreach ($element->children() as $child) {
+                            if ($child->getName() === 'note') {
+                                $removable[] = $child;
+                            }
+                        }
+                        foreach ($removable as $child) {
+                            unset($child[0]);
+                        }
+                        $paper['settings']['subtitle'][$locale]['value'] = trim(strip_tags($element->asXML()));
+                    }
+                    break;
+                }
+                case 'author': {
+                    $affiliation = $element->affiliation ?? false;
+                    if ($affiliation) {
+                        $first = $element->persName->forename;
+                        $last  = $element->persName->surname;
+                        foreach ($paper['authors'] ?? [] as $index => $author) {
+                            if (''.$first === $author['first'] && ''.$last === $author['last']) {
+                                $paper['authors'][$index]['settings']['affiliation'][$locale]['value'] = trim(''.$affiliation);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
         }
         $document = new DOMDocument();
         $document->load($file, self::$XML_PARSE_BIG_LINES);
@@ -360,7 +393,6 @@ class OpenEditionImport extends ProcessExecutor {
         $front  = Zord::firstElementChild($text);
         $body   = Zord::nextElementSibling($front);
         $back   = Zord::nextElementSibling($body);
-        $contents = [];
         foreach (['front' => $front, 'body' => $body, 'back' => $back] as $root => $part) {
             if (!isset($part)) {
                 continue;
@@ -565,7 +597,7 @@ class OpenEditionImport extends ProcessExecutor {
                 foreach ($elements as $element) {
                     $lang = ''.$element->getAttribute('xml:lang');
                     if ($element->nodeName === 'div' && !empty($lang) && (self::$LOCALES[$lang] ?? false)) {
-                        $contents['abstracts'][self::$LOCALES[$lang]] = $fragment->saveXML(Zord::firstElementChild($element));
+                        $paper['settings']['abstract'][self::$LOCALES[$lang]]['value'] = $fragment->saveXML(Zord::firstElementChild($element));
                     }
                 }
             } else {
