@@ -377,7 +377,7 @@ class OpenEditionImport extends ProcessExecutor {
                         $last  = $element->persName->surname;
                         foreach ($paper['authors'] ?? [] as $index => $author) {
                             if (''.$first === $author['first'] && ''.$last === $author['last']) {
-                                $paper['authors'][$index]['settings']['affiliation'][$locale]['value'] = trim(''.$affiliation);
+                                $paper['authors'][$index]['settings']['affiliation'][$locale]['value'] = trim(strip_tags($affiliation->asXML()));
                                 break;
                             }
                         }
