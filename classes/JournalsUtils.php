@@ -358,6 +358,97 @@ class JournalsUtils {
     public static function flat($name) {
         return strip_tags(str_replace(['<br/>','&nbsp;'], ' ', $name));
     }
+    
+    public static function find($short) {
+        $none = [false, false, false];
+        $journal = null;
+        $issue = null;
+        $pages = null;
+        $tokens = explode('_', $short);
+        if (!in_array(count($tokens), [1,2,3])) {
+            return $none;
+        }
+        if (count($tokens) > 2) {
+            list($journal, $issue, $pages) = $tokens;
+        } else if (count($tokens) > 1) {
+            list($journal, $issue) = $tokens;
+        } else {
+            $journal = $short;
+        }
+        $journal = (new JournalEntity())->retrieveOne(['context' => $journal]);
+        if ($journal && $issue) {
+            $volume = null;
+            $number = null;
+            $tokens = explode('.', $issue);
+            if (!in_array(count($tokens), [1,2])) {
+                return $none;
+            }
+            if (count($tokens) === 2) {
+                list($volume, $number) = $tokens;
+            } else {
+                $volume = $issue;
+            }
+            $issue = (new IssueEntity())->retrieveOne([
+                'journal' => $journal->id,
+                'volume'  => $volume,
+                'number'  => $number
+            ]);
+            if ($issue && $pages) {
+                $paper = (new PaperEntity())->retrieveOne([
+                    'issue' => $issue->id,
+                    'pages' => $pages
+                ]);
+                if ($paper === false) {
+                    return $none;
+                }
+            }
+        }
+        return [$journal, $issue, $paper ?? null];
+    }
+    
+    public static function expand($short) {
+        $tokens = explode('_', $short);
+        $journal = $tokens[0];
+        $issue = null;
+        $pages = null;
+        if (count($tokens) > 1) {
+            $issue = $tokens[1];
+            if (strpos($issue, '.') > 0) {
+                $issue = explode('.', $issue);
+                $issue = Zord::str_pad($issue[0], 3, '0', STR_PAD_LEFT).'.'.Zord::str_pad($issue[1], 2, '0', STR_PAD_LEFT);
+            } else {
+                $issue = Zord::str_pad($issue, 3, '0', STR_PAD_LEFT);
+            }
+            if (count($tokens) > 2) {
+                $pages = $tokens[2];
+                if (strpos($pages, '-') > 0) {
+                    $pages = explode('.', $pages);
+                    $pages = Zord::str_pad($pages[0], 3, '0', STR_PAD_LEFT).'_'.Zord::str_pad($pages[1], 3, '0', STR_PAD_LEFT);
+                } else {
+                    $pages = Zord::str_pad($pages, 3, '0', STR_PAD_LEFT);
+                }
+            }
+        }
+        return $journal.(isset($issue) ? '_'.$issue : '').(isset($pages) ? '_'.$pages: '');
+    }
+    
+    public static function shrink($short) {
+        $tokens = explode('_', $short);
+        $journal = $tokens[0];
+        $issue = null;
+        $pages = null;
+        if (count($tokens) > 1) {
+            $issue = ltrim($tokens[1], '0');
+            if (strpos($issue, '.') > 0) {
+                $issue = explode('.', $issue);
+                $issue = $issue[0].'.'.ltrim($issue[1], '0');
+            }
+            if (count($tokens) > 2) {
+                $pages = ltrim($tokens[2], '0').(count($tokens) > 3 ? '-'.ltrim($tokens[3], '0') : '');
+            }
+        }
+        return $journal.(isset($issue) ? '_'.$issue : '').(isset($pages) ? '_'.$pages : '');
+    }
 }
 
 ?>
