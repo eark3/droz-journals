@@ -444,7 +444,17 @@ class JournalsUtils {
                 $issue = $issue[0].'.'.ltrim($issue[1], '0');
             }
             if (count($tokens) > 2) {
-                $pages = ltrim($tokens[2], '0').(count($tokens) > 3 ? '-'.ltrim($tokens[3], '0') : '');
+                $pages = ltrim($tokens[2], '0');
+                if (count($tokens) > 3) {
+                    $pages .= '-'.ltrim($tokens[3], '0');
+                } else {
+                    $pages = explode('-', $pages);
+                    if (count($pages) > 1) {
+                        $pages = $pages[0].'-'.ltrim($pages[1], '0');
+                    } else {
+                        $pages = $pages[0];
+                    }
+                }
             }
         }
         return $journal.(isset($issue) ? '_'.$issue : '').(isset($pages) ? '_'.$pages : '');
