@@ -34,12 +34,12 @@ trait JournalsModule {
         $models['langs'] = Zord::value('portal', 'lang');
         foreach ((new JournalEntity())->retrieveAll(['order' => ['asc' => 'place']]) as $journal) {
             if (!empty(Zord::value('context', [$journal->context,'url']))) {
-                $models['journals'][] = $this->_journal($journal);
+                $models['journals'][] = $this->_journal($journal, false);
             }
         }
         if (isset($this->controler->journal)) {
             $models['aside'] = Zord::value('portal', ['aside', 'layout', $this->context]) ?? Zord::value('portal', ['aside', 'layout', 'default']);
-            $models['journal'] = $this->_journal($this->controler->journal);
+            $models['journal'] = $this->_journal($this->controler->journal, false);
         }
         if (isset($_page) && isset($this->locale->pages->$_page) && !isset($models['ariadne'])) {
             $models['ariadne'] = [
@@ -97,7 +97,7 @@ trait JournalsModule {
         }
     }
     
-    protected function _journal($journal) {
+    protected function _journal($journal, $full = true) {
         $key = $this->_key('journal', ['context' => $journal->context]);
         $type = $this->lang.DS.'journal';
         if ($this->cache->hasItem($type, $key)) {
@@ -106,12 +106,14 @@ trait JournalsModule {
             $result = $this->properties('journal', $journal);
             $this->cache->setItem($type, $key, $result);
         }
-        $issues = (new IssueEntity())->retrieveAll(['journal' => $journal->id, 'order' => ['desc' => 'published']]);
-        $_issues = [];
-        foreach ($issues as $issue) {
-            $_issues[] = $this->_issue($issue, $journal);
+        if ($full) {
+            $issues = (new IssueEntity())->retrieveAll(['journal' => $journal->id, 'order' => ['desc' => 'published']]);
+            $_issues = [];
+            foreach ($issues as $issue) {
+                $_issues[] = $this->_issue($issue, $journal);
+            }
+            $result['issues'] = $_issues;
         }
-        $result['issues'] = $_issues;
         return $result;
     }
     

@@ -255,7 +255,7 @@ class JournalsPortal extends Portal {
             $this->hit(['display' => $display]);
             $models = array_merge($models, ['ariadne' => $ariadne]);
             if (isset($view)) {
-                return $this->view('/portal/'.$view, $models);
+                return $this->view('/portal/'.$view, $models, 'text/html;charset=UTF-8', false, false);
             } else if (isset($page)) {
                 return $this->page($page, $models);
             }
