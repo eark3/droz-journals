@@ -336,7 +336,7 @@ ul.tabs li.current{
 }
 
 .sidebar.CHS ul.tabs{
-	background-color: #A9A9A9;
+	background-color: #B20E0C;
 	color: #FAFAFA;
 	border-top: 25px solid #FAFAFA;
 }
@@ -346,16 +346,12 @@ ul.tabs li.current{
 	color: #FAFAFA;
 }
 
-.sidebar.CHS ul.tabs li:hover {
-	background-color: #B20E0C;
-}
-
 .sidebar.CHS ul.tabs li{
 	color: #FFFFFF;
 }
 
 .sidebar.CHS .tab-content.current{
-	background-color: #FAFAFA;
+	background-color: #EDEDED;
 }
 
 
