@@ -46,7 +46,7 @@ class JournalsDelete extends ProcessExecutor {
                         case 'issue': {
                             $issueKey = JournalsUtils::expand($short);
                             $this->clean('issue', $issueKey);
-                            foreach ($this->cache->getKeys('paper', $issueKey.'_*') as $paperKey) {
+                            foreach ($this->cache->keys(DEFAULT_LANG, 'paper', $issueKey.'_*') as $paperKey) {
                                 $this->clean('paper', $paperKey);
                             }
                             break;
@@ -54,9 +54,9 @@ class JournalsDelete extends ProcessExecutor {
                         case 'journal':{
                             $journalKey = JournalsUtils::expand($short);
                             $this->clean('journal', $journalKey);
-                            foreach ($this->cache->getKeys('issue', $journalKey.'_*') as $issueKey) {
+                            foreach ($this->cache->keys(DEFAULT_LANG, 'issue', $journalKey.'_*') as $issueKey) {
                                 $this->clean('issue', $issueKey);
-                                foreach ($this->cache->getKeys('paper', $issueKey.'_*') as $paperKey) {
+                                foreach ($this->cache->keys(DEFAULT_LANG, 'paper', $issueKey.'_*') as $paperKey) {
                                     $this->clean('paper', $paperKey);
                                 }
                             }
@@ -70,7 +70,8 @@ class JournalsDelete extends ProcessExecutor {
     
     protected function clean($type, $key) {
         $this->info(0, 'delete '.$type.' '.$key.' from cache');
-        foreach (Zord::value('portal', 'lang') as $locale) {
+        foreach (glob($this->cache->getRoot().'*', GLOB_ONLYDIR) as $path) {
+            $locale = basename($path);
             if ($key && $this->cache->hasItem($locale.DS.$type, $key)) {
                 $this->info(1, $locale.DS.$type);
                 $this->cache->deleteItem($locale.DS.$type, $key);
