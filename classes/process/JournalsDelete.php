@@ -69,7 +69,7 @@ class JournalsDelete extends ProcessExecutor {
     }
     
     protected function clean($type, $key) {
-        $this->info(0, 'delete '.$key.' from cache');
+        $this->info(0, 'delete '.$type.' '.$key.' from cache');
         foreach (Zord::value('portal', 'lang') as $locale) {
             if ($key && $this->cache->hasItem($locale.DS.$type, $key)) {
                 $this->info(1, $locale.DS.$type);
@@ -78,8 +78,15 @@ class JournalsDelete extends ProcessExecutor {
         }
         if ($type === 'paper') {
             $short = JournalsUtils::shrink($key);
-            $this->info(0, 'delete '.$short.' from index');
+            $this->info(0, 'delete entry '.$short.' from index');
             Store::deindex($short);
+            $tokens = explode('_', $short);
+            $directory = STORE_FOLDER.'journals'.DS.$tokens[0].DS.$tokens[1];
+            $this->info(0, 'delete files from '.$directory);
+            foreach (glob($directory.DS.$short.'*') as $path) {
+                $this->info(1, basename($path));
+                Zord::deleteRecursive($path);
+            }
         }
     }
 }

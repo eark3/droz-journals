@@ -422,7 +422,7 @@ class JournalsUtils {
             if (count($tokens) > 2) {
                 $pages = $tokens[2];
                 if (strpos($pages, '-') > 0) {
-                    $pages = explode('.', $pages);
+                    $pages = explode('-', $pages);
                     $pages = Zord::str_pad($pages[0], 3, '0', STR_PAD_LEFT).'_'.Zord::str_pad($pages[1], 3, '0', STR_PAD_LEFT);
                 } else {
                     $pages = Zord::str_pad($pages, 3, '0', STR_PAD_LEFT);
