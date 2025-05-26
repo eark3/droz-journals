@@ -332,27 +332,30 @@ ul.tabs li.current{
 /* --------------- CHS -----------------*/
 
 .sidebar.CHS{
-	background: #ffffff;
-	background: #fdf7ec;
+	background: #FAFAFA;
 }
 
 .sidebar.CHS ul.tabs{
-	background-color: #878e9b;
-	color: #fcf2d7;
-	border-top: 25px solid #fdf7ec;
+	background-color: #A9A9A9;
+	color: #FAFAFA;
+	border-top: 25px solid #FAFAFA;
 }
 
 .sidebar.CHS ul.tabs li.current{
-	background-color :#9B9487;
-	color: #fcf2d7;
+	background-color :#000000;
+	color: #FAFAFA;
+}
+
+.sidebar.CHS ul.tabs li:hover {
+	background-color: #B20E0C;
 }
 
 .sidebar.CHS ul.tabs li{
-	color: #ffffff;
+	color: #FFFFFF;
 }
 
 .sidebar.CHS .tab-content.current{
-	background-color: #DBDCD6;
+	background-color: #FAFAFA;
 }
 
 
