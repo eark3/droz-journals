@@ -349,7 +349,7 @@ class OpenEditionImport extends ProcessExecutor {
         $footnotes = [];
         $contents = [];
         $header = simplexml_load_string(file_get_contents($file))->teiHeader;
-        foreach ($header->encodingDesc->tagsDecl->children() as $rendition) {
+        foreach ($header->encodingDesc->tagsDecl->children() ?? [] as $rendition) {
             $styles['#'.$rendition->attributes('xml',true)->id] = trim(''.$rendition);
         }
         foreach ($header->fileDesc->titleStmt->children() as $element) {
