@@ -199,8 +199,14 @@ class OpenEditionImport extends ProcessExecutor {
                             }
                             if ($type === 'pdf') {
                                 if (OPEN_EDITION_UPDATE_PDF) {
-                                    $this->info(1, $file);
-                                    Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
+                                    $alternate = dirname($file).DS.basename($filename).'.pdf';
+                                    if (file_exists($alternate)) {
+                                        $this->info(1, $alternate);
+                                        copy($alternate, $filename.'.pdf');
+                                    } else {
+                                        $this->info(1, $file);
+                                        Zord::execute('exec', 'pdftk '.$file.' cat 2-end output '.$filename.'.pdf');
+                                    }
                                 }
                                 if (isset($issue['ean']) && $_paper['status'] === 'subscription') {
                                     $_paper['galleys'][] = 'shop';
