@@ -85,7 +85,7 @@ class JournalsDelete extends ProcessExecutor {
             $directory = STORE_FOLDER.'journals'.DS.$tokens[0].DS.$tokens[1];
             $this->info(0, 'delete files from '.$directory);
             foreach (glob($directory.DS.$short.'*') as $path) {
-                $this->info(1, basename($path));
+                $this->info(1, substr($path, strlen($directory.DS)));
                 Zord::deleteRecursive($path);
             }
         }
