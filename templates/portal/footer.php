@@ -25,10 +25,9 @@
 			<div class="col-md-4">
 				<img src="/journals/img/logo-droz-77x80.png" />
 				<p>
-					Librairie Droz S.A.<br/ >
-					11, rue Firmin-Massot<br/ >
-					B.P. 389<br/ >
-					CH – 1211 Genève 12<br/ >
+					Librairie Droz S.A.<br/>
+					31 rue Vautier<br/>
+					CH-1127 Carouge (Genève)<br/>
 					Téléphone : +41 22 346 66 66<br/ >
 					<a target="_blank" href="https://www.droz.org">https://www.droz.org</a>
 				</p>
