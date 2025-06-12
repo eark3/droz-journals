@@ -27,7 +27,7 @@
 				<p>
 					Librairie Droz S.A.<br/>
 					31 rue Vautier<br/>
-					CH-1127 Carouge (Genève)<br/>
+					CH-1227 Carouge (Genève)<br/>
 					Téléphone : +41 22 346 66 66<br/ >
 					<a target="_blank" href="https://www.droz.org">https://www.droz.org</a>
 				</p>
