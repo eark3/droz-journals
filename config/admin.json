@@ -157,6 +157,11 @@
 					"template": "text",
 					"multiline": true,
 					"class": "html"
+				},
+				"notice": {
+					"template": "text",
+					"multiline": true,
+					"class": "html"
 				}
 			},
 			"issue": {

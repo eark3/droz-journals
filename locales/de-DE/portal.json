@@ -36,6 +36,7 @@
 		"policy": "Zugangsrichtlinien",
 		"license": "Impressum",
 		"subscription": "Abonnement",
+		"notice": "Bekanntmachung",
 		"login": "Einloggen",
 		"login/lostPassword": "Fordern Sie ein Passwort an"
 	},

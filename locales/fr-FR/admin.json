@@ -52,7 +52,8 @@
 				"license": "Mentions légales",
 				"readerInformation": "Informations pour les lecteurs",
 				"authorInformation": "Informations pour les auteurs",
-				"librarianInformation": "Informations pour les bibliothécaires"
+				"librarianInformation": "Informations pour les bibliothécaires",
+				"notice": "Annonce"
 			},
 			"issue": {
 				"title": "Titre du numéro",

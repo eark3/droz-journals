@@ -46,6 +46,9 @@
 <?php } ?>
 					</ul>	
 				<li class="subscription"><a href="<?php echo $baseURL; ?>/info/subscription"><?php echo $locale->pages->subscription; ?></a></li>
+<?php if (!empty($journal['settings']['notice'])) { ?>
+				<li class="notice"><a href="<?php echo $baseURL; ?>/info/notice"><?php echo $locale->pages->notice; ?></a></li>
+<?php } ?>
 			</ul>
 <?php $this->render('/portal/widget/user'); ?>
 		</nav>

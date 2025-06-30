@@ -35,6 +35,7 @@
 		"policy": "Politique d'accès",
 		"license": "Mentions légales",
 		"subscription": "Abonnement",
+		"notice": "Annonce",
 		"login": "Se connecter",
 		"login/lostPassword": "Demander un mot de passe",
 		"login/changePassword": "Changer le mot de passe"

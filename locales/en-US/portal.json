@@ -34,6 +34,7 @@
 		"policy": "Access policy",
 		"license": "Legal notice",
 		"subscription": "Subscription",
+		"notice": "Notice",
 		"login": "Login",
 		"login/lostPassword": "Forgot your password?"
 	},
