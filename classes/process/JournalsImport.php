@@ -487,6 +487,7 @@ class JournalsImport extends Import {
             'title'  => $settings['name'],
             'abbrev' => $journal->context,
             'issn'   => [
+                'title'  => !empty($settings['titleIssn']) ? $settings['titleIssn'] : null,
                 'print'  => $settings['printIssn'],
                 'online' => $settings['onlineIssn'],
             ]

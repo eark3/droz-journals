@@ -28,6 +28,7 @@
 		"forms": {
 			"journal": {
 				"name": "Nom de la revue",
+				"titleIssn": "ISSN titre déclaré",
 				"printIssn": "ISSN version imprimée",
 				"onlineIssn": "ISSN version en ligne",
 				"extraCSS": "Feuille de style complémentaire",

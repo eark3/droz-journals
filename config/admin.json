@@ -50,6 +50,9 @@
 				"name": {
 					"template": "text"
 				},
+				"titleIssn": {
+					"template": "text"
+				},
 				"printIssn": {
 					"template": "text"
 				},

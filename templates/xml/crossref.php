@@ -12,7 +12,7 @@
 <?php foreach ($articles as $article) { ?>
     <journal>
       <journal_metadata>
-        <full_title><?php echo $journal['title']; ?></full_title>
+        <full_title><?php echo $journal['issn']['title'] ?? $journal['title']; ?></full_title>
         <abbrev_title><?php echo $journal['abbrev']; ?></abbrev_title>
 <?php if (!empty($journal['issn']['online'])) { ?>
         <issn media_type="electronic"><?php echo $journal['issn']['online']; ?></issn>
