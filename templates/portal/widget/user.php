@@ -38,7 +38,7 @@
 					<a href="/" class="dropdown-toggle" data-toggle="dropdown"><?php echo $locale->language; ?>&nbsp;<b class="caret"></b></a>
 					<ul class="dropdown-menu dropdown-menu-right">
 <?php   foreach ($langs as $_lang) { ?>
-						<li><a href="<?php echo $pathURL; ?>?lang=<?php echo $_lang; ?>"><?php echo Zord::getLocale('portal', $lang)->lang->$_lang; ?></a></li>
+						<li><a href="<?php echo $pathURL; ?>?lang=<?php echo $_lang; ?>"><img src="/journals/img/<?php echo $_lang ?>.jpg" /> <span style="margin-left: 1em;"><?php echo Zord::getLocale('portal', $_lang)->lang->$_lang; ?></span></a></li>
 <?php   } ?>
 					</ul>
 				</li>

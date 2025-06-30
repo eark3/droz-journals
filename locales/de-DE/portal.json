@@ -1,9 +1,10 @@
 {
 	"language": "Sprache",
 	"lang": {
-		"fr-FR": "Französich (FR)",
-		"en-US": "Englisch (US)",
-		"de-DE": "Deutsch (DE)"
+		"fr-FR": "Französich",
+		"en-US": "Englisch",
+		"de-DE": "Deutsch",
+		"it-IT": "Italienisch"
 	},
 	"root": {
 		"journal": "Zur Zeitschrift",
