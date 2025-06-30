@@ -165,6 +165,9 @@
 					"template": "text",
 					"multiline": true,
 					"class": "html"
+				},
+				"noticeTitle": {
+					"template": "text"
 				}
 			},
 			"issue": {

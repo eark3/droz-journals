@@ -54,7 +54,8 @@
 				"readerInformation": "Informations pour les lecteurs",
 				"authorInformation": "Informations pour les auteurs",
 				"librarianInformation": "Informations pour les bibliothécaires",
-				"notice": "Annonce"
+				"notice": "Texte de l'annonce",
+				"noticeTitle": "Titre de l'annonce"
 			},
 			"issue": {
 				"title": "Titre du numéro",
