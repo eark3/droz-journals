@@ -125,6 +125,12 @@ class JournalsImport extends Import {
                 (new IssueEntity())->deleteOne($_issue->id);
             }
         }
+        $fields = Zord::value('import', ['fields','issue']);
+        foreach ($this->issue as $field => $value) {
+            if (!in_array($field, $fields) && !is_array($value)) {
+                $this->info(2, $field." : ".$value);
+            }
+        }
         $_issue = JournalsUtils::import('issue', $this->issue);
         $this->purge('issue', $_issue);
         list($journal,$issue) = explode('_', $ean);
