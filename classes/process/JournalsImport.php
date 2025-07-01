@@ -125,12 +125,6 @@ class JournalsImport extends Import {
                 (new IssueEntity())->deleteOne($_issue->id);
             }
         }
-        $fields = Zord::value('import', ['fields','issue']);
-        foreach ($this->issue as $field => $value) {
-            if (!in_array($field, $fields) && !is_array($value)) {
-                $this->info(2, $field." : ".$value);
-            }
-        }
         $_issue = JournalsUtils::import('issue', $this->issue);
         $this->purge('issue', $_issue);
         list($journal,$issue) = explode('_', $ean);
@@ -333,6 +327,12 @@ class JournalsImport extends Import {
         if (empty($volume)) {
             $this->error(3, Zord::substitute($this->locale->messages->check->error->ref->wrong, ['ref' => $ean]));
             return false;
+        }
+        $fields = Zord::value('import', ['fields','issue']);
+        foreach ($this->issue as $field => $value) {
+            if (!in_array($field, $fields) && !is_array($value)) {
+                $this->info(2, $field." : ".$value);
+            }
         }
         $this->issue['volume'] = $volume;
         $this->issue['number'] = $number;
