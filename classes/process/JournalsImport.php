@@ -338,7 +338,7 @@ class JournalsImport extends Import {
         $this->issue['number'] = $number;
         $issue = (new IssueEntity())->retrieveOne($ean);
         $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
-        if ($issue === false || empty($this->issue['published'])) {
+        if ($issue === false && empty($this->issue['published'])) {
             $this->issue['published'] = date('Y-m-d');
         }
         if (empty($this->issue['open'])) {
