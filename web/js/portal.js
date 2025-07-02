@@ -32,8 +32,7 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on("pageshow", function() {
-	var headerHeight = jQuery('#headerNavigationContainer').height() + 23.567;
-	jQuery('body').css("margin-top", headerHeight);
+	jQuery('body').css("margin-top", jQuery('#headerNavigationContainer').outerHeight(true));
 });
 
 document.addEventListener("DOMContentLoaded", function(event) {
