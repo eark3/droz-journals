@@ -32,10 +32,8 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on("pageshow", function() {
-	var headerHeight = jQuery('#headerNavigationContainer').height();
-	var headerMarginBottom = jQuery('#headerNavigationContainer').css('margin-bottom');
-	jQuery('body').css("margin-top", 'calc(' + headerHeight + 'px + ' + headerMarginBottom + ')');
-	//jQuery('body').css("padding-top", headerMarginBottom);
+	var headerHeight = jQuery('#headerNavigationContainer').height() + 23.566;
+	jQuery('body').css("margin-top", headerHeight);
 });
 
 document.addEventListener("DOMContentLoaded", function(event) {
