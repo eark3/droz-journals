@@ -34,8 +34,8 @@ jQuery(document).ready(function() {
 jQuery(window).on("pageshow", function() {
 	var headerHeight = jQuery('#headerNavigationContainer').height();
 	var headerMarginBottom = jQuery('#headerNavigationContainer').css('margin-bottom');
-	jQuery('body').css("margin-top", headerHeight);
-	jQuery('body').css("padding-top", headerMarginBottom);
+	jQuery('body').css("margin-top", 'calc(' + headerHeight + ' + ' + headerMarginBottom + ')');
+	//jQuery('body').css("padding-top", headerMarginBottom);
 });
 
 document.addEventListener("DOMContentLoaded", function(event) {
