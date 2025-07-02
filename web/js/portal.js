@@ -31,6 +31,13 @@ jQuery(document).ready(function() {
 	});
 });
 
+jQuery(window).on("load", function() {
+	var headerHeight = jQuery('#headerNavigationContainer').height();
+	var headerMarginBottom = jQuery('#headerNavigationContainer').css('margin-bottom');
+	jQuery('body').css("margin-top", headerHeight);
+	jQuery('body').css("padding-top", headerMarginBottom);
+});
+
 document.addEventListener("DOMContentLoaded", function(event) {
 	
 	var toggleMenu = function(toggle) {
