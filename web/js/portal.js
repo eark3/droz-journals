@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 	});
 });
 
-jQuery(window).on("load", function() {
+jQuery(window).on("pageshow", function() {
 	var headerHeight = jQuery('#headerNavigationContainer').height();
 	var headerMarginBottom = jQuery('#headerNavigationContainer').css('margin-bottom');
 	jQuery('body').css("margin-top", headerHeight);
