@@ -13,27 +13,10 @@
 			{
 				"media": "screen",
 				"type": "text/css",
-				"href": "/journals/js/trumbowyg/ui/trumbowyg.css"
-			},
-			{
-				"media": "screen",
-				"type": "text/css",
 				"href": "/journals/css/admin/settings.css"
 			}
 		],
 		"scripts": [
-			{
-				"type": "text/javascript",
-				"src": "/journals/js/trumbowyg/trumbowyg.js"
-			},
-			{
-				"type": "text/javascript",
-				"src": "/journals/js/trumbowyg/langs/fr.js"
-			},
-			{
-				"type": "text/javascript",
-				"src": "/journals/js/trumbowyg/langs/de.js"
-			},
 			{
 				"type": "text/javascript",
 				"src": "/journals/js/admin/settings.js"
