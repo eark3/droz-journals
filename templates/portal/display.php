@@ -2,7 +2,9 @@
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>" xml:lang="<?php echo $lang; ?>">
 	<head>
+<?php if (!empty($base)) { ?>
 		<base href="<?php echo $base; ?>">
+<?php } ?>
 		<title><?php echo $title; ?></title>
 		<meta charset="UTF-8" />
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
