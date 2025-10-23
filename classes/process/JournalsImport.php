@@ -43,6 +43,20 @@ class JournalsImport extends Import {
         foreach ((new JournalEntity())->retrieveAll() as $journal) {
             $this->journals[$journal->context] = $journal;
         }
+        $refs = [];
+        foreach ($this->refs as $ref) {
+            if (in_array($ref, array_keys($this->journals))) {
+                $issues = (new IssueEntity())->retrieveAll(['journal' => $this->journals[$ref]->id, 'order' => [['asc' => 'volume'],['asc' => 'number']]]);
+                if ($issues) {
+                    foreach ($issues as $issue) {
+                        $refs[] = JournalsUtils::short($ref, $issue->volume, $issue->number); 
+                    }
+                }
+            }
+        }
+        if (!empty($refs)) {
+            $this->refs = $refs;
+        }
         if (!isset($this->refs)) {
             $set = $this->folder.'*';
             $issues = glob($set.'.json');
