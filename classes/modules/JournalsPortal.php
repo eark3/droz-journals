@@ -461,7 +461,7 @@ class JournalsPortal extends Portal {
             $filters['date']['to'] = $to;
         }
         if (!empty($authors)) {
-            $filters['authors'] = '*'.Zord::collapse($authors, false).'*';
+            $filters['authors'] = '*'.str_replace(' ', '\ ', Zord::collapse($authors, false)).'*';
         }
         $found = 0;
         if (!empty($query) || !empty($authors)) {
