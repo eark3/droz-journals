@@ -13,7 +13,7 @@ jQuery(window).on('load', function() {
 		    	var parentw = jQuery('#sidebar').width();
 		        jQuery('.block_toc2').css({
 		            position: 'fixed',
-		            top: '89px',
+		            top: jQuery('#headerNavigationContainer').outerHeight(true) + 'px',
 		            right: 'auto',
 		            width: parentw + 'px',
 		            zIndex: '20',
