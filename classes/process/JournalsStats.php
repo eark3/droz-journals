@@ -27,8 +27,8 @@ class JournalsStats extends ProcessExecutor {
         foreach ((new PaperEntity())->retrieveAll(['journal' => $journal->id]) as $paper) {
             $issue = (new IssueEntity())->retrieveOne($paper->issue);
             $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
-            foreach (['','html','pdf'] as $display) {
-                foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
+            foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
+                foreach (['','html','pdf'] as $display) {
                     $count = $counts[$short][$display][$month] ?? null;
                     if (!empty($count)) {
                         $this->info(0, $display."\t".Zord::str_pad($short, 16)."\t".$journal->context."\t".$year.$month."\t".$count."\t".JournalsUtils::short($journal->context, $issue->volume, $issue->number));
