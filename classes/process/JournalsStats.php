@@ -24,10 +24,10 @@ class JournalsStats extends ProcessExecutor {
             $value = $counts[$month][$query->paper][$query->display] ?? 0;
             $counts[$month][$query->paper][$query->display] = $value + 1;
         }
-        foreach ((new PaperEntity())->retrieveAll(['journal' => $journal->id]) as $paper) {
+        foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
+            foreach ((new PaperEntity())->retrieveAll(['journal' => $journal->id]) as $paper) {
             $issue = (new IssueEntity())->retrieveOne($paper->issue);
             $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
-            foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
                 foreach (['','html','pdf'] as $display) {
                     $count = $counts[$month][$short][$display] ?? null;
                     if (!empty($count)) {
