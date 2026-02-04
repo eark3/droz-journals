@@ -3,8 +3,8 @@
 class JournalsStats extends ProcessExecutor {
     
     public function parameters($string) {
-        list($journal, $year) = explode(' ', $string);
-        $parameters = ['journal' => $journal, 'year' => $year];
+        list($journal, $year, $file) = explode(' ', $string);
+        $parameters = ['journal' => $journal, 'year' => $year, 'file' => $file];
         $this->setParameters($parameters);
         return $parameters;
     }
@@ -12,13 +12,14 @@ class JournalsStats extends ProcessExecutor {
     public function execute($parameters = []) {
         $journal = (new JournalEntity())->retrieveOne($parameters['journal'] ?? null);
         $year = $parameters['year'] ?? null;
+        $file = $parameters['file'] ?? null;
         $stats = JournalsUtils::stats($journal, $year);
         foreach ($stats as $tab => $data) {
-            $this->info(0, $tab);
+            file_put_contents($file, $tab."\n");
             foreach ($data as $line) {
-                $this->info(0, implode("\t", $line));
+                file_put_contents($file, implode("\t", $line)."\n");
             }
-            $this->info();
+            file_put_contents($file, "\n");
         }
     }
     
