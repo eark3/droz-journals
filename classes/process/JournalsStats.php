@@ -15,11 +15,11 @@ class JournalsStats extends ProcessExecutor {
         $file = $parameters['file'] ?? null;
         $stats = JournalsUtils::stats($journal, $year);
         foreach ($stats as $tab => $data) {
-            file_put_contents($file, $tab."\n");
+            file_put_contents($file, $tab."\n", FILE_APPEND);
             foreach ($data as $line) {
-                file_put_contents($file, implode("\t", $line)."\n");
+                file_put_contents($file, implode("\t", $line)."\n", FILE_APPEND);
             }
-            file_put_contents($file, "\n");
+            file_put_contents($file, "\n", FILE_APPEND);
         }
     }
     
