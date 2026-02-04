@@ -495,7 +495,7 @@ class JournalsUtils {
                                 foreach (['','html','pdf'] as $display) {
                                     $count = $counts[$tab][$month][$short][$display] ?? null;
                                     if (!empty($count)) {
-                                        $stats[$tab][] = [$display,Zord::str_pad($short, 16),$journal->context,$year.$month,$count,JournalsUtils::short($journal->context, $issue->volume, $issue->number)];
+                                        $stats[$tab][] = [strtoupper($display),Zord::str_pad($short, 16),$journal->context,$year.$month,$count,JournalsUtils::short($journal->context, $issue->volume, $issue->number)];
                                     }
                                 }
                             }
@@ -516,7 +516,7 @@ class JournalsUtils {
                     ]) as $issue) {
                         $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number);
                         if (!empty($counts[$tab][$short])) {
-                            $values = [$short];
+                            $values = [Zord::str_pad($short, 9)];
                             foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
                                 $values[] = $counts[$tab][$short][$month] ?? '';
                             }
@@ -554,7 +554,7 @@ class JournalsUtils {
                     ]) as $issue) {
                         $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number);
                         if (!empty($counts[$tab][$short])) {
-                            $values = [$short];
+                            $values = [Zord::str_pad($short, 9)];
                             foreach (['html','pdf',''] as $format) {
                                 $values[] = $counts[$tab][$short][$format] ?? '';
                             }
