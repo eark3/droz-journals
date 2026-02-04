@@ -495,7 +495,7 @@ class JournalsUtils {
                                 foreach (['','html','pdf'] as $display) {
                                     $count = $counts[$tab][$month][$short][$display] ?? null;
                                     if (!empty($count)) {
-                                        $stats[$tab][] = [strtoupper($display),Zord::str_pad($short, 16),$journal->context,$year.$month,$count,JournalsUtils::short($journal->context, $issue->volume, $issue->number)];
+                                        $stats[$tab][] = [strtoupper($display),$short,$journal->context,$year.$month,$count,JournalsUtils::short($journal->context, $issue->volume, $issue->number)];
                                     }
                                 }
                             }
