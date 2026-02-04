@@ -459,6 +459,137 @@ class JournalsUtils {
         }
         return $journal.(isset($issue) ? '_'.$issue : '').(isset($pages) ? '_'.$pages : '');
     }
+    
+    public static function stats($journal, $year) {
+        $queries = (new UserHasQueryEntity())->retrieveAll([
+            'journal' => $journal->context,
+            'paper'   => '__NOT_NULL__',
+            'when'    => ['>=' => $year.'-01-01'],
+            'when'    => ['<=' => $year.'-12-31']
+        ]);
+        $counts = [];
+        foreach ($queries as $query) {
+            $month = date('m', strtotime($query->when));
+            $counts['Données brutes'][$month][$query->paper][$query->display] = ($counts['Données brutes'][$month][$query->paper][$query->display] ?? 0) + 1;
+            $counts['Par mois'][$month] = ($counts['Par mois'][$month] ?? 0) + 1;
+            $counts['Par mois et par numéro'][$query->issue][$month] = ($counts['Par mois et par numéro'][$query->issue][$month] ?? 0) + 1;
+            $counts['Par mois et par article'][$query->paper][$month] = ($counts['Par mois et par article'][$query->paper][$month] ?? 0) + 1;
+            $counts['Par format et par numéro'][$query->issue][$query->display] = ($counts['Par format et par numéro'][$query->issue][$query->display] ?? 0) + 1;
+            $counts['Par format et par article'][$query->paper][$query->display] = ($counts['Par format et par article'][$query->paper][$query->display] ?? 0) + 1;
+        }
+        $stats = [];
+        foreach (['Données brutes','Par mois','Par mois et par numéro','Par mois et par article','Par format et par numéro','Par format et par article'] as $tab) {
+            switch ($tab) {
+                case 'Données brutes': {
+                    foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
+                        foreach ((new IssueEntity())->retrieveAll([
+                            'journal' => $journal->id,
+                            'order'   => [['ASC' => 'volume'],['ASC' => 'number']]
+                        ]) as $issue) {
+                            foreach ((new PaperEntity())->retrieveAll([
+                                'journal' => $journal->id,
+                                'issue'   => $issue->id,
+                                'order'   => ['ASC' => 'place']
+                            ]) as $paper) {
+                                $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
+                                foreach (['','html','pdf'] as $display) {
+                                    $count = $counts[$tab][$month][$short][$display] ?? null;
+                                    if (!empty($count)) {
+                                        $stats[$tab][] = [$display,Zord::str_pad($short, 16),$journal->context,$year.$month,$count,JournalsUtils::short($journal->context, $issue->volume, $issue->number)];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 'Par mois': {
+                    foreach ($counts[$tab] as $month => $count) {
+                        $stats[$tab][] = [$year.$month,$count];
+                    }
+                    break;
+                }
+                case 'Par mois et par numéro': {
+                    foreach ((new IssueEntity())->retrieveAll([
+                        'journal' => $journal->id,
+                        'order'   => [['ASC' => 'volume'],['ASC' => 'number']]
+                    ]) as $issue) {
+                        $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number);
+                        if (!empty($counts[$tab][$short])) {
+                            $values = [$short];
+                            foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
+                                $values[] = $counts[$tab][$short][$month] ?? '';
+                            }
+                            $stats[$tab][] = $values;
+                        }
+                    }
+                    break;
+                }
+                case 'Par mois et par article': {
+                    foreach ((new IssueEntity())->retrieveAll([
+                        'journal' => $journal->id,
+                        'order'   => [['ASC' => 'volume'],['ASC' => 'number']]
+                    ]) as $issue) {
+                        foreach ((new PaperEntity())->retrieveAll([
+                            'journal' => $journal->id,
+                            'issue'   => $issue->id,
+                            'order'   => ['ASC' => 'place']
+                        ]) as $paper) {
+                            $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
+                            if (!empty($counts[$tab][$short])) {
+                                $values = [Zord::str_pad($short, 16)];
+                                foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
+                                    $values[] = $counts[$tab][$short][$month] ?? '';
+                                }
+                                $stats[$tab][] = $values;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 'Par format et par numéro': {
+                    foreach ((new IssueEntity())->retrieveAll([
+                        'journal' => $journal->id,
+                        'order'   => [['ASC' => 'volume'],['ASC' => 'number']]
+                    ]) as $issue) {
+                        $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number);
+                        if (!empty($counts[$tab][$short])) {
+                            $values = [$short];
+                            foreach (['html','pdf',''] as $format) {
+                                $values[] = $counts[$tab][$short][$format] ?? '';
+                            }
+                            $stats[$tab][] = $values;
+                        }
+                    }
+                    break;
+                }
+                case 'Par format et par article': {
+                    foreach ((new IssueEntity())->retrieveAll([
+                        'journal' => $journal->id,
+                        'order'   => [['ASC' => 'volume'],['ASC' => 'number']]
+                    ]) as $issue) {
+                        foreach ((new PaperEntity())->retrieveAll([
+                            'journal' => $journal->id,
+                            'issue'   => $issue->id,
+                            'order'   => ['ASC' => 'place']
+                        ]) as $paper) {
+                            $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
+                            if (!empty($counts[$tab][$short])) {
+                                $values = [Zord::str_pad($short, 16)];
+                                foreach (['html','pdf',''] as $format) {
+                                    $values[] = $counts[$tab][$short][$format] ?? '';
+                                }
+                                $stats[$tab][] = $values;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return $stats;
+    }
+    
 }
 
 ?>
