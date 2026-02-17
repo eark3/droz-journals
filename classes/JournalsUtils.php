@@ -465,7 +465,7 @@ class JournalsUtils {
             'journal' => $journal->context,
             'paper'   => '__NOT_NULL__',
             'when'    => ['>=' => $year.'-01-01'],
-            'when'    => ['<' => ($year + 1).'-01-01']
+            'when'    => ['<' => ((int) $year + 1).'-01-01']
         ]);
         $counts = [];
         foreach ($queries as $query) {
