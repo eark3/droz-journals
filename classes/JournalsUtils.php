@@ -461,20 +461,21 @@ class JournalsUtils {
     }
     
     public static function stats($journal, $year) {
+        $tabs = [
+            'Données brutes',
+            'Par mois',
+            'Par mois et par numéro',
+            'Par mois et par article',
+            'Par format et par numéro',
+            'Par format et par article'
+        ];
         $queries = (new UserHasQueryEntity())->retrieveAll([
             'journal' => $journal->context,
             'paper'   => '__NOT_NULL__',
             'when'    => ['>=' => $year.'-01-01'],
             'when'    => ['<' => ((int) $year + 1).'-01-01']
         ]);
-        $counts = [
-            'Données brutes'            => [],
-            'Par mois'                  => [],
-            'Par mois et par numéro'    => [],
-            'Par mois et par article'   => [],
-            'Par format et par numéro'  => [],
-            'Par format et par article' => []
-        ];
+        $counts = array_combine($tabs, array_fill(0, count($tabs), []));
         foreach ($queries as $query) {
             $month = date('m', strtotime($query->when));
             $counts['Données brutes'][$month][$query->paper][$query->display] = ($counts['Données brutes'][$month][$query->paper][$query->display] ?? 0) + 1;
@@ -487,15 +488,8 @@ class JournalsUtils {
         $array = $counts['Par mois'];
         ksort($array);
         $counts['Par mois'] = $array;
-        $stats = [
-            'Données brutes'            => [],
-            'Par mois'                  => [],
-            'Par mois et par numéro'    => [],
-            'Par mois et par article'   => [],
-            'Par format et par numéro'  => [],
-            'Par format et par article' => []
-        ];
-        foreach (['Données brutes','Par mois','Par mois et par numéro','Par mois et par article','Par format et par numéro','Par format et par article'] as $tab) {
+        $stats = array_combine($tabs, array_fill(0, count($tabs), []));
+        foreach ($tabs as $tab) {
             switch ($tab) {
                 case 'Données brutes': {
                     foreach (['01','02','03','04','05','06','07','08','09','10','11','12'] as $month) {
