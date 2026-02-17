@@ -477,6 +477,9 @@ class JournalsUtils {
             $counts['Par format et par numéro'][$query->issue][$query->display] = ($counts['Par format et par numéro'][$query->issue][$query->display] ?? 0) + 1;
             $counts['Par format et par article'][$query->paper][$query->display] = ($counts['Par format et par article'][$query->paper][$query->display] ?? 0) + 1;
         }
+        $array = $counts['Par mois'];
+        ksort($array);
+        $counts['Par mois'] = $array;
         $stats = [];
         foreach (['Données brutes','Par mois','Par mois et par numéro','Par mois et par article','Par format et par numéro','Par format et par article'] as $tab) {
             switch ($tab) {
