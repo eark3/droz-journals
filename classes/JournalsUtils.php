@@ -467,7 +467,14 @@ class JournalsUtils {
             'when'    => ['>=' => $year.'-01-01'],
             'when'    => ['<' => ((int) $year + 1).'-01-01']
         ]);
-        $counts = [];
+        $counts = [
+            'Données brutes'            => [],
+            'Par mois'                  => [],
+            'Par mois et par numéro'    => [],
+            'Par mois et par article'   => [],
+            'Par format et par numéro'  => [],
+            'Par format et par article' => []
+        ];
         foreach ($queries as $query) {
             $month = date('m', strtotime($query->when));
             $counts['Données brutes'][$month][$query->paper][$query->display] = ($counts['Données brutes'][$month][$query->paper][$query->display] ?? 0) + 1;
