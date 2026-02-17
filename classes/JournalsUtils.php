@@ -487,7 +487,14 @@ class JournalsUtils {
         $array = $counts['Par mois'];
         ksort($array);
         $counts['Par mois'] = $array;
-        $stats = [];
+        $stats = [
+            'Données brutes'            => [],
+            'Par mois'                  => [],
+            'Par mois et par numéro'    => [],
+            'Par mois et par article'   => [],
+            'Par format et par numéro'  => [],
+            'Par format et par article' => []
+        ];
         foreach (['Données brutes','Par mois','Par mois et par numéro','Par mois et par article','Par format et par numéro','Par format et par article'] as $tab) {
             switch ($tab) {
                 case 'Données brutes': {
