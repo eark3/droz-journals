@@ -35,10 +35,11 @@
 				</li>
 <?php if (count($langs ?? []) > 1) { ?>
 				<li class="dropdown">
-					<a href="/" class="dropdown-toggle" data-toggle="dropdown"><img src="/journals/img/<?php echo $lang ?>.jpg" />&nbsp;<b class="caret"></b></a>
+<?php /* Flags from https://github.com/SlavkoPekaric/Country-Flags-Responsive-CSS-Sprite/tree/master/img/separate */ ?>
+					<a href="/" class="dropdown-toggle" data-toggle="dropdown"><img style="width: 16px;" src="/journals/img/<?php echo $lang ?>.png" />&nbsp;<b class="caret"></b></a>
 					<ul class="dropdown-menu dropdown-menu-right">
 <?php   foreach ($langs as $_lang) { ?>
-						<li><a href="<?php echo $pathURL; ?>?lang=<?php echo $_lang; ?>"><img src="/journals/img/<?php echo $_lang ?>.jpg" /> <span style="margin-left: 1em;"><?php echo Zord::getLocale('portal', $_lang)->lang->$_lang; ?></span></a></li>
+						<li><a href="<?php echo $pathURL; ?>?lang=<?php echo $_lang; ?>"><img style="width: 16px;" src="/journals/img/<?php echo $_lang ?>.png" /> <span style="margin-left: 1em;"><?php echo Zord::getLocale('portal', $_lang)->lang->$_lang; ?></span></a></li>
 <?php   } ?>
 					</ul>
 				</li>
