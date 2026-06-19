@@ -1,14 +1,3 @@
-<doi_batch xmlns="http://www.crossref.org/schema/4.3.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1" xmlns:ai="http://www.crossref.org/AccessIndicators.xsd" version="4.3.6" xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 https://www.crossref.org/schemas/crossref4.3.6.xsd">
-  <head>
-    <doi_batch_id><?php echo DROZ_DOI_PREFIX; ?><?php echo $issue['short']; ?>@<?php echo date('Ymd.His'); ?></doi_batch_id>
-    <timestamp><?php echo time(); ?></timestamp>
-    <depositor>
-      <depositor_name><?php echo CROSSREF_DEPOSITOR_NAME; ?></depositor_name>
-      <email_address><?php echo CROSSREF_DEPOSITOR_EMAIL; ?></email_address>
-    </depositor>
-    <registrant><?php echo CROSSREF_REGISTRANT; ?></registrant>
-  </head>
-  <body>
 <?php foreach ($articles as $article) { ?>
     <journal>
       <journal_metadata>
@@ -88,5 +77,3 @@
       </journal_article>
     </journal>
 <?php } ?>
-  </body>
-</doi_batch>

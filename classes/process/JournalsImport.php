@@ -1,9 +1,8 @@
 <?php
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-
 class JournalsImport extends Import {
+    
+    use CrossRef;
     
     protected $journals = [];
     protected $journal  = null;
@@ -222,7 +221,7 @@ class JournalsImport extends Import {
                     'locale' => $this->journal->locale
                 ];
                 $setting = (new SettingEntity('paper'))->retrieveOne($criteria);
-                $criteria['value'] = DROZ_DOI_PREFIX.$short;
+                $criteria['value'] = DROZ_DOI_PREFIX.'/'.$short;
                 if ($setting === false) {
                     (new SettingEntity('paper'))->create($criteria);
                 } else {
@@ -489,8 +488,7 @@ class JournalsImport extends Import {
     }
     
     protected function crossref($ean) {
-        $connection = Zord::value('connection', 'crossref');
-        $models = [];
+        $models = ['id' => $ean];
         $issue = (new IssueEntity())->retrieveOne($ean);
         if ($issue === false) {
             $this->error(2, $this->locale->messages->crossref->error->issue->unknown);
@@ -557,46 +555,7 @@ class JournalsImport extends Import {
         }
         $result = true;
         foreach ($articles as $prefix => $_articles) {
-            $filename = Zord::liveFolder('build'.DS.$prefix, true).'crossref_'.$ean.'.xml';
-            $this->info(2, $filename);
-            $view = new View('/xml/crossref', Zord::array_map_recursive(function($item) {return htmlentities(str_replace('&nbsp;', ' ', strip_tags($item)), ENT_XML1, 'UTF-8');}, array_merge($models, ['articles' => $_articles])));
-            $view->setMark(false);
-            file_put_contents($filename, $view->render());
-            if (CROSSREF_UPLOAD_SUBMISSION) {
-                if (empty($connection['parameters'][$prefix])) {
-                    $this->warn(2, $this->locale->messages->crossref->warn->parameters->missing.' '.$prefix);
-                    continue;
-                }
-                $httpClient = new Client($connection['config']);
-                $multipart = [];
-                foreach ($connection['parameters'][$prefix] as $name => $contents) {
-                    $multipart[] = ['name' => $name, 'contents' => $contents];
-                }
-                $multipart[] = ['name' => 'operation', 'contents' => 'doMDUpload'];
-                $multipart[] = ['name' => 'mdFile',    'contents' => fopen($filename, 'r')];
-                try {
-                    $this->info(2, $this->locale->messages->crossref->info->file->sending, false, true);
-                    $httpClient->request('POST', $connection['url'], ['multipart' => $multipart]);
-                    $this->report(0, 'OK', 'OK');
-                } catch(RequestException $error) {
-                    $this->report(0, 'KO', 'KO');
-                    $returnMessage = $error->getMessage();
-                    if ($error->hasResponse()) {
-                        $responseBody = $error->getResponse()->getBody(true);
-                        $statusCode = $error->getResponse()->getStatusCode();
-                        if ($statusCode == 403) {
-                            $xmlDoc = new DOMDocument();
-                            $xmlDoc->loadXML($responseBody);
-                            $msg = $xmlDoc->getElementsByTagName('msg')->item(0)->nodeValue;
-                            $returnMessage = $msg.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
-                        } else {
-                            $returnMessage = $responseBody.' ('.$statusCode.' '.$error->getResponse()->getReasonPhrase().')';
-                        }
-                    }
-                    $this->error(2, $returnMessage);
-                    $result &= false;
-                }
-            }
+            $result &= $this->register(array_merge($models, ['prefix' => $prefix, 'articles' => $_articles]));
         }
         return $result;
     }
