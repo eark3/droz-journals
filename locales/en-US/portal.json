@@ -37,6 +37,7 @@
 		"policy": "Access policy",
 		"license": "Legal notice",
 		"subscription": "Subscription",
+		"apikey": "API key",
 		"notice": "Notice",
 		"login": "Login",
 		"login/lostPassword": "Forgot your password?"

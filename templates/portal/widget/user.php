@@ -17,6 +17,7 @@
 						<li>
 <?php   if ($user->isConnected()) { ?>
 							<a href="<?php echo $baseURL; ?>/login/signOut"><?php echo $locale->login->signOut; ?></a>
+							<a href="<?php echo $baseURL; ?>/page/apikey"><?php echo $this->locale('counter')->apikey; ?> (Counter R5)</a>
 <?php   } else { ?>
 							<a href="<?php echo $baseURL; ?>/login"><?php echo $locale->login->signIn; ?></a>
 <?php   } ?>

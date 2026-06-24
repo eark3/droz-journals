@@ -38,6 +38,7 @@
 		"license": "Mentions légales",
 		"subscription": "Abonnement",
 		"notice": "Annonce",
+		"apikey": "Clé API",
 		"login": "Se connecter",
 		"login/lostPassword": "Demander un mot de passe",
 		"login/changePassword": "Changer le mot de passe"

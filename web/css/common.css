@@ -2,7 +2,8 @@
 	display: flex;
 }
 
-body.root .pkp_structure_content.login {
+body.root .pkp_structure_content.login,
+body.root .pkp_structure_content.apikey {
 	display: flex;
 }
 

@@ -2,6 +2,8 @@
 
 class JournalsUser extends User {
     
+    use ApiKeyUser;
+    
     public $institution = null;
     
     public function setInstitution($institution) {
@@ -14,6 +16,13 @@ class JournalsUser extends User {
     
     public function getInstitution() {
         return $this->institution;
+    }
+    
+    public function hasRole($role, $context, $wild = true) {
+        if ($role === 'counter') {
+            return ($this->isConnected() && $this->hasRole('reader', $context)) || $this->hasRole('admin', $context);
+        }
+        return parent::hasRole($role, $context, $wild);
     }
     
 }

@@ -10,3 +10,20 @@
 .list li div input, .list li div select, .list li div i {
 	height: 2em !important;
 }
+
+.admin-panel-content {
+	color: black;
+}
+
+.admin-panel-content fieldset {
+	border: revert;
+	padding: revert;
+}
+
+.admin-panel-content legend {
+	all: revert;
+}
+
+.admin-panel-content ul {
+	margin: revert;
+}

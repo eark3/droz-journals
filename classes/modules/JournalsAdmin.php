@@ -4,7 +4,7 @@ use CSSValidator\CSSValidator;
 
 class JournalsAdmin extends StoreAdmin {
         
-    use JournalsModule;
+    use JournalsModule, ApiKeyAdmin;
     
     protected $errors = [];
     

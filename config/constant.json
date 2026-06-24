@@ -14,5 +14,73 @@
 	"DEFAULT_THEME": "ROOT",
 	"PUBLIC_RESOURCE_BASE": "public/journals",
 	"OPEN_EDITION_UPDATE_PDF": false,
-	"OPEN_EDITION_UPDATE_HTML": true
+	"OPEN_EDITION_UPDATE_HTML": true,
+	"AVAILABLE_COUNTER_REPORTS": [
+		{
+			"manifest": {
+				"Report_Name": "Journal Requests (Controlled)",
+				"Report_ID": "TR_J1",
+				"Release": "5.1",
+				"Report_Description": "Reports on usage of journal content as Total_Item_Requests and Unique_Item_Requests."
+			},
+			"templates": {
+				"header": {
+					"Release": "5.1",
+					"Report_ID": "TR_J1",
+					"Report_Name": "Journal Requests (Controlled)",
+					"Created": "",
+					"Created_By": "Librairie Droz",
+					"Institution_Name": "",
+					"Report_Filters": {
+						"Metric_Type": [
+							"Total_Item_Requests",
+							"Unique_Item_Requests"
+						],
+						"Begin_Date": "",
+						"End_Date": "",
+						"Data_Type": [
+							"Journal"
+						],
+						"Access_Type": [
+							"Controlled"
+						],
+						"Access_Method": [
+							"Regular"
+						]
+					}
+				},
+				"item": {
+					"Title": "",
+					"Publisher": "Librairie Droz",
+					"Publisher_ID": {
+						"ISNI": [
+							"0000000123593177"
+						]
+					},
+					"Platform": "",
+					"Item_ID": {
+						"DOI": "",
+						"Online_ISSN": "",
+						"URI": ""
+					},
+					"Attribute_Performance": [
+						{
+							"Performance": {
+								"Total_Item_Requests": {
+								},
+								"Unique_Item_Requests": {
+								}
+							}
+						}
+					]
+				}
+			}
+		}
+	],
+	"SUSHI_SERVICE_STATUS": [
+		{
+			"Description": "COUNTER Usage Reports for Droz Journals Portal",
+			"Service_Active": true
+		}
+	]
 }

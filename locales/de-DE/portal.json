@@ -37,6 +37,7 @@
 		"policy": "Zugangsrichtlinien",
 		"license": "Impressum",
 		"subscription": "Abonnement",
+		"apikey": "API-Schlüssel",
 		"notice": "Bekanntmachung",
 		"login": "Einloggen",
 		"login/lostPassword": "Fordern Sie ein Passwort an"

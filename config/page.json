@@ -24,5 +24,20 @@
 				"href": "/journals/css/admin.css"
 			}
 		]
+	},
+	"apikey": {
+		"styles": [
+			{
+				"type": "text/css",
+				"media": "screen",
+				"href": "/journals/css/apikey.css"
+			}
+		],
+		"scripts": [
+			{
+				"type": "text/javascript",
+				"src": "/common/js/apikey.js"
+			}
+		]
 	}
 }

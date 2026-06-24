@@ -2,7 +2,7 @@
 
 class JournalsAccount extends Account {
     
-    use JournalsModule;
+    use JournalsModule, SushiService, Counter;
     
     protected function form($action = 'connect', $models = []) {
         $page = 'login';
@@ -30,6 +30,61 @@ class JournalsAccount extends Account {
         $choose = $this->params['choose'] ?? false;
         $models['mode'] = empty($choose) ? 'new' : 'choose';
         return parent::notifyReset($user, $models);
+    }
+    
+    protected function getCounterCriteria($user, $context) {
+        return [
+            'user'    => $user,
+            'journal' => $context,
+            'paper'   => '__NOT_NULL__'
+        ];
+    }
+    
+    protected function getReportItems($user, $context, $begin, $end, $template) {
+        $items = [];
+        $timezone = new DateTimeZone(DEFAULT_TIMEZONE);
+        $platform = Zord::value('context', [$context,'title',DEFAULT_LANG]);
+        $first = new DateTime($begin, $timezone);
+        $last = new DateTime($end, $timezone);
+        $journal = (new JournalEntity())->retrieveOne($context);
+        $_journal = $this->_journal($journal);
+        foreach ((new UserHasQueryEntity())->retrieveDistinct($this->getCounterBetweenMonthsQuery($user->login, $context, $first, $last), 'paper') as $entity) {
+            $paper = (new PaperEntity())->retrieveOne($entity->paper);
+            $issue = (new IssueEntity())->retrieveOne($paper->issue);
+            $_paper = $this->_paper($paper, $issue);
+            $totalItemRequests = [];
+            $uniqueTitleRequests = [];
+            for ($month = clone $first ; $month <= $last ; $month->modify('+1 month')) {
+                $key = $month->format('Y-m');
+                $totalQuery = array_merge($this->getCounterBetweenMonthsQuery($user->login, $context, $month, $month), [
+                    'paper' => $entity->paper
+                ]);
+                $totalItemRequests[$key] = (new UserHasQueryEntity())->retrieveAll($totalQuery)->count();
+                $uniqueQuery = array_merge($totalQuery, [
+                    'display' => '__NULL__'
+                ]);
+                $uniqueTitleRequests[$key] = (new UserHasQueryEntity())->retrieveAll($uniqueQuery)->count();
+            }
+            $item = array_merge($template, [
+                "Title" => $_paper['settings']['title'],
+                "Platform" => $platform,
+                "Item_ID" => [
+                    "DOI" => $_paper['settings']['pub-id::doi'],
+                    "Online_ISSN" => $_journal['settings']['onlineIssn'],
+                    "URI" => JournalsUtils::url($journal->context, $issue, $paper)
+                ],
+                "Attribute_Performance" => [
+                    array_merge($template['Attribute_Performance'][0], [
+                        "Performance" => [
+                            "Total_Item_Requests" => $totalItemRequests,
+                            "Unique_Title_Requests" => $uniqueTitleRequests
+                        ]
+                    ])
+                ]
+            ]);
+            $items[] = $item;
+        }
+        return $items;
     }
     
     protected function _password($login) {
