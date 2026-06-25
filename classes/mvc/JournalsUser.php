@@ -20,7 +20,7 @@ class JournalsUser extends User {
     
     public function hasRole($role, $context, $wild = true) {
         if ($role === 'counter') {
-            return ($this->isConnected() && $this->hasRole('reader', $context)) || $this->hasRole('admin', $context);
+            return $this->hasRole('reader', $context, $wild) || $this->hasRole('admin', $context, $wild);
         }
         return parent::hasRole($role, $context, $wild);
     }
