@@ -18,13 +18,6 @@ class JournalsUser extends User {
         return $this->institution;
     }
     
-    public function hasRole($role, $context, $wild = true) {
-        if ($role === 'counter') {
-            return $this->hasRole('reader', $context, $wild) || $this->hasRole('admin', $context, $wild);
-        }
-        return parent::hasRole($role, $context, $wild);
-    }
-    
 }
 
 ?>
