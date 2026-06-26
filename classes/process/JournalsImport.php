@@ -560,12 +560,12 @@ class JournalsImport extends Import {
         return $result;
     }
     
-    protected function force($ean) {
+    protected function forceNotify($ean) {
         $this->journal = $this->journal($ean);
         $this->settings = JournalsUtils::settings('journal', $this->journal, $this->journal->locale);
         $this->issue = JournalsUtils::settings('issue', (new IssueEntity())->retrieveOne($ean), $this->journal->locale);
         $this->new = true;
-        return true;
+        return $this->notify($ean);
     }
     
     protected function notify($ean) {
