@@ -9,30 +9,28 @@
 <?php   } else { ?>
 						<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 <?php   } ?>
-						&nbsp;<span class="caret"></span>
 <?php } ?>
+						&nbsp;<span class="caret"></span>
 					</a>
-<?php if (!$user->isInstitution()) { ?>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						<li>
-<?php   if ($user->isConnected()) { ?>
+<?php if ($user->isConnected()) { ?>
 							<a href="<?php echo $baseURL; ?>/login/signOut"><?php echo $locale->login->signOut; ?></a>
 							<a href="<?php echo $baseURL; ?>/page/apikey"><?php echo $this->locale('counter')->apikey; ?> (Counter R5)</a>
-<?php   } else { ?>
+<?php } else { ?>
 							<a href="<?php echo $baseURL; ?>/login"><?php echo $locale->login->signIn; ?></a>
-<?php   } ?>
-<?php   if ($user->hasRole('admin', $context)) { ?>
+<?php } ?>
+<?php if ($user->hasRole('admin', $context)) { ?>
 							<a href="<?php echo $baseURL; ?>/admin"><?php echo $locale->admin->menu; ?></a>
-<?php     if (isset($edit)) { ?>
+<?php   if (isset($edit)) { ?>
 							<a href="<?php echo $baseURL; ?>/admin<?php echo Zord::substitute(Zord::value('portal', 'edit'), $edit); ?>" target="_blank"><?php echo $locale->edit; ?> <?php echo $edit['short']; ?></a>
-<?php     } ?>
-<?php     if (isset($export)) { ?>
-							<a href="<?php echo $baseURL; ?>/export/<?php echo $export['short']; ?>"><?php echo $locale->export; ?> <?php echo $export['short']; ?></a>
-<?php     } ?>
 <?php   } ?>
+<?php   if (isset($export)) { ?>
+							<a href="<?php echo $baseURL; ?>/export/<?php echo $export['short']; ?>"><?php echo $locale->export; ?> <?php echo $export['short']; ?></a>
+<?php   } ?>
+<?php } ?>
 						</li>
 					</ul>
-<?php } ?>
 				</li>
 <?php if (count($langs ?? []) > 1) { ?>
 				<li class="dropdown">
