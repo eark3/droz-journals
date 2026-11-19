@@ -53,8 +53,10 @@ trait JournalsCommon {
         $context = $journal->context ?? $this->context;
         $key = $this->_key('issue', ['issue' => $issue, 'context' => $context]);
         $type = $this->lang.DS.'issue';
+        $aligned = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
         if ($this->cache->hasItem($type, $key)) {
             $result = $this->cache->getItem($type, $key);
+            $result['aligned'] = $aligned;
         } else {
             $result = $this->properties('issue', $issue);
             $copyright = 'Copyright (c) '.$issue->year.' Librairie Droz';
