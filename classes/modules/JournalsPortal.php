@@ -498,13 +498,13 @@ class JournalsPortal extends Portal {
         }
         if (count($results) > 0) {
             usort($results, function($first, $second) use ($order) {
-                if ($first['issue']['published'] === $second['issue']['published']) {
+                if ($first['issue']['aligned'] === $second['issue']['aligned']) {
                     return $first['paper']['aligned'] <=> $second['paper']['aligned'];
                 }
                 if ($order === 'DESC') {
-                    return $first['issue']['published'] <=> $second['issue']['published'];
+                    return $first['issue']['aligned'] <=> $second['issue']['aligned'];
                 } else {
-                    return $second['issue']['published'] <=> $first['issue']['published'];
+                    return $second['issue']['aligned'] <=> $first['issue']['aligned'];
                 }
             });
             $models['start']  = $start;

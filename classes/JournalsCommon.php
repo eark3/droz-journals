@@ -59,6 +59,7 @@ trait JournalsCommon {
             $result = $this->properties('issue', $issue);
             $copyright = 'Copyright (c) '.$issue->year.' Librairie Droz';
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
+            $aligned = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
             $serial = JournalsUtils::serial($issue);
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
             $link = Zord::getContextURL($context).'/issue/view/'.$short;
@@ -79,6 +80,7 @@ trait JournalsCommon {
                 'serial'    => $serial,
                 'link'      => $link,
                 'short'     => $short,
+                'aligned'   => $aligned,
                 'copyright' => $copyright,
                 'sections'  => $_sections
             ]);
