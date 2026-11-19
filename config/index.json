@@ -3,6 +3,7 @@
 	"fields": {
 		"short": "string",
 		"aligned": "string",
+		"issue": "string",
 		"date": "string",
 		"galleys": "string",
 		"journal": "string",

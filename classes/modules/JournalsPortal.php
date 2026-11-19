@@ -471,7 +471,7 @@ class JournalsPortal extends Portal {
                 'filters' => $filters,
                 'start'   => $start,
                 'rows'    => $rows,
-                'sort'    => ['aligned' => $order]
+                'sort'    => ['issue' => $order, 'aligned' => 'ASC']
             ]);
             if ($found > 0) {
                 foreach ($documents as $document) {

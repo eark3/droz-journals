@@ -53,15 +53,12 @@ trait JournalsCommon {
         $context = $journal->context ?? $this->context;
         $key = $this->_key('issue', ['issue' => $issue, 'context' => $context]);
         $type = $this->lang.DS.'issue';
-        $aligned = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
         if ($this->cache->hasItem($type, $key)) {
             $result = $this->cache->getItem($type, $key);
-            $result['aligned'] = $aligned;
         } else {
             $result = $this->properties('issue', $issue);
             $copyright = 'Copyright (c) '.$issue->year.' Librairie Droz';
             $short = JournalsUtils::short($context, $issue->volume, $issue->number);
-            $aligned = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
             $serial = JournalsUtils::serial($issue);
             $cover = '/public/journals/images/'.$context.'/'.$result['settings']['coverImage'];
             $link = Zord::getContextURL($context).'/issue/view/'.$short;
@@ -82,7 +79,6 @@ trait JournalsCommon {
                 'serial'    => $serial,
                 'link'      => $link,
                 'short'     => $short,
-                'aligned'   => $aligned,
                 'copyright' => $copyright,
                 'sections'  => $_sections
             ]);
@@ -109,15 +105,18 @@ trait JournalsCommon {
         $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);
         $aligned = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages, true);
         $key = $this->_key('paper', ['paper' => $paper, 'context' => $context, 'issue' => $issue]);
+        $issue = JournalsUtils::short($context, $issue->volume, $issue->number, null, true);
         $type = $this->lang.DS.'paper';
         if ($this->cache->hasItem($type, $key)) {
             $result = $this->cache->getItem($type, $key);
             $result['aligned'] = $aligned;
+            $result['issue'] = $issue;
             return $result;
         }
         $result = $this->properties('paper', $paper);
         $result['short'] = $short;
         $result['aligned'] = $aligned;
+        $result['issue'] = $issue;
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
             $_author = $this->properties('author', $author);
