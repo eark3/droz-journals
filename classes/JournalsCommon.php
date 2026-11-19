@@ -103,13 +103,17 @@ trait JournalsCommon {
     protected function _paper($paper, $issue, $journal = null) {
         $context = $journal->context ?? $this->context;
         $short = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages);
+        $aligned = JournalsUtils::short($context, $issue->volume, $issue->number, $paper->pages, true);
         $key = $this->_key('paper', ['paper' => $paper, 'context' => $context, 'issue' => $issue]);
         $type = $this->lang.DS.'paper';
         if ($this->cache->hasItem($type, $key)) {
-            return $this->cache->getItem($type, $key);
+            $result = $this->cache->getItem($type, $key);
+            $result['aligned'] = $aligned;
+            return $result;
         }
         $result = $this->properties('paper', $paper);
         $result['short'] = $short;
+        $result['aligned'] = $aligned;
         $authors = (new AuthorEntity())->retrieveAll(['paper' => $paper->id, 'order' => ['asc' => 'place']]);
         foreach ($authors as $author) {
             $_author = $this->properties('author', $author);

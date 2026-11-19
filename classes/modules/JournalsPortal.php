@@ -443,6 +443,7 @@ class JournalsPortal extends Portal {
         $to      = $this->params['to']      ?? null;
         $start   = $this->params['start']   ?? 0;
         $rows    = $this->params['rows']    ?? SEARCH_PAGE_DEFAULT_SIZE;
+        $order   = $this->params['order']   ?? 'DESC';
         $results = [];
         $models  = ['filters' => [
             'query'   => $query,
@@ -496,6 +497,16 @@ class JournalsPortal extends Portal {
             }
         }
         if (count($results) > 0) {
+            usort($results, function($first, $second) use ($order) {
+                if ($first['issue']['published'] === $second['issue']['published']) {
+                    return $first['paper']['aligned'] <=> $second['paper']['aligned'];
+                }
+                if ($order === 'DESC') {
+                    return $first['issue']['published'] <=> $second['issue']['published'];
+                } else {
+                    return $second['issue']['published'] <=> $first['issue']['published'];
+                }
+            });
             $models['start']  = $start;
             $models['rows']   = $rows;
             $models['found']  = $found;
