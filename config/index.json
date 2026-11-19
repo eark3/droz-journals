@@ -2,6 +2,7 @@
 	"key": "short",
 	"fields": {
 		"short": "string",
+		"aligned": "string",
 		"date": "string",
 		"galleys": "string",
 		"journal": "string",

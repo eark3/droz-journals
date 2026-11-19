@@ -470,7 +470,8 @@ class JournalsPortal extends Portal {
                 'query'   => $query,
                 'filters' => $filters,
                 'start'   => $start,
-                'rows'    => $rows
+                'rows'    => $rows,
+                'sort'    => ['aligned' => $order]
             ]);
             if ($found > 0) {
                 foreach ($documents as $document) {
@@ -497,16 +498,6 @@ class JournalsPortal extends Portal {
             }
         }
         if (count($results) > 0) {
-            usort($results, function($first, $second) use ($order) {
-                if ($first['issue']['aligned'] === $second['issue']['aligned']) {
-                    return $first['paper']['aligned'] <=> $second['paper']['aligned'];
-                }
-                if ($order === 'ASC') {
-                    return $first['issue']['aligned'] <=> $second['issue']['aligned'];
-                } else {
-                    return $second['issue']['aligned'] <=> $first['issue']['aligned'];
-                }
-            });
             $models['start']  = $start;
             $models['rows']   = $rows;
             $models['found']  = $found;

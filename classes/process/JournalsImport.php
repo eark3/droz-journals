@@ -295,6 +295,7 @@ class JournalsImport extends Import {
                 $file = JournalsUtils::path($journal->context, $issue->volume, $issue->number, $paper->pages, $type);
                 if (file_exists($file)) {
                     $short = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages);
+                    $aligned = JournalsUtils::short($journal->context, $issue->volume, $issue->number, $paper->pages, true);
                     $this->info(2, basename($file));
                     if ($type === 'pdf') {
                         Zord::execute('exec', PDFTOTEXT_COMMAND, ['file' => $file]);
@@ -303,6 +304,7 @@ class JournalsImport extends Import {
                     $content = Store::align(file_get_contents($file), $type, true);
                     $contents[] = [
                         'short'   => $short,
+                        'aligned' => $aligned,
                         'name'    => $name,
                         'galleys' => $galleys,
                         'date'    => $date,
