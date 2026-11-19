@@ -501,7 +501,7 @@ class JournalsPortal extends Portal {
                 if ($first['issue']['aligned'] === $second['issue']['aligned']) {
                     return $first['paper']['aligned'] <=> $second['paper']['aligned'];
                 }
-                if ($order === 'DESC') {
+                if ($order === 'ASC') {
                     return $first['issue']['aligned'] <=> $second['issue']['aligned'];
                 } else {
                     return $second['issue']['aligned'] <=> $first['issue']['aligned'];
