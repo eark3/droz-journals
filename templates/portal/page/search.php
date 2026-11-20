@@ -33,7 +33,7 @@
     			<label><?php echo $locale->search->filters->order->results; ?></label>
     			<div style="display: flex; justify-content: space-around;">
 <?php foreach (['DESC','ASC'] as $order) { ?>
-					<div><input id="desc" type="radio" name="order" value="<?php echo $order; ?>"<?php if ($filters['order'] === $order) { ?> checked<?php } ?>/><span style="margin-left:1em;"><?php echo $locale->search->filters->order->$order; ?></span></div>
+					<div><input id="<?php echo $order; ?>" type="radio" name="order" value="<?php echo $order; ?>"<?php if ($filters['order'] === $order) { ?> checked<?php } ?>/><span style="margin-left:1em;"><?php echo $locale->search->filters->order->$order; ?></span></div>
 <?php } ?>
 				</div>
 			</div>

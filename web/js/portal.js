@@ -110,6 +110,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		action: 'search'
 	}, false);
 	
+	[].forEach.call(['DESC','ASC'], function(order) {
+		jQuery('#' + order).on('change', function(e) {
+			this.closest('form').submit();
+		});
+	});
+	
 	if (window.location.hash) {
 		scrollToAnchor(window.location.hash);
 	}
