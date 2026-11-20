@@ -126,7 +126,12 @@
 			"enhanced": "Filtres avancés",
 			"from": "De",
 			"to": "Jusqu'à",
-			"authors": "Auteurs"
+			"authors": "Auteurs",
+			"order": {
+				"results": "Classer les résultats",
+				"DESC": "du plus récent au plus ancien",
+				"ASC": "du plus ancien au plus récent"
+			}
 		}
 	},
 	"footer": {

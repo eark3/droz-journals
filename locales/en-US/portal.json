@@ -125,7 +125,12 @@
 			"enhanced": "Advanced filters",
 			"from": "Published After",
 			"to": "Published Before",
-			"authors": "By Authors"
+			"authors": "By Authors",
+			"order": {
+				"results": "Sort results",
+				"DESC": "from newest to oldest",
+				"ASC": "from oldest to newest"
+			}
 		}
 	},
 	"pagination": "${from} - ${to} of ${total} items"

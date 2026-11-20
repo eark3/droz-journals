@@ -4,8 +4,5 @@
 	},
 	"fetch": [
 		"short"
-	],
-	"sort": {
-		"short": "ASC"
-	}
+	]
 }

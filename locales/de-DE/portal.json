@@ -125,7 +125,12 @@
 			"enhanced": "Erweiterte Filter",
 			"from": "von",
 			"to": "bis",
-			"authors": "Nach Autor/in"
+			"authors": "Nach Autor/in",
+			"order": {
+				"results": "Ergebnisse sortieren",
+				"DESC": "vom neuesten zum ältesten",
+				"ASC": "vom ältesten zum neuesten"
+			}
 		}
 	},
 	"pagination": "${from} - ${to} von ${total} Treffern"

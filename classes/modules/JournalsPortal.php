@@ -449,7 +449,8 @@ class JournalsPortal extends Portal {
             'query'   => $query,
             'authors' => $authors,
             'from'    => $from,
-            'to'      => $to
+            'to'      => $to,
+            'order'   => $order
         ]];
         if (!empty($query)) {
             $query = Zord::collapse($query, false);
